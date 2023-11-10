@@ -46,20 +46,25 @@
           </el-form-item> -->
 					<el-form-item>
 						<div class="item-btn">
-							<input type="button" value="登录" @click="dataFormSubmit()" />
+							<input
+								style="cursor: pointer"
+								type="button"
+								value="登录"
+								@click="dataFormSubmit()"
+							/>
 						</div>
 					</el-form-item>
 				</el-form>
 			</div>
 
-			<div class="bottom">Copyright © 2019 广州市蓝海创新科技有限公司</div>
+			<div class="bottom">Copyright © 2019</div>
 		</div>
-		<Verify
+		<!-- <Verify
 			ref="verify"
 			:captcha-type="'blockPuzzle'"
 			:img-size="{ width: '400px', height: '200px' }"
 			@success="login"
-		/>
+		/> -->
 	</div>
 </template>
 
