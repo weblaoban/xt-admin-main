@@ -3,7 +3,7 @@
 		<div class="login-box">
 			<div class="top">
 				<div class="logo">
-					<img src="~@/assets/img/login-logo.png" alt="" />
+					<!-- <img src="~@/assets/img/login-logo.png" alt="" /> -->
 				</div>
 			</div>
 			<div class="mid">
@@ -57,7 +57,7 @@
 				</el-form>
 			</div>
 
-			<div class="bottom">Copyright © 2019</div>
+			<div class="bottom"></div>
 		</div>
 		<!-- <Verify
 			ref="verify"
@@ -180,8 +180,6 @@ export default {
 .login {
 	width: 100%;
 	height: 100%;
-	background: url(~@/assets/img/login-bg.png) no-repeat;
-	background-size: cover;
 	position: fixed;
 }
 .login .login-box {
@@ -192,6 +190,7 @@ export default {
 	padding-top: 10%;
 }
 .login .login-box .top {
+    width:400px;
 	margin-bottom: 30px;
 	text-align: center;
 }
