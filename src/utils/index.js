@@ -95,6 +95,6 @@ function idListFromTree (data, val, res = [], id = 'id', children = 'children') 
  */
 export function clearLoginInfo () {
   Vue.cookie.delete('Authorization')
-  store.commit('resetStore')
+  // store.commit('resetStore')
   router.options.isAddDynamicMenuRoutes = false
 }
