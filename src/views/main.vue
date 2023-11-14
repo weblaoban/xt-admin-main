@@ -47,7 +47,7 @@
       }
     },
     created () {
-      // this.getUserInfo()
+      this.getUserInfo()
     },
     mounted () {
       this.resetDocumentClientHeight()
