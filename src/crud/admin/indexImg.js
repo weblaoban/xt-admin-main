@@ -15,6 +15,7 @@ export const tableOption = {
   editBtn: false,
   delBtn: false,
   viewBtn: false,
+  showHeader: false,
   props: {
     label: 'label',
     value: 'value'

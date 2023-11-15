@@ -36,17 +36,17 @@
 		</avue-crud>
 
 		<!-- 弹窗, 新增 / 修改 -->
-		<!-- <add-or-update
+		<add-or-update
 			v-if="addOrUpdateVisible"
 			ref="addOrUpdate"
 			@refreshDataList="getDataList"
-		></add-or-update> -->
+		></add-or-update>
 	</div>
 </template>
 
 <script>
 import { buytableOption } from "@/crud/user/user";
-// import AddOrUpdate from "./buyDetail.vue";
+import AddOrUpdate from "./buyDetail.vue";
 export default {
 	data() {
 		return {
@@ -63,7 +63,7 @@ export default {
 		};
 	},
 	components: {
-		// AddOrUpdate,
+		AddOrUpdate,
 	},
 	methods: {
 		// 获取数据列表
