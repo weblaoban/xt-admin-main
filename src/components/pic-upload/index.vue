@@ -29,7 +29,8 @@
     methods: {
       // 图片上传
       handleUploadSuccess (response, file, fileList) {
-        this.$emit('input', file.response)
+        console.log(file)
+        this.$emit('input', 'images/' + file.response.data)
       },
       // 限制图片上传大小
       beforeAvatarUpload (file) {
