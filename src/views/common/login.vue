@@ -46,12 +46,13 @@
           </el-form-item> -->
 					<el-form-item>
 						<div class="item-btn">
-							<input
-								style="cursor: pointer"
-								type="button"
-								value="登录"
+							<el-button
+								style="width: 100%"
 								@click="dataFormSubmit()"
-							/>
+								type="primary"
+								:loading="isSubmit"
+								>登录</el-button
+							>
 						</div>
 					</el-form-item>
 				</el-form>
@@ -96,6 +97,7 @@ export default {
 				],
 			},
 			captchaPath: "",
+			isSubmit:false
 		};
 	},
 	beforeDestroy() {
@@ -190,7 +192,7 @@ export default {
 	padding-top: 10%;
 }
 .login .login-box .top {
-    width:400px;
+	width: 400px;
 	margin-bottom: 30px;
 	text-align: center;
 }

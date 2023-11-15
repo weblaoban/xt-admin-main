@@ -25,9 +25,9 @@
                 slot="status">
         <el-tag v-if="scope.row.status === 0"
                 size="small"
-                type="danger">未审核</el-tag>
+                type="danger">未回复</el-tag>
         <el-tag v-else
-                size="small">审核通过</el-tag>
+                size="small">已回复</el-tag>
       </template>
 
       <template slot-scope="scope"
