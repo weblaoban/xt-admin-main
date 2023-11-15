@@ -9,14 +9,9 @@
 			@selection-change="selectionChange"
 			@on-load="getDataList"
 		>
-			<!--      <template slot="menuLeft">-->
-			<!--        <el-button type="danger"-->
-			<!--                   @click="deleteHandle()"-->
-			<!--                   v-if="isAuth('admin:user:delete')"-->
-			<!--                   size="small"-->
-			<!--                   :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
-			<!--      </template>-->
-
+			<template slot-scope="scope" slot="detail">
+				<el-button type="text" @click="onShowDetail">查看购买详情</el-button>
+			</template>
 
 			<template slot-scope="scope" slot="menu">
 				<el-button
@@ -27,21 +22,31 @@
 					@click.stop="addOrUpdateHandle(scope.row.userId)"
 					>编辑</el-button
 				>
+
+				<el-button
+					type="text"
+					icon="el-icon-delete"
+					style="color: #ef4444"
+					size="small"
+					v-if="isAuth('admin:user:delete')"
+					@click.stop="deleteHandle(scope.row.userId)"
+					>删除</el-button
+				>
 			</template>
 		</avue-crud>
 
 		<!-- 弹窗, 新增 / 修改 -->
-		<add-or-update
+		<!-- <add-or-update
 			v-if="addOrUpdateVisible"
 			ref="addOrUpdate"
 			@refreshDataList="getDataList"
-		></add-or-update>
+		></add-or-update> -->
 	</div>
 </template>
 
 <script>
-import { tableOption } from "@/crud/user/user";
-import AddOrUpdate from "./user-add-or-update";
+import { buytableOption } from "@/crud/user/user";
+// import AddOrUpdate from "./buyDetail.vue";
 export default {
 	data() {
 		return {
@@ -49,7 +54,7 @@ export default {
 			dataListLoading: false,
 			dataListSelections: [],
 			addOrUpdateVisible: false,
-			tableOption: tableOption,
+			tableOption: buytableOption,
 			page: {
 				total: 0, // 总页数
 				currentPage: 1, // 当前页数
@@ -58,7 +63,7 @@ export default {
 		};
 	},
 	components: {
-		AddOrUpdate,
+		// AddOrUpdate,
 	},
 	methods: {
 		// 获取数据列表
@@ -85,6 +90,9 @@ export default {
 				}
 			});
 		},
+    onShowDetail(){
+
+    },
 		// 新增 / 修改
 		addOrUpdateHandle(id) {
 			this.addOrUpdateVisible = true;

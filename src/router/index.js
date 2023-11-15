@@ -162,9 +162,12 @@ function fnAddDynamicMenuRoutes(menuList = [], routes = []) {
 				route["meta"]["iframeUrl"] = menuList[i].url;
 			} else {
 				try {
+					console.log(menuList[i].url);
+					console.log(_import(`modules/${menuList[i].url}`));
 					route["component"] = _import(`modules/${menuList[i].url}`) || null;
 				} catch (e) {}
 			}
+			console.log(route);
 			routes.push(route);
 		}
 	}
