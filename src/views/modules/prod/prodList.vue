@@ -32,6 +32,11 @@
       </template>
 
       <template slot-scope="scope"
+                slot="other">
+       <el-button type="text">查看</el-button>
+      </template>
+
+      <template slot-scope="scope"
                 slot="menu">
         <el-button type="primary"
                    icon="el-icon-edit"
@@ -77,7 +82,7 @@ export default {
     getDataList (page, params, done) {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/prod/prod/page'),
+        url: this.$http.adornUrl('/admin/prod/page'),
         method: 'get',
         params: this.$http.adornParams(
           Object.assign(
@@ -90,12 +95,12 @@ export default {
         )
       }).then(({ data }) => {
         this.dataList = data.records
-        for (const key in this.dataList) {
-          if (this.dataList.hasOwnProperty(key)) {
-            const element = this.dataList[key]
-            element.imgs = element.imgs.split(',')[0]
-          }
-        }
+        // for (const key in this.dataList) {
+        //   if (this.dataList.hasOwnProperty(key)) {
+        //     const element = this.dataList[key]
+        //     element.imgs = element.imgs.split(',')[0]
+        //   }
+        // }
         this.page.total = data.total
         this.dataListLoading = false
         if (done) {

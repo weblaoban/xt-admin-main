@@ -8,7 +8,6 @@
 			:model="dataForm"
 			:rules="dataRule"
 			ref="dataForm"
-			@keyup.enter.native="dataFormSubmit()"
 			label-width="80px"
 		>
 			<!-- <el-form-item v-if="dataForm.type !== 2"

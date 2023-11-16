@@ -31,12 +31,12 @@
                      icon="el-icon-edit"
                      size="small"
                      v-if="isAuth('prod:prod:update')"
-                     @click="addOrUpdateHandle(scope.row.prodId)">修改</el-button>
+                     @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="danger"
                      icon="el-icon-delete"
                      size="small"
                      v-if="isAuth('prod:prod:delete')"
-                     @click="deleteHandle(scope.row.prodId)">删除</el-button>
+                     @click="deleteHandle(scope.row.id)">删除</el-button>
   
         </template>
       </avue-crud>
@@ -123,7 +123,8 @@
             Object.assign(
               {
                 current: page == null ? this.page.currentPage : page.currentPage,
-                size: page == null ? this.page.pageSize : page.pageSize
+                size: page == null ? this.page.pageSize : page.pageSize,
+                categoryId: 8
               },
               params
             )

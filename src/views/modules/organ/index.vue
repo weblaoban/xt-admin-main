@@ -18,7 +18,7 @@
 				header-align="center"
 				treeKey="id"
 				width="150"
-				label="分类名称"
+				label="机构名称"
 			>
 			</el-table-column>
 			<!-- <el-table-column prop="pic"
@@ -102,7 +102,7 @@ export default {
 		getDataList() {
 			this.dataListLoading = true;
 			this.$http({
-				url: this.$http.adornUrl("/admin/organDetail/table"),
+				url: this.$http.adornUrl("/admin/organDetail/page"),
 				method: "get",
 				params: this.$http.adornParams(),
 			}).then(({ data }) => {
