@@ -56,6 +56,7 @@
 
 <script>
 import { tableOption } from '@/crud/prod/prodList'
+import { treeDataTranslate } from '@/utils'
 export default {
   data () {
     return {
@@ -77,7 +78,22 @@ export default {
       resourcesUrl: process.env.VUE_APP_RESOURCES_URL
     }
   },
+  created () {
+    this.getCategoryList()
+  },
   methods: {
+
+        // 获取分类信息
+    getCategoryList () {
+      return this.$http({
+        url: this.$http.adornUrl('/prod/category/listCategory'),
+        method: 'get',
+        params: this.$http.adornParams()
+      }).then(({ data }) => {
+        this.tableOption.column[4].dicData = treeDataTranslate(data, 'categoryId', 'parentId')
+        console.log(this.tableOption)
+      })
+    },
     // 获取数据列表
     getDataList (page, params, done) {
       this.dataListLoading = true

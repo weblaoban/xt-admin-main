@@ -1,3 +1,4 @@
+import Vue from 'vue'
 export const tableOption = {
     searchMenuSpan: 6,
     columnBtn: false,
@@ -15,18 +16,18 @@ export const tableOption = {
     editBtn: false,
     delBtn: false,
     viewBtn: false,
-    props: {
-        label: 'label',
-        value: 'value'
-    },
+    // props: {
+    //     label: 'label',
+    //     value: 'value'
+    // },
     column: [{
         label: 'id',
         prop: 'id',
-        hide:true,
-        search: true,
+        hide: true,
+        search: true
     }, {
         label: '生成时间',
-        prop: 'createTime',
+        prop: 'createTime'
     }, {
         width: 150,
         label: '状态',
@@ -55,7 +56,13 @@ export const tableOption = {
         search: true
     }, {
         label: '类型',
-        prop: 'categoryId'
+        prop: 'categoryId',
+        dicData: [],
+        props: {
+            label: 'categoryName',
+            value: 'categoryId'
+        },
+        type: 'select',
     }, {
         label: '期限',
         prop: 'investLimitId'
@@ -77,7 +84,7 @@ export const tableOption = {
     }, {
         label: '是否推荐',
         prop: 'recommed',
-        search: true,
+        search: true
     }, {
         label: '其他详情',
         prop: 'other'
