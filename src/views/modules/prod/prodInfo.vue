@@ -62,12 +62,6 @@
                     placeholder="产品卖点"></el-input>
         </el-col>
       </el-form-item>
-      <el-form-item label="配送方式">
-        <el-checkbox v-model="dataForm.deliveryMode.hasShopDelivery">商家配送</el-checkbox>
-        <el-checkbox v-model="dataForm.deliveryMode.hasUserPickUp">用户自提</el-checkbox>
-      </el-form-item>
-      <prod-transport v-show="dataForm.deliveryMode.hasShopDelivery"
-                      v-model="dataForm.deliveryTemplateId"></prod-transport>
       <sku-tag ref="skuTag"
                 :skuList="dataForm.skuList"
                @change="skuTagChangeSkuHandler"></sku-tag>
@@ -122,10 +116,6 @@ export default {
         tagList: [],
         content: '',
         status: 1,
-        deliveryMode: {
-          hasShopDelivery: false,
-          hasUserPickUp: false
-        },
         deliveryTemplateId: null
       },
       tags: [],
@@ -161,7 +151,6 @@ export default {
             params: this.$http.adornParams()
           }).then(({ data }) => {
             this.dataForm = data
-            this.dataForm.deliveryMode = JSON.parse(data.deliveryMode)
             this.$refs.skuTag.init(data.skuList)
             this.$refs.skuTable.init()
             this.category.selected = idList(this.category.list, this.dataForm.categoryId, 'categoryId', 'children').reverse()
@@ -201,24 +190,13 @@ export default {
           this.errorMsg('请选择图片上传')
           return
         }
-        if (!this.dataForm.deliveryMode) {
-          this.errorMsg('请选择配送方式')
-          return
-        }
-        if (this.dataForm.deliveryMode.hasShopDelivery && !this.dataForm.deliveryTemplateId) {
-          this.errorMsg('请选择运费模板')
-          return
-        }
         let param = Object.assign({}, this.dataForm)
         // 设置价格和库存
         this.paramSetPriceAndStocks(param)
-
-        param.deliveryMode = undefined
-        param.deliveryModeVo = this.dataForm.deliveryMode
         // 商品主图
         param.pic = this.dataForm.imgs.split(',')[0]
         this.$http({
-          url: this.$http.adornUrl(`/prod/prod`),
+          url: this.$http.adornUrl(`/admin/prod`),
           method: param.prodId ? 'put' : 'post',
           data: this.$http.adornData(param)
         }).then(({ data }) => {

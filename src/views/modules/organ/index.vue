@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import AddOrUpdate from "./category-add-or-update";
+import AddOrUpdate from "./organ-add-or-update";
 import { treeDataTranslate } from "@/utils";
 
 export default {
@@ -102,7 +102,7 @@ export default {
 		getDataList() {
 			this.dataListLoading = true;
 			this.$http({
-				url: this.$http.adornUrl("/admin/categoryContent/table"),
+				url: this.$http.adornUrl("/admin/organDetail/table"),
 				method: "get",
 				params: this.$http.adornParams(),
 			}).then(({ data }) => {
@@ -125,7 +125,7 @@ export default {
 				type: "warning",
 			}).then(() => {
 				this.$http({
-					url: this.$http.adornUrl(`/admin/categoryContent/${id}`),
+					url: this.$http.adornUrl(`/admin/organDetail/${id}`),
 					method: "delete",
 					data: this.$http.adornData(),
 				}).then(({ data }) => {
