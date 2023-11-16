@@ -11,37 +11,44 @@
 			@keyup.enter.native="dataFormSubmit()"
 			label-width="80px"
 		>
-			<el-form-item label="资讯标题" prop="title">
+			<!-- <el-form-item v-if="dataForm.type !== 2"
+                    label="分类图片"
+                    prop="icon">
+        <pic-upload v-model="dataForm.icon"></pic-upload>
+      </el-form-item> -->
+			<el-form-item v-if="dataForm.type !== 2" label="分类名称" prop="name">
 				<el-input
-					v-model="dataForm.title"
+					v-model="dataForm.name"
 					controls-position="right"
 					:min="0"
-					label="资讯标题"
+					label="分类名称"
 				></el-input>
 			</el-form-item>
-			<el-form-item label="正文图片" prop="imgUrl">
-				<pic-upload v-model="dataForm.imgUrl"></pic-upload>
+			<el-form-item label="上级分类">
+				<el-cascader
+					expand-trigger="hover"
+					:options="categoryList"
+					:props="categoryTreeProps"
+					change-on-select
+					:clearable="true"
+					v-model="selectedCategory"
+					@change="handleChange"
+				>
+				</el-cascader>
 			</el-form-item>
-			<!-- <el-form-item label="分类" prop="id">
-				<el-col :span="8">
-					<el-cascader
-						expand-trigger="hover"
-						:options="categoryList"
-						:props="categoryTreeProps"
-						change-on-select
-						:clearable="true"
-						v-model="selectedCategory"
-						@change="handleChange"
-					>
-					</el-cascader>
-				</el-col>
-			</el-form-item> -->
-			<el-form-item label="正文文字" prop="content">
-				<tiny-mce
-					v-model="dataForm.content"
-					ref="content"
-					style="width: 100%"
-				></tiny-mce>
+			<el-form-item v-if="dataForm.type !== 2" label="排序号" prop="seq">
+				<el-input-number
+					v-model="dataForm.seq"
+					controls-position="right"
+					:min="0"
+					label="排序号"
+				></el-input-number>
+			</el-form-item>
+			<el-form-item label="状态" size="mini" prop="status">
+				<el-radio-group v-model="dataForm.status">
+					<el-radio :label="0">下线</el-radio>
+					<el-radio :label="1">正常</el-radio>
+				</el-radio-group>
 			</el-form-item>
 		</el-form>
 		<span slot="footer" class="dialog-footer">
@@ -56,52 +63,51 @@
 import { treeDataTranslate, idList } from "@/utils";
 import PicUpload from "@/components/pic-upload";
 import { Debounce } from "@/utils/debounce";
-import TinyMce from "@/components/tiny-mce";
 export default {
 	data() {
 		return {
 			visible: false,
 			dataForm: {
-				title: "",
-				content: "",
-				imgUrl: "",
+				id: 0,
+				currentId: 0,
+				grade: 0,
+				name: "",
+				seq: 1,
+				status: 1,
+				parentId: 0,
+				icon: "",
 			},
 			dataRule: {
-				//   id: [
-				//     { required: true, message: '分类名称不能为空', trigger: 'blur' },
-				//     { pattern: /\s\S+|S+\s|\S/, message: '请输入正确的分类名称', trigger: 'blur' }
-				//   ],
-				title: [
-					{ required: true, message: "分类图片不能为空", trigger: "blur" },
+				name: [
+					{ required: true, message: "分类名称不能为空", trigger: "blur" },
+					{
+						pattern: /\s\S+|S+\s|\S/,
+						message: "请输入正确的分类名称",
+						trigger: "blur",
+					},
 				],
+				// icon: [
+				//   { required: true, message: '分类图片不能为空', trigger: 'blur' }
+				// ]
 			},
-			// 分类树展示与回显
-			category: {
-				list: [],
-				selected: [],
-				props: {
-					value: "id",
-					label: "categoryName",
-				},
-			},
+			categoryList: [],
 			selectedCategory: [],
 			categoryTreeProps: {
 				value: "id",
-				label: "categoryName",
+				label: "name",
 			},
 			isSubmit: false,
 		};
 	},
 	components: {
 		PicUpload,
-		TinyMce,
 	},
 	methods: {
 		init(id) {
 			this.dataForm.currentId = id || 0;
 			this.dataForm.id = id || 0;
 			this.$http({
-				url: this.$http.adornUrl("/admin/categoryContent/listCategoryContent"),
+				url: this.$http.adornUrl("/admin/organDetail/listorganDetail"),
 				method: "get",
 				params: this.$http.adornParams(),
 			})
@@ -120,15 +126,15 @@ export default {
 						// 修改
 						this.$http({
 							url: this.$http.adornUrl(
-								`/admin/content/info/${this.dataForm.id}`
+								`/admin/organDetail/info/${this.dataForm.id}`
 							),
 							method: "get",
 							params: this.$http.adornParams(),
 						}).then(({ data }) => {
 							this.dataForm.id = data.id;
-							this.dataForm.categoryName = data.categoryName;
+							this.dataForm.name = data.name;
 							this.dataForm.seq = data.seq;
-							this.dataForm.pic = data.pic;
+							this.dataForm.icon = data.icon;
 							this.dataForm.parentId = data.parentId;
 							this.dataForm.status = data.status;
 							this.selectedCategory = idList(
@@ -162,14 +168,16 @@ export default {
 					}
 					this.isSubmit = true;
 					this.$http({
-						url: this.$http.adornUrl(`/admin/content`),
+						url: this.$http.adornUrl(`/admin/organDetail`),
 						method: this.dataForm.id ? "put" : "post",
 						data: this.$http.adornData({
 							id: this.dataForm.id || "",
-							title: this.dataForm.title,
-							content: this.dataForm.content,
-							imgUrl: this.dataForm.imgUrl,
-							categoryId: 8,
+							name: this.dataForm.name,
+							status: this.dataForm.status,
+							seq: this.dataForm.seq,
+							grade: this.dataForm.grade,
+							parentId: this.dataForm.parentId,
+							// 'icon': this.dataForm.icon
 						}),
 					}).then(({ data }) => {
 						this.$message({
@@ -179,6 +187,7 @@ export default {
 							onClose: () => {
 								this.isSubmit = false;
 								this.visible = false;
+								this.dataForm.parentId = 0;
 								this.$emit("refreshDataList");
 							},
 						});

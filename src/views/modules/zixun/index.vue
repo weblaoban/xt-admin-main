@@ -133,7 +133,7 @@
           for (const key in this.dataList) {
             if (this.dataList.hasOwnProperty(key)) {
               const element = this.dataList[key]
-              element.imgs = element.imgs.split(',')[0]
+              // element.imgs = element.imgs.split(',')[0]
             }
           }
           this.page.total = data.total
