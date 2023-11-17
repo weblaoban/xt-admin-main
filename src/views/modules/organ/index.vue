@@ -106,7 +106,7 @@ export default {
 				method: "get",
 				params: this.$http.adornParams(),
 			}).then(({ data }) => {
-				this.dataList = treeDataTranslate(data, "id", "parentId");
+				this.dataList = treeDataTranslate(data.records, "id", "parentId");
 				this.dataListLoading = false;
 			});
 		},
