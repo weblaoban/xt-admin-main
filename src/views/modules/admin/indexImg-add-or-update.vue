@@ -6,57 +6,40 @@
       <el-form :model="dataForm"
                ref="dataForm"
                :rules="dataRule"
+               label-position="top"
                label-width="100px">
-        <el-form-item label="轮播图片" prop="imgUrl">
+        <el-form-item label="1.上传图片" prop="imgUrl">
           <pic-upload v-model="dataForm.imgUrl"></pic-upload>
         </el-form-item>
-        <el-form-item label="顺序"
+        <!-- <el-form-item label="顺序"
                       prop="seq"
                       :rules="[
                         { required: false, pattern: /\s\S+|S+\s|\S/, message: '请输入正确的顺序', trigger: 'blur' }
                       ]">
           <el-input v-model="dataForm.seq"></el-input>
-        </el-form-item>
-        <el-form-item label="状态"
+        </el-form-item> -->
+        <!-- <el-form-item label="状态"
                       prop="status">
           <el-radio-group v-model="dataForm.status">
             <el-radio :label="0">禁用</el-radio>
             <el-radio :label="1">正常</el-radio>
           </el-radio-group>
-        </el-form-item>
-        <el-form-item label="类型">
+        </el-form-item> -->
+        <el-form-item label="2.图片链接">
           <el-radio-group v-model="dataForm.type"
                           @change="deleteRelation">
-            <el-radio :label="-1">无</el-radio>
-            <el-radio :label="0">商品</el-radio>
-            <!-- <el-radio :label="1">店铺</el-radio>
-            <el-radio :label="2">活动</el-radio> -->
+            <el-radio :label="-1">不跳转链接</el-radio>
+            <el-radio :label="0">跳转</el-radio>
           </el-radio-group>
-          <div v-if="dataForm.relation!=null">
-            <el-card :body-style="{ padding: '0px' }"
-                     style="height: 160px;width: 120px">
-              <img :src="card.pic"
-                   style="height:104px;width:100%">
-              <div class="card-prod-bottom">
-                <span class="card-prod-name">{{card.name}}</span>
-                <el-button type="text"
-                           class="card-prod-name-button"
-                           @click="deleteRelation">删除</el-button>
-              </div>
-            </el-card>
-          </div>
-          <div v-if="dataForm.relation==null">
-            <el-button @click="addProd"
-                       v-if=" dataForm.type == 0"
-                       size="small">选择商品</el-button>
-            <!-- <el-button @click="addShop"
-                       v-if=" dataForm.type == 1"
-                       size="small">选择店铺</el-button>
-            <el-button @click="addActivity"
-                       v-if="dataForm.type == 2"
-                       size="small">选择活动</el-button> -->
-          </div>
         </el-form-item>
+
+        <div v-if="dataForm.relation!=null">
+            
+        <el-form-item label=""
+                      prop="link">
+          <el-input v-model="dataForm.link" placeholder=" 复制链接到对话框中"></el-input>
+        </el-form-item>
+        </div>
         <el-form-item>
           <el-button type="primary"
                      @click="dataFormSubmit()">确定</el-button>
@@ -85,7 +68,8 @@ export default {
         seq: 0,
         imgId: 0,
         type: -1,
-        relation: null
+        relation: null,
+        link: ''
       },
       dataRule: {
         imgUrl: [
@@ -170,33 +154,6 @@ export default {
     // 删除关联数据
     deleteRelation () {
       this.dataForm.relation = null
-    },
-    // 打开选择商品
-    addProd () {
-      this.prodsSelectVisible = true
-      this.$nextTick(() => {
-        this.$refs.prodsSelect.init(this.card.realData.prod)
-      })
-    },
-    // 添加指定商品
-    selectCouponProds (prods) {
-      this.card.realData.prods = prods
-      if (prods.length) {
-        let selectProd = prods[0]
-        this.dataForm.relation = selectProd.prodId
-        this.card.pic = selectProd.pic
-        this.card.name = selectProd.prodName
-        this.card.id = selectProd.prodId
-      } else {
-        this.card = {}
-        this.relation = null
-      }
-    },
-    addShop () {
-      alert('选择店铺')
-    },
-    addActivity () {
-      alert('选择活动')
     }
   }
 }

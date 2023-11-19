@@ -88,8 +88,8 @@
 
                     <el-form-item label="发行机构" prop="organid">
            
-                    <el-select v-model="dataForm.organid" multiple style="width: 250px" placeholder="请选择">
-                        <el-option v-for="item in this.tags" :key="item.id" :label="item.title" :value="item.id">
+                    <el-select v-model="dataForm.organid" style="width: 250px" placeholder="请选择">
+                        <el-option v-for="item in this.organList" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
 
@@ -125,9 +125,25 @@
             </el-form-item></el-col>
                 </el-row>
 
+                <el-form-item label="" prop="sold_num">
+                    <div class="sold_list">
+                        <div class="soldItem soldhead" >
+                           <div>序号</div>
+                           <div class="soldDetail"> 进度详情</div>
+                           <div>操作</div>
+                        </div>
+                        <div class="soldItem" v-for="(item,index) in dataForm.sold_num" :key="index">
 
+                           <div>{{index+1}}</div>
+                           <div class="soldDetail"> 
+                    <el-input v-model="dataForm.sold_num[index].detail" placeholder="进度详情" maxlength="500"></el-input></div>
+                           <div @click="delSold(index)" style="color:red;cursor:pointer">删除</div>
+                        </div>
+                    </div>
+                    <el-button @click="addSold" type="text">新增进度</el-button>
+            </el-form-item>
 
-            <el-form-item label="产品详情" prop="content">
+            <el-form-item label="产品进度" prop="content">
                     <el-input show-word-limit :rows="4" type="textarea" v-model="dataForm.content" placeholder="产品详情" maxlength="500"></el-input>
             </el-form-item>
             <el-form-item>
@@ -177,10 +193,12 @@ export default {
         totalStocks: '',
         area: '',
         investRatio: '',
-        contentItem: ''
+        contentItem: '',
+        sold_num: []
       },
       tags: [],
-      resourcesUrl: process.env.VUE_APP_RESOURCES_URL
+      resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
+      organList: []
     }
   },
   components: {
@@ -197,12 +215,13 @@ export default {
   },
   activated () {
     this.dataForm.prodId = this.$route.query.prodId
+    console.log(this.$route.query.prodId)
     this.getDataList()
   },
   methods: {
         // 获取分类数据
     getDataList () {
-    //   this.getTagList()
+      this.getOrganList()
       this.getCategoryList().then(() => {
         if (this.dataForm.prodId) {
                     // 获取产品数据
@@ -232,6 +251,15 @@ export default {
         }
       })
     },
+    // 机构信息
+    getOrganList () {
+      return this.$http({
+        url: this.$http.adornUrl('/admin/organDetail/page?size=100'),
+        method: 'get'
+      }).then(({ data }) => {
+        this.organList = data.records
+      })
+    },
         // 获取分类信息
     getCategoryList () {
       return this.$http({
@@ -246,6 +274,14 @@ export default {
     handleCategoryChange (val) {
       this.dataForm.categoryId = val[val.length - 1]
     },
+    addSold () {
+      this.dataForm.sold_num.push({detail: ''})
+    },
+    delSold (index) {
+      const sold = [...this.dataForm.sold_num]
+      sold.splice(index, 1)
+      this.dataForm.sold_num = sold
+    },
         // 表单提交
     dataFormSubmit: Debounce(function () {
       this.$refs['dataForm'].validate((valid) => {
@@ -253,6 +289,7 @@ export default {
           return
         }
         let param = Object.assign({}, this.dataForm)
+        param.sold_num = JSON.stringify(param.sold_num)
         this.$http({
           url: this.$http.adornUrl(`/admin/prod`),
           method: param.id ? 'put' : 'post',
@@ -340,3 +377,28 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.sold_list{
+    width:600px;
+    margin-bottom:10px;
+    .empty{
+        text-align: center;
+        padding:20px;
+    }
+    .soldItem{
+        display: flex;
+        &>div{
+            width:100px;
+            flex-shrink: 0;
+            padding:10px 0;
+            border:1px solid #eee;
+                text-align: center;
+            &.soldDetail{
+                flex:1;
+                text-align: center;
+                padding:10px 20px;
+            }
+        }
+    }
+}</style>

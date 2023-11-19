@@ -33,7 +33,7 @@
 
       <template slot-scope="scope"
                 slot="other">
-       <el-button type="text">查看</el-button>
+       <el-button type="text" @click="showDetail">查看</el-button>
       </template>
 
       <template slot-scope="scope"
@@ -42,15 +42,48 @@
                    icon="el-icon-edit"
                    size="small"
                    v-if="isAuth('prod:prod:update')"
-                   @click="addOrUpdateHandle(scope.row.prodId)">修改</el-button>
+                   @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
         <el-button type="danger"
                    icon="el-icon-delete"
                    size="small"
                    v-if="isAuth('prod:prod:delete')"
-                   @click="deleteHandle(scope.row.prodId)">删除</el-button>
+                   @click="deleteHandle(scope.row.id)">删除</el-button>
 
       </template>
     </avue-crud>
+
+
+
+	<el-dialog
+		title="其他产品详情"
+		:close-on-click-modal="false"
+		:visible.sync="detailVisible"
+	>
+    <el-descriptions title="">
+    <el-descriptions-item label="发行机构">kooriookami</el-descriptions-item>
+    <el-descriptions-item label="收益类型">18100000000</el-descriptions-item>
+    <el-descriptions-item label="规模">苏州市</el-descriptions-item>
+    <el-descriptions-item label="所在地区">苏州市</el-descriptions-item>
+    <el-descriptions-item label="大小额配比">大小额配比</el-descriptions-item>
+</el-descriptions>
+    <div class="sold_list">
+                        <div class="soldItem soldhead" >
+                           <div>序号</div>
+                           <div class="soldDetail"> 进度详情</div>
+                        </div>
+                        <div class="soldItem" v-for="(item,index) in detail.sold_num" :key="index">
+
+                           <div>{{index+1}}</div>
+                           <div class="soldDetail"> 
+                            {{item.detail}}</div>
+                        </div>
+                        <div class="empty" v-if="!detail || !detail.sold_num || !detail.sold_num.length">暂无数据</div>
+                    </div>
+
+    <el-descriptions title="">
+    <el-descriptions-item label="进度详情"> 进度详情</el-descriptions-item>
+    </el-descriptions>
+	</el-dialog>
   </div>
 </template>
 
@@ -75,7 +108,9 @@ export default {
       dataListSelections: [],
       dataListLoading: false,
       tableOption: tableOption,
-      resourcesUrl: process.env.VUE_APP_RESOURCES_URL
+      resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
+      detailVisible: false,
+      detail: {}
     }
   },
   created () {
@@ -126,6 +161,7 @@ export default {
     },
     // 新增 / 修改
     addOrUpdateHandle (id) {
+      console.log(id)
       this.$router.push({
         path: '/prodInfo',
         query: { prodId: id }
@@ -159,6 +195,10 @@ export default {
           })
         })
         .catch(() => { })
+    },
+    showDetail (row) {
+      this.detailVisible = true
+      this.detail = row
     },
     // 条件查询
     searchChange (params, done) {

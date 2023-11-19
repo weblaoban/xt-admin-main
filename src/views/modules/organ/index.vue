@@ -78,70 +78,70 @@
 </template>
 
 <script>
-import AddOrUpdate from "./organ-add-or-update";
-import { treeDataTranslate } from "@/utils";
+import AddOrUpdate from './organ-add-or-update'
+import { treeDataTranslate } from '@/utils'
 
 export default {
-	data() {
-		return {
-			dataForm: {},
-			dataList: [],
-			dataListLoading: false,
-			addOrUpdateVisible: false,
-			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
-		};
-	},
-	components: {
-		AddOrUpdate,
-	},
-	activated() {
-		this.getDataList();
-	},
-	methods: {
+  data () {
+    return {
+      dataForm: {},
+      dataList: [],
+      dataListLoading: false,
+      addOrUpdateVisible: false,
+      resourcesUrl: process.env.VUE_APP_RESOURCES_URL
+    }
+  },
+  components: {
+    AddOrUpdate
+  },
+  activated () {
+    this.getDataList()
+  },
+  methods: {
 		// 获取数据列表
-		getDataList() {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/organDetail/page"),
-				method: "get",
-				params: this.$http.adornParams(),
-			}).then(({ data }) => {
-				this.dataList = treeDataTranslate(data.records, "id", "parentId");
-				this.dataListLoading = false;
-			});
-		},
+    getDataList () {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/organDetail/page?size=100'),
+        method: 'get',
+        params: this.$http.adornParams()
+      }).then(({ data }) => {
+        this.dataList = treeDataTranslate(data.records, 'id', 'parentId')
+        this.dataListLoading = false
+      })
+    },
 		// 新增 / 修改
-		addOrUpdateHandle(id) {
-			this.addOrUpdateVisible = true;
-			this.$nextTick(() => {
-				this.$refs.addOrUpdate.init(id);
-			});
-		},
+    addOrUpdateHandle (id) {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.addOrUpdate.init(id)
+      })
+    },
 		// 删除
-		deleteHandle(id) {
-			this.$confirm(`确定进行删除操作?`, "提示", {
-				confirmButtonText: "确定",
-				cancelButtonText: "取消",
-				type: "warning",
-			}).then(() => {
-				this.$http({
-					url: this.$http.adornUrl(`/admin/organDetail/${id}`),
-					method: "delete",
-					data: this.$http.adornData(),
-				}).then(({ data }) => {
-					this.$message({
-						message: "操作成功",
-						type: "success",
-						duration: 1500,
-						onClose: () => {
-							this.getDataList();
-						},
-					});
-				});
-			});
-		},
-	},
-};
+    deleteHandle (id) {
+      this.$confirm(`确定进行删除操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          url: this.$http.adornUrl(`/admin/organDetail/${id}`),
+          method: 'delete',
+          data: this.$http.adornData()
+        }).then(({ data }) => {
+          this.$message({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.getDataList()
+            }
+          })
+        })
+      })
+    }
+  }
+}
 </script>
 <style lang="scss">
 .mod-category {

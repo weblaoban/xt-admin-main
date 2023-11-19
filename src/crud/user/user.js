@@ -70,54 +70,51 @@ export const tableOption = {
     ]
 }
 
-// export const buytableOption = {
-//     searchMenuSpan: 6,
-//     columnBtn: false,
-//     border: true,
-//     // selection: true,
-//     index: false,
-//     indexLabel: '序号',
-//     stripe: true,
-//     menuAlign: 'center',
-//     menuWidth: 350,
-//     align: 'center',
-//     refreshBtn: true,
-//     searchSize: 'mini',
-//     addBtn: false,
-//     editBtn: false,
-//     delBtn: false,
-//     viewBtn: false,
-//     props: {
-//         label: 'label',
-//         value: 'value'
-//     },
-//     column: [
-//         {
-//             label: '用户名',
-//             prop: 'nickName',
-//             search: true
-//         },
-//         {
-//             label: '手机号',
-//             prop: 'nickName',
-//             search: true
-//         },
-//         {
-//             label: '姓名',
-//             prop: 'nickName',
-//             search: true
-//         },
-//         {
-//             label: '性别',
-//             prop: 'nickName'
-//         },
-//         {
-//             label: '身份证',
-//             prop: 'nickName'
-//         },
-//         {
-//             label: '购买产品详情',
-//             prop: 'detail'
-//         }
-//     ]
-// }
+export const buytableOption = {
+    searchMenuSpan: 6,
+    columnBtn: false,
+    border: true,
+    // selection: true,
+    index: false,
+    indexLabel: '序号',
+    stripe: true,
+    menuAlign: 'center',
+    menuWidth: 350,
+    align: 'center',
+    refreshBtn: false,
+    searchSize: 'mini',
+    addBtn: false,
+    editBtn: false,
+    delBtn: false,
+    viewBtn: false,
+    props: {
+        label: 'label',
+        value: 'value'
+    },
+    column: [
+        {
+            label: '用户名',
+            prop: 'nickName',
+        },
+        {
+            label: '手机号',
+            prop: 'nickName',
+        },
+        {
+            label: '姓名',
+            prop: 'nickName',
+        },
+        {
+            label: '性别',
+            prop: 'nickName'
+        },
+        {
+            label: '身份证',
+            prop: 'nickName'
+        },
+        {
+            label: '购买产品详情',
+            prop: 'detail'
+        }
+    ]
+}
