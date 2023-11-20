@@ -11,13 +11,13 @@
         <el-form-item label="1.上传图片" prop="imgUrl">
           <pic-upload v-model="dataForm.imgUrl"></pic-upload>
         </el-form-item>
-        <!-- <el-form-item label="顺序"
+        <el-form-item label="顺序"
                       prop="seq"
                       :rules="[
                         { required: false, pattern: /\s\S+|S+\s|\S/, message: '请输入正确的顺序', trigger: 'blur' }
                       ]">
           <el-input v-model="dataForm.seq"></el-input>
-        </el-form-item> -->
+        </el-form-item>
         <!-- <el-form-item label="状态"
                       prop="status">
           <el-radio-group v-model="dataForm.status">

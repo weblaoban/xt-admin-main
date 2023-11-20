@@ -33,7 +33,7 @@
 					icon="el-icon-delete"
 					size="small"
 					v-if="isAuth('admin:indexImg:delete')"
-					@click="deleteHandle(scope.row.imgId)"
+					@click="deleteHandle(scope.row)"
 					>清空</el-button
 				>
 			</template>
@@ -72,7 +72,7 @@
 					icon="el-icon-delete"
 					size="small"
 					v-if="isAuth('admin:indexImg:delete')"
-					@click="deleteHandle(scope.row.imgId)"
+					@click="deleteHandle(scope.row)"
 					>清空</el-button
 				>
 			</template>
@@ -88,103 +88,120 @@
 </template>
 
 <script>
-import AddOrUpdate from './indexImg-add-or-update'
-import { tableOption } from '@/crud/admin/indexImg'
+import AddOrUpdate from "./indexImg-add-or-update";
+import { tableOption } from "@/crud/admin/indexImg";
 export default {
-  data () {
-    return {
-      dataForm: {
-        indexImg: ''
-      },
-      dataList: [],
-      dataListLoading: false,
-      dataListSelections: [],
-      addOrUpdateVisible: false,
-      resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
+	data() {
+		return {
+			dataForm: {
+				indexImg: "",
+			},
+			dataList: [],
+			dataListLoading: false,
+			dataListSelections: [],
+			addOrUpdateVisible: false,
+			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
 			// 修改
-      tableOption: tableOption,
-      page: {
-        total: 0, // 总页数
-        currentPage: 1, // 当前页数
-        pageSize: 10 // 每页显示多少条
-      }
-    }
-  },
-  components: {
-    AddOrUpdate
-  },
-  methods: {
+			tableOption: tableOption,
+			page: {
+				total: 0, // 总页数
+				currentPage: 1, // 当前页数
+				pageSize: 10, // 每页显示多少条
+			},
+		};
+	},
+	components: {
+		AddOrUpdate,
+	},
+	methods: {
 		// 获取数据列表
-    getDataList (page, params, done) {
-      this.dataListLoading = true
-      this.$http({
-        url: this.$http.adornUrl('/admin/indexImg/page'),
-        method: 'get',
-        params: this.$http.adornParams(
+		getDataList(page, params, done) {
+			this.dataListLoading = true;
+			this.$http({
+				url: this.$http.adornUrl("/admin/indexImg/page"),
+				method: "get",
+				params: this.$http.adornParams(
 					Object.assign(
-  {
-    current: page == null ? this.page.currentPage : page.currentPage,
-    size: page == null ? this.page.pageSize : page.pageSize
-  },
+						{
+							current: page == null ? this.page.currentPage : page.currentPage,
+							size: page == null ? this.page.pageSize : page.pageSize,
+						},
 						params
 					)
-				)
-      }).then(({ data }) => {
-        data.records.forEach((item) => {
-          item.imgUrl = item.imgUrl ? this.resourcesUrl + item.imgUrl : ''
-        })
-        this.dataList = data.records
-        this.page.total = data.total
-        this.dataListLoading = false
-        if (done) {
-          done()
-        }
-      })
-    },
+				),
+			}).then(({ data }) => {
+				data.records.forEach((item) => {
+					item.imgUrl = item.imgUrl ? this.resourcesUrl + item.imgUrl : "";
+				});
+				this.dataList = data.records;
+				this.page.total = data.total;
+				this.dataListLoading = false;
+				if (done) {
+					done();
+				}
+			});
+		},
 
 		// 新增 / 修改
-    addOrUpdateHandle (id) {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id)
-      })
-    },
+		addOrUpdateHandle(id) {
+			this.addOrUpdateVisible = true;
+			this.$nextTick(() => {
+				this.$refs.addOrUpdate.init(id);
+			});
+		},
 		// 删除
-    deleteHandle (id) {
-      var ids = id
+		deleteHandle(row) {
+			let param = { ...row,imgUrl:'' };
+			this.$http({
+				url: this.$http.adornUrl(`/admin/indexImg`),
+				method: param.imgId ? "put" : "post",
+				data: this.$http.adornData(param),
+			}).then(({ data }) => {
+				this.$message({
+					message: "操作成功",
+					type: "success",
+					duration: 1500,
+					onClose: () => {
+						this.getDataList();
+					},
+				});
+			});
+			return;
+			var ids = id
 				? [id]
 				: this.dataListSelections.map((item) => {
-  return item.imgId
-				  })
-      this.$confirm(`确定进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$http({
-          url: this.$http.adornUrl('/admin/indexImg'),
-          method: 'delete',
-          data: this.$http.adornData(ids, false)
-        }).then(({ data }) => {
-          this.$message({
-            message: '操作成功',
-            type: 'success',
-            duration: 1500,
-            onClose: () => {
-              this.getDataList()
-            }
-          })
-        })
-      })
-    },
+						return item.imgId;
+				  });
+			this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
+				confirmButtonText: "确定",
+				cancelButtonText: "取消",
+				type: "warning",
+			}).then(() => {
+				imgUrl: "";
+				this.$http({
+					url: this.$http.adornUrl("/admin/indexImg"),
+					method: "delete",
+					data: this.$http.adornData(ids, false),
+				}).then(({ data }) => {
+					this.$message({
+						message: "操作成功",
+						type: "success",
+						duration: 1500,
+						onClose: () => {
+							this.getDataList();
+						},
+					});
+				});
+			});
+		},
 		// 条件查询
-    searchChange (params, done) {
-      this.getDataList(this.page, params, done)
-    },
+		searchChange(params, done) {
+			this.getDataList(this.page, params, done);
+		},
 		// 多选变化
-    selectionChange (val) {
-      this.dataListSelections = val
-    }
-  }
-}
+		selectionChange(val) {
+			this.dataListSelections = val;
+		},
+	},
+};
 </script>

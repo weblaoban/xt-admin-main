@@ -13,7 +13,6 @@
           <el-button type="primary"
                      icon="el-icon-plus"
                      size="small"
-                     v-if="isAuth('shop:pickAddr:save')"
                      @click.stop="addOrUpdateHandle()">新增</el-button>
         </template>
   
@@ -72,14 +71,14 @@
           searchMenuSpan: 6,
           columnBtn: false,
           border: true,
-          selection: true,
+          selection: false,
           index: true,
           indexLabel: '序号',
           stripe: true,
           menuAlign: 'center',
           menuWidth: 350,
           align: 'center',
-          refreshBtn: true,
+          refreshBtn: false,
           searchSize: 'mini',
           addBtn: false,
           editBtn: false,

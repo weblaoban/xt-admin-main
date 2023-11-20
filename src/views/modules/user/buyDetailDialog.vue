@@ -100,6 +100,7 @@ export default {
         nickName: '',
         pic: '',
         status: 1,
+        phone:'',
         detail: [
           {
             time: '2021-01-01',
