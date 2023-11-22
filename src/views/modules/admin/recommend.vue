@@ -204,13 +204,14 @@ export default {
 		getDataList(page, params, done) {
 			this.dataListLoading = true;
 			this.$http({
-				url: this.$http.adornUrl("/admin/indexImg/page"),
+				url: this.$http.adornUrl("/admin/prod/page"),
 				method: "get",
 				params: this.$http.adornParams(
 					Object.assign(
 						{
 							current: page == null ? this.page.currentPage : page.currentPage,
 							size: page == null ? this.page.pageSize : page.pageSize,
+                            categoryId:97
 						},
 						params
 					)
