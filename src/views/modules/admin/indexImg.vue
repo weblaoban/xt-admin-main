@@ -42,12 +42,12 @@
 		<h4>移动端banner管理</h4>
 		<avue-crud
 			ref="crud"
-			:data="dataList"
+			:data="dataListH5"
 			:table-loading="dataListLoading"
 			:option="tableOption"
 			@search-change="searchChange"
 			@selection-change="selectionChange"
-			@on-load="getDataList"
+			@on-load="getDataListH5"
 		>
 			<template slot-scope="scope" slot="imgUrl">
 				<img
@@ -97,6 +97,7 @@ export default {
 				indexImg: "",
 			},
 			dataList: [],
+			dataListH5: [],
 			dataListLoading: false,
 			dataListSelections: [],
 			addOrUpdateVisible: false,
@@ -118,13 +119,14 @@ export default {
 		getDataList(page, params, done) {
 			this.dataListLoading = true;
 			this.$http({
-				url: this.$http.adornUrl("/admin/indexImg/page"),
+				url: this.$http.adornUrl("/admin/content/page"),
 				method: "get",
 				params: this.$http.adornParams(
 					Object.assign(
 						{
 							current: page == null ? this.page.currentPage : page.currentPage,
 							size: page == null ? this.page.pageSize : page.pageSize,
+							categoryId: 10,
 						},
 						params
 					)
@@ -142,6 +144,35 @@ export default {
 			});
 		},
 
+		// 获取h5数据列表
+		getDataListH5(page, params, done) {
+			this.dataListLoading = true;
+			this.$http({
+				url: this.$http.adornUrl("/admin/content/page"),
+				method: "get",
+				params: this.$http.adornParams(
+					Object.assign(
+						{
+							current: page == null ? this.page.currentPage : page.currentPage,
+							size: page == null ? this.page.pageSize : page.pageSize,
+							categoryId: 11,
+						},
+						params
+					)
+				),
+			}).then(({ data }) => {
+				data.records.forEach((item) => {
+					item.imgUrl = item.imgUrl ? this.resourcesUrl + item.imgUrl : "";
+				});
+				this.dataListH5 = data.records;
+				this.page.total = data.total;
+				this.dataListLoading = false;
+				if (done) {
+					done();
+				}
+			});
+		},
+
 		// 新增 / 修改
 		addOrUpdateHandle(id) {
 			this.addOrUpdateVisible = true;
@@ -151,9 +182,9 @@ export default {
 		},
 		// 删除
 		deleteHandle(row) {
-			let param = { ...row,imgUrl:'' };
+			let param = { ...row, imgUrl: "" };
 			this.$http({
-				url: this.$http.adornUrl(`/admin/indexImg`),
+				url: this.$http.adornUrl(`/admin/content`),
 				method: param.imgId ? "put" : "post",
 				data: this.$http.adornData(param),
 			}).then(({ data }) => {

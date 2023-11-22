@@ -21,14 +21,7 @@
 				label="分类名称"
 			>
 			</el-table-column>
-			<!-- <el-table-column prop="pic"
-                         header-align="center"
-                         align="center"
-                         label="图片">
-          <template slot-scope="scope">
-            <img :src="resourcesUrl + scope.row.pic " />
-          </template>
-        </el-table-column> -->
+			<el-table-column prop="id" label="id"> </el-table-column>
 			<el-table-column
 				prop="status"
 				header-align="center"
