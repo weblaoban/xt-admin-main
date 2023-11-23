@@ -163,6 +163,7 @@ export default {
 						{
 							current: page == null ? this.page.currentPage : page.currentPage,
 							size: page == null ? this.page.pageSize : page.pageSize,
+							status: -1,
 						},
 						params
 					)

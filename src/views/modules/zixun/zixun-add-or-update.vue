@@ -52,116 +52,115 @@
 	</el-dialog>
 </template>
 <script>
-import { idList } from '@/utils'
-import PicUpload from '@/components/pic-upload'
-import { Debounce } from '@/utils/debounce'
-import TinyMce from '@/components/tiny-mce'
+import { idList } from "@/utils";
+import PicUpload from "@/components/pic-upload";
+import { Debounce } from "@/utils/debounce";
+import TinyMce from "@/components/tiny-mce";
 export default {
-  data () {
-    return {
-      visible: false,
-      dataForm: {
-        title: '',
-        content: '',
-        imgUrl: ''
-      },
-      dataRule: {
+	data() {
+		return {
+			visible: false,
+			dataForm: {
+				title: "",
+				content: "",
+				imgUrl: "",
+			},
+			dataRule: {
 				//   id: [
 				//     { required: true, message: '分类名称不能为空', trigger: 'blur' },
 				//     { pattern: /\s\S+|S+\s|\S/, message: '请输入正确的分类名称', trigger: 'blur' }
 				//   ],
-        title: [
-					{ required: true, message: '分类图片不能为空', trigger: 'blur' }
-        ]
-      },
+				title: [
+					{ required: true, message: "分类图片不能为空", trigger: "blur" },
+				],
+			},
 			// 分类树展示与回显
-      category: {
-        list: [],
-        selected: [],
-        props: {
-          value: 'id',
-          label: 'categoryName'
-        }
-      },
-      selectedCategory: [],
-      categoryTreeProps: {
-        value: 'id',
-        label: 'categoryName'
-      },
-      isSubmit: false
-    }
-  },
-  components: {
-    PicUpload,
-    TinyMce
-  },
-  methods: {
-    init (id) {
-      this.dataForm.currentId = id || 0
-      this.dataForm.id = id || 0
-      console.log(id)
-      if (id) {
-						// 修改
-        this.$http({
-          url: this.$http.adornUrl(
-								`/admin/content/info/${this.dataForm.id}`
-							),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({ data }) => {
-          this.dataForm.id = data.id
-          this.dataForm.title = data.title
-          this.dataForm.imgUrl = data.imgUrl
-          this.dataForm.content = data.content
-        })
-      }
-      this.visible = true
-    },
-    handleChange (val) {
-      this.dataForm.parentId = val[val.length - 1]
-    },
+			category: {
+				list: [],
+				selected: [],
+				props: {
+					value: "id",
+					label: "categoryName",
+				},
+			},
+			selectedCategory: [],
+			categoryTreeProps: {
+				value: "id",
+				label: "categoryName",
+			},
+			isSubmit: false,
+		};
+	},
+	components: {
+		PicUpload,
+		TinyMce,
+	},
+	methods: {
+		init(id) {
+			this.dataForm.currentId = id || 0;
+			this.dataForm.id = id || 0;
+			console.log(id);
+			if (id) {
+				// 修改
+				this.$http({
+					url: this.$http.adornUrl(`/admin/content/info/${this.dataForm.id}`),
+					method: "get",
+					params: this.$http.adornParams(),
+				}).then(({ data }) => {
+					this.dataForm.id = data.id;
+					this.dataForm.title = data.title;
+					this.dataForm.imgUrl = data.imgUrl;
+					this.dataForm.content = data.content;
+				});
+			}
+			this.visible = true;
+		},
+		handleChange(val) {
+			this.dataForm.parentId = val[val.length - 1];
+		},
 		// 表单提交
-    dataFormSubmit: Debounce(function () {
-      if (this.selectedCategory.length === 1) {
-        this.dataForm.grade = 0
-      }
-      if (this.selectedCategory.length === 2) {
-        this.dataForm.grade = 1
-      }
-      if (this.selectedCategory.length === 3) {
-        this.dataForm.grade = 2
-      }
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          if (this.isSubmit) {
-            return
-          }
-          this.isSubmit = true
-          this.$http({
-            url: this.$http.adornUrl(`/admin/content`),
-            method: this.dataForm.id ? 'put' : 'post',
-            data: this.$http.adornData({
-              id: this.dataForm.id || '',
-              title: this.dataForm.title,
-              content: this.dataForm.content,
-              imgUrl: this.dataForm.imgUrl,
-              categoryId: 8
-            })
-          }).then(({ data }) => {
-            this.$message({
-              message: '操作成功',
-              type: 'success',
-              duration: 1000,
-              onClose: () => {
-                this.isSubmit = false
-                this.visible = false
-                this.$emit('refreshDataList')
-              }
-            })
-          })
-        }
-      })
-    })
-  }
-}
+		dataFormSubmit: Debounce(function () {
+			if (this.selectedCategory.length === 1) {
+				this.dataForm.grade = 0;
+			}
+			if (this.selectedCategory.length === 2) {
+				this.dataForm.grade = 1;
+			}
+			if (this.selectedCategory.length === 3) {
+				this.dataForm.grade = 2;
+			}
+			this.$refs["dataForm"].validate((valid) => {
+				if (valid) {
+					if (this.isSubmit) {
+						return;
+					}
+					this.isSubmit = true;
+					this.$http({
+						url: this.$http.adornUrl(`/admin/content`),
+						method: this.dataForm.id ? "put" : "post",
+						data: this.$http.adornData({
+							id: this.dataForm.id || "",
+							title: this.dataForm.title,
+							content: this.dataForm.content,
+							imgUrl: this.dataForm.imgUrl,
+							categoryId: 8,
+						}),
+					}).then(({ data }) => {
+						this.$message({
+							message: "操作成功",
+							type: "success",
+							duration: 1000,
+							onClose: () => {
+								this.isSubmit = false;
+								this.visible = false;
+								this.$emit("refreshDataList");
+								// this.$refs["dataForm"].resetFields();
+							},
+						});
+					});
+				}
+			});
+		}),
+	},
+};
 </script>

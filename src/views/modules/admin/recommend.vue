@@ -7,18 +7,16 @@
 			:data="dataList"
 			:table-loading="dataListLoading"
 			:option="tableOption"
-			@search-change="searchChange"
-			@selection-change="selectionChange"
 			@on-load="getDataList"
 		>
 			<template slot-scope="scope" slot="imgUrl">
-				<img
-					v-if="scope.row.imgUrl"
-					:src="scope.row.imgUrl"
-					width="100"
-					height="100"
-				/>
-				<img v-else src="~@/assets/img/def.png" width="100" height="100" />
+				<p v-if="scope.row.name">{{ scope.row.name }}</p>
+				<el-button
+					@click="onShowSelectProd(97)"
+					type="text"
+					:if="!scope.row.name"
+					>请选择产品</el-button
+				>
 			</template>
 			<template slot-scope="scope" slot="menu">
 				<el-button
@@ -35,7 +33,7 @@
 					icon="el-icon-delete"
 					size="small"
 					v-if="isAuth('admin:indexImg:delete')"
-					@click="deleteHandle(scope.row.imgId)"
+					@click="deleteHandle(scope.row)"
 					>清空</el-button
 				>
 			</template>
@@ -44,12 +42,10 @@
 		<h4>集合资管</h4>
 		<avue-crud
 			ref="crud"
-			:data="dataList"
+			:data="dataList2"
 			:table-loading="dataListLoading"
 			:option="tableOption"
-			@search-change="searchChange"
-			@selection-change="selectionChange"
-			@on-load="getDataList"
+			@on-load="getDataList1"
 		>
 			<template slot-scope="scope" slot="imgUrl">
 				<img
@@ -74,7 +70,7 @@
 					icon="el-icon-delete"
 					size="small"
 					v-if="isAuth('admin:indexImg:delete')"
-					@click="deleteHandle(scope.row.imgId)"
+					@click="deleteHandle(scope.row)"
 					>清空</el-button
 				>
 				<!-- <el-button type="danger"
@@ -88,12 +84,10 @@
 		<h4>私募基金</h4>
 		<avue-crud
 			ref="crud"
-			:data="dataList"
+			:data="dataList2"
 			:table-loading="dataListLoading"
 			:option="tableOption"
-			@search-change="searchChange"
-			@selection-change="selectionChange"
-			@on-load="getDataList"
+			@on-load="getDataList2"
 		>
 			<template slot-scope="scope" slot="imgUrl">
 				<img
@@ -118,7 +112,7 @@
 					icon="el-icon-delete"
 					size="small"
 					v-if="isAuth('admin:indexImg:delete')"
-					@click="deleteHandle(scope.row.imgId)"
+					@click="deleteHandle(scope.row)"
 					>清空</el-button
 				>
 				<!-- <el-button type="danger"
@@ -130,25 +124,23 @@
 		</avue-crud>
 		<!-- 弹窗, 新增 / 修改 --><el-dialog
 			title="提示"
-			:visible.sync="addOrUpdateVisible"
+			:visible.sync="showSelectProd"
 			width="30%"
 		>
 			<div class="content">
-				<el-select v-model="selectItem.name" filterable placeholder="请选择">
+				<el-select v-model="selectItem" filterable placeholder="请选择">
 					<el-option
-						v-for="item in options"
+						v-for="item in selectList"
 						:key="item.value"
-						:label="item.label"
-						:value="item.value"
+						:label="item.name"
+						:value="item.id"
 					>
 					</el-option>
 				</el-select>
 			</div>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="dialogVisible = false">取 消</el-button>
-				<el-button type="primary" @click="dialogVisible = false"
-					>确 定</el-button
-				>
+				<el-button type="primary" @click="onSetProd">确 定</el-button>
 			</span>
 		</el-dialog>
 	</div>
@@ -156,38 +148,35 @@
 
 <script>
 import { tableOption } from "@/crud/admin/indexImg";
+const defaultList = [
+	{
+		imgUrl: "",
+		default: true,
+	},
+	{
+		imgUrl: "",
+		default: true,
+	},
+	{
+		imgUrl: "",
+		default: true,
+	},
+	{
+		imgUrl: "",
+		default: true,
+	},
+];
 export default {
 	data() {
 		return {
 			selectItem: {},
-			options: [
-				{
-					value: "选项1",
-					label: "黄金糕",
-				},
-				{
-					value: "选项2",
-					label: "双皮奶",
-				},
-				{
-					value: "选项3",
-					label: "蚵仔煎",
-				},
-				{
-					value: "选项4",
-					label: "龙须面",
-				},
-				{
-					value: "选项5",
-					label: "北京烤鸭",
-				},
-			],
 			dataForm: {
 				indexImg: "",
 			},
-			dataList: [],
+			dataList: [...defaultList],
+			dataList1: [...defaultList],
+			dataList2: [...defaultList],
 			dataListLoading: false,
-			dataListSelections: [],
 			addOrUpdateVisible: false,
 			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
 			// 修改
@@ -197,10 +186,13 @@ export default {
 				currentPage: 1, // 当前页数
 				pageSize: 10, // 每页显示多少条
 			},
+			showSelectProd: false,
+			selectList: [],
+			selectItem: [],
 		};
 	},
 	methods: {
-		// 获取数据列表
+		// 获取数据列表 信托产品
 		getDataList(page, params, done) {
 			this.dataListLoading = true;
 			this.$http({
@@ -211,17 +203,21 @@ export default {
 						{
 							current: page == null ? this.page.currentPage : page.currentPage,
 							size: page == null ? this.page.pageSize : page.pageSize,
-                            categoryId:97
+							categoryId: 97,
+							soldNum: 1,
+							status: -1,
 						},
 						params
 					)
 				),
 			}).then(({ data }) => {
-				data.records.forEach((item) => {
-					item.imgUrl = item.imgUrl ? this.resourcesUrl + item.imgUrl : "";
+				const dataList = [...defaultList];
+				dataList.forEach((_, index) => {
+					if (data.records[index]) {
+						dataList[index] = data.records[index];
+					}
 				});
-				this.dataList = data.records;
-				this.page.total = data.total;
+				this.dataList = dataList;
 				this.dataListLoading = false;
 				if (done) {
 					done();
@@ -229,46 +225,138 @@ export default {
 			});
 		},
 
-		// 新增 / 修改
-		addOrUpdateHandle(row) {
-			this.addOrUpdateVisible = true;
-			this.selectItem = row;
-		},
-		// 删除
-		deleteHandle(id) {
-			var ids = id
-				? [id]
-				: this.dataListSelections.map((item) => {
-						return item.imgId;
-				  });
-			this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
-				confirmButtonText: "确定",
-				cancelButtonText: "取消",
-				type: "warning",
-			}).then(() => {
-				this.$http({
-					url: this.$http.adornUrl("/admin/indexImg"),
-					method: "delete",
-					data: this.$http.adornData(ids, false),
-				}).then(({ data }) => {
-					this.$message({
-						message: "操作成功",
-						type: "success",
-						duration: 1500,
-						onClose: () => {
-							this.getDataList();
+		getDataList1(page, params, done) {
+			this.dataListLoading = true;
+			this.$http({
+				url: this.$http.adornUrl("/admin/prod/page"),
+				method: "get",
+				params: this.$http.adornParams(
+					Object.assign(
+						{
+							current: page == null ? this.page.currentPage : page.currentPage,
+							size: page == null ? this.page.pageSize : page.pageSize,
+							categoryId: 98,
+							soldNum: 1,
+							status: -1,
 						},
-					});
+						params
+					)
+				),
+			}).then(({ data }) => {
+				const dataList = [...defaultList];
+				dataList.forEach((_, index) => {
+					if (data.records[index]) {
+						dataList[index] = data.records[index];
+					}
+				});
+				this.dataList1 = dataList;
+				this.dataListLoading = false;
+				if (done) {
+					done();
+				}
+			});
+		},
+
+		getDataList2(page, params, done) {
+			this.dataListLoading = true;
+			this.$http({
+				url: this.$http.adornUrl("/admin/prod/page"),
+				method: "get",
+				params: this.$http.adornParams(
+					Object.assign(
+						{
+							current: page == null ? this.page.currentPage : page.currentPage,
+							size: page == null ? this.page.pageSize : page.pageSize,
+							categoryId: 99,
+							soldNum: 1,
+							status: -1,
+						},
+						params
+					)
+				),
+			}).then(({ data }) => {
+				const dataList = [...defaultList];
+				dataList.forEach((_, index) => {
+					if (data.records[index]) {
+						dataList[index] = data.records[index];
+					}
+				});
+				this.dataList2 = dataList;
+				this.dataListLoading = false;
+				if (done) {
+					done();
+				}
+			});
+		},
+
+		getAllList() {
+			this.getDataList();
+			this.getDataList1();
+			this.getDataList2();
+		},
+		onShowSelectProd(classify) {
+			this.dataListLoading = true;
+			this.$http({
+				url: this.$http.adornUrl("/admin/prod/page"),
+				method: "get",
+				params: this.$http.adornParams(
+					Object.assign({
+						current: 1,
+						size: 1000,
+						categoryId: classify,
+						soldNum: 0,
+						status: -1,
+					})
+				),
+			}).then(({ data }) => {
+				this.selectList = data.records;
+				this.dataListLoading = false;
+				this.showSelectProd = true;
+				if (done) {
+					done();
+				}
+			});
+		},
+		onSetProd() {
+			const param = {
+				id: this.selectItem,
+				soldNum: 1,
+			};
+			this.$http({
+				url: this.$http.adornUrl(`/admin/prod`),
+				method: param.id ? "put" : "post",
+				data: this.$http.adornData(param),
+			}).then(() => {
+				this.$message({
+					message: "操作成功",
+					type: "success",
+					duration: 1500,
+					onClose: () => {
+						this.getAllList();
+						this.showSelectProd = false;
+					},
 				});
 			});
 		},
-		// 条件查询
-		searchChange(params, done) {
-			this.getDataList(this.page, params, done);
-		},
-		// 多选变化
-		selectionChange(val) {
-			this.dataListSelections = val;
+
+		//清空
+		deleteHandle(row) {
+			let param = Object.assign({}, row);
+			param.soldNum = 0;
+			this.$http({
+				url: this.$http.adornUrl(`/admin/prod`),
+				method: param.id ? "put" : "post",
+				data: this.$http.adornData(param),
+			}).then(() => {
+				this.$message({
+					message: "操作成功",
+					type: "success",
+					duration: 2000,
+					onClose: () => {
+						this.getAllList();
+					},
+				});
+			});
 		},
 	},
 };

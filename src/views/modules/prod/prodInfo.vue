@@ -200,7 +200,7 @@
 				></el-col>
 			</el-row>
 
-			<el-form-item label="" prop="sold_num">
+			<el-form-item label="" prop="totalStocks">
 				<div class="sold_list">
 					<div class="soldItem soldhead">
 						<div>序号</div>
@@ -209,13 +209,13 @@
 					</div>
 					<div
 						class="soldItem"
-						v-for="(item, index) in dataForm.sold_num"
+						v-for="(item, index) in dataForm.totalStocks"
 						:key="index"
 					>
 						<div>{{ index + 1 }}</div>
 						<div class="soldDetail">
 							<el-input
-								v-model="dataForm.sold_num[index].detail"
+								v-model="dataForm.totalStocks[index].detail"
 								placeholder="进度详情"
 								maxlength="500"
 							></el-input>
@@ -229,14 +229,11 @@
 			</el-form-item>
 
 			<el-form-item label="产品进度" prop="content">
-				<el-input
-					show-word-limit
-					:rows="4"
-					type="textarea"
+				<tiny-mce
 					v-model="dataForm.content"
-					placeholder="产品详情"
-					maxlength="500"
-				></el-input>
+					ref="content"
+					style="width: 100%"
+				></tiny-mce>
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" @click="dataFormSubmit()">确定</el-button>
@@ -286,7 +283,7 @@ export default {
 				area: "",
 				investRatio: "",
 				contentItem: "",
-				sold_num: [],
+				totalStocks: [],
 			},
 			tags: [],
 			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
@@ -367,12 +364,12 @@ export default {
 			this.dataForm.categoryId = val[val.length - 1];
 		},
 		addSold() {
-			this.dataForm.sold_num.push({ detail: "" });
+			this.dataForm.totalStocks.push({ detail: "" });
 		},
 		delSold(index) {
-			const sold = [...this.dataForm.sold_num];
+			const sold = [...this.dataForm.totalStocks];
 			sold.splice(index, 1);
-			this.dataForm.sold_num = sold;
+			this.dataForm.totalStocks = sold;
 		},
 		// 表单提交
 		dataFormSubmit: Debounce(function () {
@@ -381,8 +378,7 @@ export default {
 					return;
 				}
 				let param = Object.assign({}, this.dataForm);
-				// param.sold_num = JSON.stringify(param.sold_num)
-				param.sold_num = 0;
+				param.totalStocks = JSON.stringify(param.totalStocks);
 				this.$http({
 					url: this.$http.adornUrl(`/admin/prod`),
 					method: param.id ? "put" : "post",

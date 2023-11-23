@@ -6,8 +6,6 @@
 			:data="dataList"
 			:table-loading="dataListLoading"
 			:option="tableOption"
-			@search-change="searchChange"
-			@selection-change="selectionChange"
 			@on-load="getDataList"
 		>
 			<template slot-scope="scope" slot="imgUrl">
@@ -25,7 +23,7 @@
 					icon="el-icon-edit"
 					size="small"
 					v-if="isAuth('admin:indexImg:update')"
-					@click="addOrUpdateHandle(scope.row.imgId)"
+					@click="addOrUpdateHandle(scope.row.id)"
 					>编辑</el-button
 				>
 				<el-button
@@ -45,8 +43,6 @@
 			:data="dataListH5"
 			:table-loading="dataListLoading"
 			:option="tableOption"
-			@search-change="searchChange"
-			@selection-change="selectionChange"
 			@on-load="getDataListH5"
 		>
 			<template slot-scope="scope" slot="imgUrl">
@@ -64,7 +60,7 @@
 					icon="el-icon-edit"
 					size="small"
 					v-if="isAuth('admin:indexImg:update')"
-					@click="addOrUpdateHandle(scope.row.imgId)"
+					@click="addOrUpdateHandle(scope.row.id)"
 					>编辑</el-button
 				>
 				<el-button
@@ -132,10 +128,17 @@ export default {
 					)
 				),
 			}).then(({ data }) => {
+				const hasImg = [];
+				const noImg = [];
 				data.records.forEach((item) => {
-					item.imgUrl = item.imgUrl ? this.resourcesUrl + item.imgUrl : "";
+					if (item.imgUrl) {
+						item.imgUrl = item.imgUrl ? this.resourcesUrl + item.imgUrl : "";
+						hasImg.push(item);
+					} else {
+						noImg.push(item);
+					}
 				});
-				this.dataList = data.records;
+				this.dataList = [...hasImg, ...noImg];
 				this.page.total = data.total;
 				this.dataListLoading = false;
 				if (done) {
@@ -161,10 +164,17 @@ export default {
 					)
 				),
 			}).then(({ data }) => {
+				const hasImg = [];
+				const noImg = [];
 				data.records.forEach((item) => {
-					item.imgUrl = item.imgUrl ? this.resourcesUrl + item.imgUrl : "";
+					if (item.imgUrl) {
+						item.imgUrl = item.imgUrl ? this.resourcesUrl + item.imgUrl : "";
+						hasImg.push(item);
+					} else {
+						noImg.push(item);
+					}
 				});
-				this.dataListH5 = data.records;
+				this.dataList = [...hasImg, ...noImg];
 				this.page.total = data.total;
 				this.dataListLoading = false;
 				if (done) {
@@ -182,10 +192,17 @@ export default {
 		},
 		// 删除
 		deleteHandle(row) {
-			let param = { ...row, imgUrl: "" };
+			let param = {
+				id: row.id,
+				imgUrl: "",
+				title: row.title,
+				categoryId: row.categoryId,
+				content: row.content,
+				link: row.link || "",
+			};
 			this.$http({
 				url: this.$http.adornUrl(`/admin/content`),
-				method: param.imgId ? "put" : "post",
+				method: param.id ? "put" : "post",
 				data: this.$http.adornData(param),
 			}).then(({ data }) => {
 				this.$message({
@@ -224,14 +241,6 @@ export default {
 					});
 				});
 			});
-		},
-		// 条件查询
-		searchChange(params, done) {
-			this.getDataList(this.page, params, done);
-		},
-		// 多选变化
-		selectionChange(val) {
-			this.dataListSelections = val;
 		},
 	},
 };

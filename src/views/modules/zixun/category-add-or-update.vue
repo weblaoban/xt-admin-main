@@ -188,6 +188,7 @@ export default {
 								this.visible = false;
 								this.dataForm.parentId = 0;
 								this.$emit("refreshDataList");
+								this.$refs["dataForm"].resetFields();
 							},
 						});
 					});

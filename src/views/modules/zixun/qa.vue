@@ -32,7 +32,7 @@
 					icon="el-icon-edit"
 					size="small"
 					v-if="isAuth('prod:prod:update')"
-					@click="addOrUpdateHandle(scope.row.prodId)"
+					@click="addOrUpdateHandle(scope.row.id)"
 					>修改</el-button
 				>
 				<el-button
@@ -40,7 +40,7 @@
 					icon="el-icon-delete"
 					size="small"
 					v-if="isAuth('prod:prod:delete')"
-					@click="deleteHandle(scope.row.prodId)"
+					@click="deleteHandle(scope.row.id)"
 					>删除</el-button
 				>
 			</template>
