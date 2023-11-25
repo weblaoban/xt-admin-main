@@ -26,6 +26,10 @@
 				<el-tag v-else size="small">未上架</el-tag>
 			</template>
 
+			<template slot-scope="scope" slot="des">
+				<img v-if="scope.row.des" :src="scope.row.des" alt="">
+			</template>
+
 			<template slot-scope="scope" slot="menu">
 				<el-button
 					type="primary"
@@ -55,158 +59,162 @@
 </template>
 
 <script>
-import AddOrUpdate from "./qa-add-or-update";
+import AddOrUpdate from './qa-add-or-update'
 export default {
-	data() {
-		return {
-			showAdd: false,
-			addOrUpdateVisible: false,
-			dataForm: {
-				prodName: "",
-			},
-			permission: {
+  data () {
+    return {
+      showAdd: false,
+      addOrUpdateVisible: false,
+      dataForm: {
+        prodName: ''
+      },
+      permission: {
 				//   delBtn: this.isAuth('prod:prod:delete')
-			},
-			dataList: [],
-			page: {
-				total: 0, // 总页数
-				currentPage: 1, // 当前页数
-				pageSize: 10, // 每页显示多少条
-			},
-			dataListSelections: [],
-			dataListLoading: false,
-			tableOption: {
-				searchMenuSpan: 6,
-				columnBtn: false,
-				border: true,
-				selection: false,
-				index: true,
-				indexLabel: "序号",
-				stripe: true,
-				menuAlign: "center",
-				menuWidth: 350,
-				align: "center",
-				refreshBtn: false,
-				searchSize: "mini",
-				addBtn: false,
-				editBtn: false,
-				delBtn: false,
-				viewBtn: false,
-				props: {
-					label: "label",
-					value: "value",
-				},
-				column: [
-					{
-						label: "标题",
-						prop: "title",
-					},
-					{
-						label: "上传人",
-						prop: "prodName",
-					},
-					{
-						label: "标题",
-						prop: "title",
-					},
-					{
-						label: "创建时间",
-						prop: "uploadTime",
-					},
-					{
-						label: "修改时间",
-						prop: "uploadTime",
-					},
-				],
-			},
-			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
-		};
-	},
-	components: {
-		AddOrUpdate,
-	},
-	methods: {
+      },
+      dataList: [],
+      page: {
+        total: 0, // 总页数
+        currentPage: 1, // 当前页数
+        pageSize: 10 // 每页显示多少条
+      },
+      dataListSelections: [],
+      dataListLoading: false,
+      tableOption: {
+        searchMenuSpan: 6,
+        columnBtn: false,
+        border: true,
+        selection: false,
+        index: true,
+        indexLabel: '序号',
+        stripe: true,
+        menuAlign: 'center',
+        menuWidth: 350,
+        align: 'center',
+        refreshBtn: false,
+        searchSize: 'mini',
+        addBtn: false,
+        editBtn: false,
+        delBtn: false,
+        viewBtn: false,
+        props: {
+          label: 'label',
+          value: 'value'
+        },
+        column: [
+          {
+            label: '标题',
+            prop: 'title'
+          },
+          {
+            label: '上传人',
+            prop: 'prodName'
+          },
+          {
+            label: '标题',
+            prop: 'title'
+          },
+          {
+            label: '列表图片',
+            prop: 'des'
+          },
+          {
+            label: '创建时间',
+            prop: 'uploadTime'
+          },
+          {
+            label: '修改时间',
+            prop: 'uploadTime'
+          }
+        ]
+      },
+      resourcesUrl: process.env.VUE_APP_RESOURCES_URL
+    }
+  },
+  components: {
+    AddOrUpdate
+  },
+  methods: {
 		// 获取数据列表
-		getDataList(page, params, done) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/content/page"),
-				method: "get",
-				params: this.$http.adornParams(
+    getDataList (page, params, done) {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/content/page'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							categoryId: 9,
-						},
+  {
+    current: page == null ? this.page.currentPage : page.currentPage,
+    size: page == null ? this.page.pageSize : page.pageSize,
+    categoryId: 9
+  },
 						params
 					)
-				),
-			}).then(({ data }) => {
-				this.dataList = data.records;
-				for (const key in this.dataList) {
-					if (this.dataList.hasOwnProperty(key)) {
-						const element = this.dataList[key];
+				)
+      }).then(({ data }) => {
+        this.dataList = data.records
+        for (const key in this.dataList) {
+          if (this.dataList.hasOwnProperty(key)) {
+            const element = this.dataList[key]
 						// element.imgs = element.imgs.split(',')[0]
-					}
-				}
-				this.page.total = data.total;
-				this.dataListLoading = false;
-				if (done) {
-					done();
-				}
-			});
-		},
+          }
+        }
+        this.page.total = data.total
+        this.dataListLoading = false
+        if (done) {
+          done()
+        }
+      })
+    },
 		// 新增 / 修改
-		addOrUpdateHandle(id) {
-			this.addOrUpdateVisible = true;
-			this.$nextTick(() => {
-				this.$refs.addOrUpdate.init(id);
-			});
-		},
+    addOrUpdateHandle (id) {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.addOrUpdate.init(id)
+      })
+    },
 		// 删除和批量删除
-		deleteHandle(id) {
-			let prodIds = this.getSeleProdIds();
-			if (id) {
-				prodIds.push(id);
-			}
-			this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
-				confirmButtonText: "确定",
-				cancelButtonText: "取消",
-				type: "warning",
-			})
+    deleteHandle (id) {
+      let prodIds = this.getSeleProdIds()
+      if (id) {
+        prodIds.push(id)
+      }
+      this.$confirm(`确定进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
 				.then(() => {
-					this.$http({
-						url: this.$http.adornUrl(`/prod/prod`),
-						method: "delete",
-						data: this.$http.adornData(prodIds, false),
-					}).then(({ data }) => {
-						this.$message({
-							message: "操作成功",
-							type: "success",
-							duration: 1500,
-							onClose: () => {
-								this.getDataList(this.page);
-							},
-						});
-					});
-				})
-				.catch(() => {});
-		},
+  this.$http({
+    url: this.$http.adornUrl(`/prod/prod`),
+    method: 'delete',
+    data: this.$http.adornData(prodIds, false)
+  }).then(({ data }) => {
+    this.$message({
+      message: '操作成功',
+      type: 'success',
+      duration: 1500,
+      onClose: () => {
+        this.getDataList(this.page)
+      }
+    })
+  })
+})
+				.catch(() => {})
+    },
 		// 条件查询
-		searchChange(params, done) {
-			this.getDataList(this.page, params, done);
-		},
+    searchChange (params, done) {
+      this.getDataList(this.page, params, done)
+    },
 		// 多选变化
-		selectionChange(val) {
-			this.dataListSelections = val;
-		},
+    selectionChange (val) {
+      this.dataListSelections = val
+    },
 		// 获取选中的商品Id列表
-		getSeleProdIds() {
-			return this.dataListSelections.map((item) => {
-				return item.prodId;
-			});
-		},
-	},
-};
+    getSeleProdIds () {
+      return this.dataListSelections.map((item) => {
+        return item.prodId
+      })
+    }
+  }
+}
 </script>

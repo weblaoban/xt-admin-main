@@ -30,13 +30,9 @@
 				>
 			</template>
 
-			<template slot-scope="scope" slot="status">
-				<el-tag v-if="scope.row.status === 1" size="small">上架</el-tag>
-				<el-tag v-else size="small">未上架</el-tag>
-			</template>
 
 			<template slot-scope="scope" slot="other">
-				<el-button type="text" @click="showDetail">查看</el-button>
+				<el-button type="text" @click="showDetail(scope.row)">查看</el-button>
 			</template>
 
 			<template slot-scope="scope" slot="menu">
@@ -84,7 +80,7 @@
 				</div>
 				<div
 					class="soldItem"
-					v-for="(item, index) in detail.sold_num"
+					v-for="(item, index) in detail.porder"
 					:key="index"
 				>
 					<div>{{ index + 1 }}</div>
@@ -94,7 +90,7 @@
 				</div>
 				<div
 					class="empty"
-					v-if="!detail || !detail.sold_num || !detail.sold_num.length"
+					v-if="!detail || !detail.porder || !detail.porder.length"
 				>
 					暂无数据
 				</div>
@@ -108,136 +104,138 @@
 </template>
 
 <script>
-import { tableOption } from "@/crud/prod/prodList";
-import { treeDataTranslate } from "@/utils";
+import { tableOption } from '@/crud/prod/prodList'
+import { treeDataTranslate } from '@/utils'
 export default {
-	data() {
-		return {
-			dataForm: {
-				prodName: "",
-			},
-			permission: {
-				delBtn: this.isAuth("prod:prod:delete"),
-			},
-			dataList: [],
-			page: {
-				total: 0, // 总页数
-				currentPage: 1, // 当前页数
-				pageSize: 10, // 每页显示多少条
-			},
-			dataListSelections: [],
-			dataListLoading: false,
-			tableOption: tableOption,
-			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
-			detailVisible: false,
-			detail: {},
-		};
-	},
-	created() {
-		this.getCategoryList();
-	},
-	methods: {
+  data () {
+    return {
+      dataForm: {
+        prodName: ''
+      },
+      permission: {
+        delBtn: this.isAuth('prod:prod:delete')
+      },
+      dataList: [],
+      page: {
+        total: 0, // 总页数
+        currentPage: 1, // 当前页数
+        pageSize: 10 // 每页显示多少条
+      },
+      dataListSelections: [],
+      dataListLoading: false,
+      tableOption: tableOption,
+      resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
+      detailVisible: false,
+      detail: {}
+    }
+  },
+  created () {
+    this.getCategoryList()
+  },
+  methods: {
 		// 获取分类信息
-		getCategoryList() {
-			return this.$http({
-				url: this.$http.adornUrl("/admin/category/listCategory"),
-				method: "get",
-				params: this.$http.adornParams(),
-			}).then(({ data }) => {
-				this.tableOption.column[4].dicData = treeDataTranslate(
+    getCategoryList () {
+      return this.$http({
+        url: this.$http.adornUrl('/admin/category/listCategory'),
+        method: 'get',
+        params: this.$http.adornParams()
+      }).then(({ data }) => {
+        this.tableOption.column[4].dicData = treeDataTranslate(
 					data,
-					"categoryId",
-					"parentId"
-				);
-				console.log(this.tableOption);
-			});
-		},
+					'categoryId',
+					'parentId'
+				)
+        console.log(this.tableOption)
+      })
+    },
 		// 获取数据列表
-		getDataList(page, params, done) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/prod/page"),
-				method: "get",
-				params: this.$http.adornParams(
+    getDataList (page, params, done) {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/prod/page'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							status: -1,
-						},
+  {
+    current: page == null ? this.page.currentPage : page.currentPage,
+    size: page == null ? this.page.pageSize : page.pageSize,
+    status: -1
+  },
 						params
 					)
-				),
-			}).then(({ data }) => {
-				this.dataList = data.records;
+				)
+      }).then(({ data }) => {
+        this.dataList = data.records
 				// for (const key in this.dataList) {
 				//   if (this.dataList.hasOwnProperty(key)) {
 				//     const element = this.dataList[key]
 				//     element.imgs = element.imgs.split(',')[0]
 				//   }
 				// }
-				this.page.total = data.total;
-				this.dataListLoading = false;
-				if (done) {
-					done();
-				}
-			});
-		},
+        this.page.total = data.total
+        this.dataListLoading = false
+        if (done) {
+          done()
+        }
+      })
+    },
 		// 新增 / 修改
-		addOrUpdateHandle(id) {
-			console.log(id);
-			this.$router.push({
-				path: "/prodInfo",
-				query: { prodId: id },
-			});
-		},
+    addOrUpdateHandle (id) {
+      console.log(id)
+      this.$router.push({
+        path: '/prodInfo',
+        query: { prodId: id }
+      })
+    },
 		// 删除和批量删除
-		deleteHandle(id) {
-			let prodIds = this.getSeleProdIds();
-			if (id) {
-				prodIds.push(id);
-			}
-			this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
-				confirmButtonText: "确定",
-				cancelButtonText: "取消",
-				type: "warning",
-			})
+    deleteHandle (id) {
+      let prodIds = this.getSeleProdIds()
+      if (id) {
+        prodIds.push(id)
+      }
+      this.$confirm(`确定进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
 				.then(() => {
-					this.$http({
-						url: this.$http.adornUrl(`/admin/prod`),
-						method: "delete",
-						data: this.$http.adornData(prodIds, false),
-					}).then(({ data }) => {
-						this.$message({
-							message: "操作成功",
-							type: "success",
-							duration: 1500,
-							onClose: () => {
-								this.getDataList(this.page);
-							},
-						});
-					});
-				})
-				.catch(() => {});
-		},
-		showDetail(row) {
-			this.detailVisible = true;
-			this.detail = row;
-		},
+  this.$http({
+    url: this.$http.adornUrl(`/admin/prod`),
+    method: 'delete',
+    data: this.$http.adornData(prodIds, false)
+  }).then(({ data }) => {
+    this.$message({
+      message: '操作成功',
+      type: 'success',
+      duration: 1500,
+      onClose: () => {
+        this.getDataList(this.page)
+      }
+    })
+  })
+})
+				.catch(() => {})
+    },
+    showDetail (row) {
+      const detail = {...row}
+      detail.porder = JSON.parse(detail.porder)
+      this.detailVisible = true
+      this.detail = detail
+    },
 		// 条件查询
-		searchChange(params, done) {
-			this.getDataList(this.page, params, done);
-		},
+    searchChange (params, done) {
+      this.getDataList(this.page, params, done)
+    },
 		// 多选变化
-		selectionChange(val) {
-			this.dataListSelections = val;
-		},
+    selectionChange (val) {
+      this.dataListSelections = val
+    },
 		// 获取选中的商品Id列表
-		getSeleProdIds() {
-			return this.dataListSelections.map((item) => {
-				return item.prodId;
-			});
-		},
-	},
-};
+    getSeleProdIds () {
+      return this.dataListSelections.map((item) => {
+        return item.prodId
+      })
+    }
+  }
+}
 </script>

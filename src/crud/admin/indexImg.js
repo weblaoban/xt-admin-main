@@ -21,6 +21,7 @@ export const tableOption = {
 		value: "value",
 	},
 	column: [
+		
 		{
 			label: "轮播图片",
 			prop: "imgUrl",
@@ -28,10 +29,10 @@ export const tableOption = {
 			slot: true,
 			listType: "picture-img",
 		},
-		{
-			label: "顺序",
-			prop: "seq",
-		},
+		// {
+		// 	label: "顺序",
+		// 	prop: "seq",
+		// },
 		//   {
 		//     width: 150,
 		//     label: '状态',

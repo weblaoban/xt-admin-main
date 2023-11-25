@@ -7,7 +7,7 @@
       :show-file-list="false"
       :on-success="handleUploadSuccess"
       :before-upload="beforeAvatarUpload">
-      <img v-if="value" :src="resourcesUrl + value" class="pic">
+      <img v-if="value" :src="value" class="pic">
       <i v-else class="el-icon-plus pic-uploader-icon"></i>
     </el-upload>
   </div>
@@ -30,7 +30,7 @@
       // 图片上传
       handleUploadSuccess (response, file, fileList) {
         console.log(file)
-        this.$emit('input', 'images/' + file.response.data)
+        this.$emit('input', this.resourcesUrl + 'images/' + file.response.data)
       },
       // 限制图片上传大小
       beforeAvatarUpload (file) {

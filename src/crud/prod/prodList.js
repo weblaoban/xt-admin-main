@@ -43,11 +43,8 @@ export const tableOption = {
                 label: '在售',
                 value: 2
             }, {
-                label: '停售',
+                label: '售罄',
                 value: 3
-            }, {
-                label: '完结',
-                value: 4
             }
         ]
     }, {
@@ -62,7 +59,7 @@ export const tableOption = {
             label: 'categoryName',
             value: 'categoryId'
         },
-        type: 'select',
+        type: 'select'
     }, {
         label: '期限',
         prop: 'investLimitId'
