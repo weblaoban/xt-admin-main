@@ -100,7 +100,7 @@ export default {
         nickName: '',
         pic: '',
         status: 1,
-        phone:'',
+        phone: '',
         detail: [
           {
             time: '2021-01-01',
@@ -195,7 +195,7 @@ export default {
       })
       if (this.addForm.id) {
         this.$http({
-          url: this.$http.adornUrl(`/admin/user/info/${this.addForm.id}`),
+          url: this.$http.adornUrl(`/admin/prodTagReference/${this.addForm.id}`),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
@@ -233,7 +233,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.$http({
-            url: this.$http.adornUrl(`/admin/user`),
+            url: this.$http.adornUrl(`/admin/prodTagReference`),
             method: this.addForm.id ? 'put' : 'post',
             data: this.$http.adornData({
               id: this.addForm.id || '',

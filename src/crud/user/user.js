@@ -51,18 +51,18 @@ export const tableOption = {
         {
             label: '是否有意向',
             prop: 'yixiang',
-            type:'radio',
-            dicData:[
+            type: 'radio',
+            dicData: [
                 {
-                    label:'是',
-                    value:1
+                    label: '是',
+                    value: 1
                 },
                 {
-                    label:'否',
-                    value:0
+                    label: '否',
+                    value: 0
                 }
             ]
-        }, 
+        },
         {
             label: '是否已购',
             prop: 'yixiang'
@@ -87,6 +87,7 @@ export const buytableOption = {
     editBtn: false,
     delBtn: false,
     viewBtn: false,
+    menu:false,
     props: {
         label: 'label',
         value: 'value'
@@ -95,14 +96,16 @@ export const buytableOption = {
         {
             label: '用户名',
             prop: 'nickName',
+            search: true
         },
         {
             label: '手机号',
             prop: 'nickName',
+            search: true
         },
         {
             label: '姓名',
-            prop: 'nickName',
+            prop: 'nickName'
         },
         {
             label: '性别',

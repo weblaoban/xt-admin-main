@@ -9,15 +9,12 @@
 			@selection-change="selectionChange"
 			@on-load="getDataList"
 		>
-			<template slot-scope="scope" slot="menuLeft">
-				<el-button type="text" @click="addOrUpdateHandle(null)">新增</el-button>
-			</template>
 			<template slot-scope="scope" slot="detail">
 				<el-button type="text" @click="onShowDetail(scope.row)">查看购买详情</el-button>
 			</template>
 
 			<template slot-scope="scope" slot="menu">
-				<el-button
+				<!-- <el-button
 					type="text"
 					icon="el-icon-edit"
 					size="small"
@@ -34,7 +31,7 @@
 					v-if="isAuth('admin:user:delete')"
 					@click.stop="deleteHandle(scope.row.userId)"
 					>删除</el-button
-				>
+				> -->
 			</template>
 		</avue-crud>
 
@@ -139,7 +136,7 @@ export default {
     getDataList (page, params, done) {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/admin/user/page'),
+        url: this.$http.adornUrl('/admin/prodTagReference/page'),
         method: 'get',
         params: this.$http.adornParams(
 					Object.assign(
