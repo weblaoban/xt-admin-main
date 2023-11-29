@@ -23,28 +23,28 @@ export const tableOption = {
 	column: [
 		{
 			label: "时间",
-			prop: "createTime",
+			prop: "recTime",
 			type: "datetime",
 			searchRange: true,
 			search: true,
 		},
 		{
 			label: "姓名",
-			prop: "userName",
+			prop: "name",
 			search: true,
 		},
 		{
 			label: "手机号",
-			prop: "contact",
+			prop: "tel",
 		},
 		{
 			label: "咨询内容",
-			prop: "contact",
+			prop: "content",
 			search: true,
 		},
 		{
 			label: "状态",
-			prop: "status",
+			prop: "replySts",
 			search: true,
 			slot: true,
 			type: "select",
