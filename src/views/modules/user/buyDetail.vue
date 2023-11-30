@@ -136,7 +136,7 @@ export default {
     getDataList (page, params, done) {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/admin/prodTagReference/page'),
+        url: this.$http.adornUrl('/admin/prodTagReference'),
         method: 'get',
         params: this.$http.adornParams(
 					Object.assign(
