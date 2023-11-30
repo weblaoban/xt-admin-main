@@ -26,7 +26,7 @@ export const tableOption = {
         },
         {
             label: '用户名',
-            prop: 'nickName',
+            prop: 'realName',
             search: true
         },
         {
@@ -36,17 +36,17 @@ export const tableOption = {
         },
         {
             label: '姓名',
-            prop: 'nickName',
+            prop: 'userName',
             search: true
         },
         {
             label: '性别',
-            prop: 'nickName',
+            prop: 'sex',
             search: true
         },
         {
             label: '身份证',
-            prop: 'nickName'
+            prop: 'userMail'
         },
         {
             label: '是否有意向',
@@ -87,7 +87,7 @@ export const buytableOption = {
     editBtn: false,
     delBtn: false,
     viewBtn: false,
-    menu:false,
+    menu: false,
     props: {
         label: 'label',
         value: 'value'
@@ -95,7 +95,7 @@ export const buytableOption = {
     column: [
         {
             label: '用户名',
-            prop: 'nickName',
+            prop: 'realName',
             search: true
         },
         {
@@ -105,19 +105,92 @@ export const buytableOption = {
         },
         {
             label: '姓名',
-            prop: 'nickName'
+            prop: 'userName',
+            search: true
         },
         {
             label: '性别',
-            prop: 'nickName'
+            prop: 'sex',
         },
         {
             label: '身份证',
-            prop: 'nickName'
+            prop: 'userMail'
         },
         {
             label: '购买产品详情',
             prop: 'detail'
+        }
+    ]
+}
+
+export const userbuytableOption = {
+    searchMenuSpan: 6,
+    columnBtn: false,
+    border: true,
+    // selection: true,
+    index: false,
+    indexLabel: '序号',
+    stripe: true,
+    menuAlign: 'center',
+    menuWidth: 200,
+    align: 'center',
+    refreshBtn: false,
+    searchSize: 'mini',
+    addBtn: false,
+    editBtn: false,
+    delBtn: false,
+    viewBtn: false,
+    props: {
+        label: 'label',
+        value: 'value'
+    },
+    column: [
+        {
+            label: '产品名称',
+            prop: 'name',
+            search: true
+        },
+        {
+            label: '状态',
+            prop: 'state',
+            search: true,
+            type: 'select',
+            dicData: [
+                {
+                    label: '存续中',
+                    value: 0
+                },
+                {
+                    label: '已完成',
+                    value: 1
+                }
+            ]
+        },
+        {
+            label: '业绩比较基准',
+            prop: 'brief'
+        },
+        {
+            label: '成立时间',
+            prop: 'otime'
+        },
+        {
+            label: '到期时间',
+            prop: 'dtime'
+        },
+        {
+            label: '总认购金额',
+            prop: 'zmount'
+        },
+        {
+            label: '回款计划',
+            prop: 'bplan'
+        }, {
+            label: '期数',
+            prop: 'scount'
+        }, {
+            label: '认购用户',
+            prop: 'ucount'
         }
     ]
 }

@@ -47,20 +47,22 @@
 
         <el-dialog
 		title="查看购买详情"
+        v-if="visibleBuyDetailDialog"
 		:close-on-click-modal="false"
 		:visible.sync="visibleBuyDetailDialog"
 	>
 
     <el-descriptions title="">
-    <el-descriptions-item label="用户名">kooriookami</el-descriptions-item>
-    <el-descriptions-item label="姓名">苏州市</el-descriptions-item>
+    <el-descriptions-item label="用户名">{{detailItem.realName}}</el-descriptions-item>
+    <el-descriptions-item label="姓名">{{detailItem.userName}}</el-descriptions-item>
 </el-descriptions>
 
 <div class="dynamic" style="line-height:42px">
 				<el-row  :gutter="20">
-					<el-col :span="6">购买时间</el-col>
+					<el-col :span="6">成立时间</el-col>
 					<el-col :span="6">产品名称</el-col>
 					<el-col :span="6">产品金额</el-col>
+					<el-col :span="6">状态</el-col>
 				</el-row>
 			</div>
 
@@ -70,11 +72,13 @@
 				<el-row  :gutter="20">
 					<el-col :span="6"
 						>
-                        <span>1111</span></el-col>
+                        <span>{{ item.otime || '暂无' }}</span></el-col>
 					<el-col :span="6"
-						>  <span>222</span> </el-col>
+						>  <span>{{item.name|| '暂无'}}</span> </el-col>
 					<el-col :span="6">
-						<span>6500</span></el-col>
+						<span>{{item.userDtm.find(dt=>dt.userId===detailItem.userId).amount}}元</span></el-col>
+					<el-col :span="6"
+						>  <span>{{item.state===0?'存续中': '已全部兑付'}}</span> </el-col>
 				</el-row>
 			</div>
         </div>
@@ -95,31 +99,7 @@ export default {
       tableOption: buytableOption,
       visibleBuyDetailDialog: false,
       detailItem: {detail: [
-        {
-          time: '2021-01-01',
-          name: '产品名称',
-          amount: 5000
-        },
-        {
-          time: '2021-01-01',
-          name: '产品名称',
-          amount: 5000
-        },
-        {
-          time: '2021-01-01',
-          name: '产品名称',
-          amount: 5000
-        },
-        {
-          time: '2021-01-01',
-          name: '产品名称',
-          amount: 5000
-        },
-        {
-          time: '2021-01-01',
-          name: '产品名称',
-          amount: 5000
-        }
+
       ]},
       page: {
         total: 0, // 总页数
@@ -136,7 +116,7 @@ export default {
     getDataList (page, params, done) {
       this.dataListLoading = true
       this.$http({
-        url: this.$http.adornUrl('/admin/prodTagReference'),
+        url: this.$http.adornUrl('/admin/prodTagReference/findUserByProd'),
         method: 'get',
         params: this.$http.adornParams(
 					Object.assign(
@@ -157,8 +137,16 @@ export default {
       })
     },
     onShowDetail (row) {
-      this.detailItem = row
-      this.visibleBuyDetailDialog = true
+      this.$http({
+        url: this.$http.adornUrl(
+						`/admin/prodTagReference/find`
+					),
+        method: 'get',
+        params: this.$http.adornParams({uid: row.userId, size: 100})
+      }).then(({ data }) => {
+        this.detailItem = {...row, detail: data.records}
+        this.visibleBuyDetailDialog = true
+      })
     },
 		// 新增 / 修改
     addOrUpdateHandle (id) {
