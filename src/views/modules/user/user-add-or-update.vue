@@ -22,23 +22,21 @@
 					</el-form-item></el-col
 				>
 				<el-col :span="12">
-					<el-form-item label="手机号" prop="phone">
-						<span>{{ dataForm.phone }}</span>
+					<el-form-item label="手机号" prop="nickName">
+						<span>{{ dataForm.nickName }}</span>
 					</el-form-item></el-col
 				>
 			</el-row>
 
-			<el-form-item label="姓名" prop="nickName">
+			<el-form-item label="姓名" prop="userName">
 				<el-input
-					v-model="dataForm.name"
-					:disabled="true"
+					v-model="dataForm.userName"
 					placeholder="姓名"
 				></el-input>
 			</el-form-item>
-			<el-form-item label="身份证" size="mini" prop="status">
+			<el-form-item label="身份证" size="mini" prop="userMail">
 				<el-input
-					v-model="dataForm.name"
-					:disabled="true"
+					v-model="dataForm.userMail"
 					placeholder="身份证"
 				></el-input> </el-form-item
 			><el-row>
@@ -48,7 +46,7 @@
 					</el-form-item></el-col
 				>
 				<el-col :span="12">
-					<el-form-item label="已读" prop="userName">
+					<el-form-item label="已购" prop="userName">
 						<span>{{ dataForm.userName }}</span>
 					</el-form-item></el-col
 				>

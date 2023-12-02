@@ -79,7 +79,14 @@
 					</el-form-item>
 				</el-col>
 				<el-col :span="8">
-					<el-form-item label="业绩比较基准" prop="brief">
+					<el-form-item label="业绩比较基准" prop="brief" 
+							:rules="[
+								{
+									required: true,
+									message: '业绩比较基准不能为空',
+									trigger: 'blur',
+								},
+							]">
 						<el-col :span="20">
 							<el-input
 								v-model="dataForm.brief"

@@ -9,17 +9,6 @@
 			ref="dataForm"
 			@keyup.enter.native="dataFormSubmit()"
 			label-width="80px"
-			>
-			<el-row v-if="addForm.id">
-				<el-descriptions title="">
-					<el-descriptions-item label="用户名"
-						>kooriookami</el-descriptions-item
-					>
-					<el-descriptions-item label="姓名">苏州市</el-descriptions-item>
-					<el-descriptions-item label="手机号"
-						>18100000000</el-descriptions-item
-					>
-				</el-descriptions> </el-row
 			><el-row>
 				<el-col :span="12">
 					<el-form-item label="产品名称" prop="name"
@@ -163,10 +152,10 @@ export default {
           method: 'get',
           params: this.$http.adornParams()
         }).then(({ data }) => {
-          data.qlist = JSON.parse(data.qlist)
+          data.qlist = data.qlist ? JSON.parse(data.qlist) : []
           this.addForm = data
 
-        //   this.getProductList()
+          console.log(data)
         })
       }
     },
