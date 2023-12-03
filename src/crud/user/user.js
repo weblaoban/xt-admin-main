@@ -26,23 +26,34 @@ export const tableOption = {
         },
         {
             label: '用户名',
-            prop: 'realName',
-            search: true
-        },
-        {
-            label: '手机号',
             prop: 'nickName',
             search: true
         },
         {
+            label: '手机号',
+            prop: 'userMoblie',
+            search: true
+        },
+        {
             label: '姓名',
-            prop: 'userName',
+            prop: 'nickName',
             search: true
         },
         {
             label: '性别',
             prop: 'sex',
-            search: true
+            search: true,
+            type: 'radio',
+            dicData: [
+                {
+                    label: '男',
+                    value: 'M'
+                },
+                {
+                    label: '女',
+                    value: 'F'
+                }
+            ]
         },
         {
             label: '身份证',
@@ -50,7 +61,7 @@ export const tableOption = {
         },
         {
             label: '是否有意向',
-            prop: 'yixiang',
+            prop: 'status',
             type: 'radio',
             dicData: [
                 {
@@ -65,7 +76,18 @@ export const tableOption = {
         },
         {
             label: '是否已购',
-            prop: 'yixiang'
+            prop: 'status',
+            type: 'radio',
+            dicData: [
+                {
+                    label: '是',
+                    value: 1
+                },
+                {
+                    label: '否',
+                    value: 0
+                }
+            ]
         }
     ]
 }
@@ -95,22 +117,22 @@ export const buytableOption = {
     column: [
         {
             label: '用户名',
-            prop: 'realName',
-            search: true
-        },
-        {
-            label: '手机号',
             prop: 'nickName',
             search: true
         },
         {
+            label: '手机号',
+            prop: 'userMoblie',
+            search: true
+        },
+        {
             label: '姓名',
-            prop: 'userName',
+            prop: 'nickName',
             search: true
         },
         {
             label: '性别',
-            prop: 'sex',
+            prop: 'sex'
         },
         {
             label: '身份证',

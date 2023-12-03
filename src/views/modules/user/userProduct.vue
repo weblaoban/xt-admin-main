@@ -67,11 +67,11 @@
 		>
         <el-form label-width="80px" ref="ruleForm" :model="userForm" :rules="rules">
             <el-row>
-                <el-col :span="12">  <el-form-item label="姓名" prop="userName">
-    <el-input v-model="userForm.userName"></el-input>
-  </el-form-item></el-col>
-                <el-col :span="12">  <el-form-item label="手机号" prop="nickName">
+                <el-col :span="12">  <el-form-item label="姓名" prop="nickName">
     <el-input v-model="userForm.nickName"></el-input>
+  </el-form-item></el-col>
+                <el-col :span="12">  <el-form-item label="手机号" prop="userMobile">
+    <el-input v-model="userForm.userMobile"></el-input>
   </el-form-item></el-col>
                 <el-col :span="12"> <el-form-item label="身份证号" prop="userMail">
     <el-input v-model="userForm.userMail"></el-input>
@@ -98,11 +98,11 @@
       </template>
       </el-table-column>
       <el-table-column
-        prop="userName"
+        prop="nickName"
         label="姓名">
       </el-table-column>
       <el-table-column
-        prop="nickName"
+        prop="userMobile"
         label="手机号">
       </el-table-column>
       <el-table-column
@@ -153,18 +153,18 @@ export default {
             { required: true, message: '请输入身份证', trigger: 'blur' }
         ],
         // 手机
-        nickName: [
+        userMobile: [
             { required: true, message: '请输入手机', trigger: 'blur' }
         ],
         // 姓名
-        userName: [
+        nickName: [
             { required: true, message: '请输入 姓名', trigger: 'blur' }
         ],
         amount: [
             { required: true, message: '请输入购买金额', trigger: 'blur' }
         ]
       },
-      userForm: {}
+      userForm: {userMail: '', nickName: '', userMobile: '', amount: ''}
     }
   },
   components: {
@@ -197,8 +197,9 @@ export default {
     },
     onShowDetail (row) {
       this.detailItem = row
-      this.$refs.ruleForm.resetFields()
       this.visibleBuyDetailDialog = true
+    //   this.$refs.ruleForm.resetFields()
+      this.userForm = {userMail: '', nickName: '', userMobile: '', amount: ''}
     },
 		// 新增 / 修改
     addOrUpdateHandle (id) {

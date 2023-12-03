@@ -15,14 +15,14 @@
   <!--                   :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
   <!--      </template>-->
   
-        <template slot-scope="scope"
+        <!-- <template slot-scope="scope"
                   slot="status">
           <el-tag v-if="scope.row.status === 0"
                   size="small"
                   type="danger">禁用</el-tag>
           <el-tag v-else
                   size="small">正常</el-tag>
-        </template>
+        </template> -->
   
         <template slot-scope="scope"
                   slot="menu">

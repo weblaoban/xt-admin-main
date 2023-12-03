@@ -44,7 +44,8 @@
 				<el-col :span="8">
 					<el-form-item
 						label="产品分类"
-						:rules="[{ required: true, message: '请选择产品分类' }]"
+						:rules="[{ required: true, message: '请选择产品分类',
+									trigger: 'change', }]"
 						prop="categoryId"
 					>
 						<el-col :span="24">
@@ -60,7 +61,9 @@
 						</el-col> </el-form-item
 				></el-col>
 				<el-col :span="8">
-					<el-form-item label="期限" prop="investLimitId">
+					<el-form-item label="期限" prop="investLimitId"
+						:rules="[{ required: true, message: '请选择期限',
+									trigger: 'change', }]">
 						<el-col :span="20">
                             <el-select
 							v-model="dataForm.investLimitId"
@@ -96,7 +99,9 @@
 						</el-col> </el-form-item
 				></el-col>
 				<el-col :span="8">
-					<el-form-item label="投资门槛" prop="pmStand">
+					<el-form-item label="投资门槛" prop="pmStand" 
+						:rules="[{ required: true, message: '请选择投资门槛',
+									trigger: 'change', }]">
 						<el-col :span="20">
 
                             <el-select

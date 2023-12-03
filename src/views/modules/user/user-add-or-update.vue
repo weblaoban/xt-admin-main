@@ -17,20 +17,20 @@
 					</el-form-item></el-col
 				>
 				<el-col :span="12">
-					<el-form-item label="用户名" prop="userName">
-						<span>{{ dataForm.userName }}</span>
+					<el-form-item label="用户名" prop="nickName">
+						<span>{{ dataForm.nickName }}</span>
 					</el-form-item></el-col
 				>
 				<el-col :span="12">
-					<el-form-item label="手机号" prop="nickName">
-						<span>{{ dataForm.nickName }}</span>
+					<el-form-item label="手机号" prop="userMobile">
+						<span>{{ dataForm.userMobile }}</span>
 					</el-form-item></el-col
 				>
 			</el-row>
 
-			<el-form-item label="姓名" prop="userName">
+			<el-form-item label="姓名" prop="nickName">
 				<el-input
-					v-model="dataForm.userName"
+					v-model="dataForm.nickName"
 					placeholder="姓名"
 				></el-input>
 			</el-form-item>
@@ -42,12 +42,12 @@
 			><el-row>
 				<el-col :span="12"
 					><el-form-item label="意向" prop="userRegtime">
-						<span>{{ dataForm.userRegtime }}</span>
+						<span>否</span>
 					</el-form-item></el-col
 				>
 				<el-col :span="12">
 					<el-form-item label="已购" prop="userName">
-						<span>{{ dataForm.userName }}</span>
+						<span>否</span>
 					</el-form-item></el-col
 				>
 			</el-row>
@@ -111,6 +111,7 @@ export default {
             data: this.$http.adornData({
               userId: this.dataForm.userId || undefined,
               nickName: this.dataForm.nickName,
+              userName: this.dataForm.userName,
               status: this.dataForm.status
             })
           }).then(({ data }) => {
