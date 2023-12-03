@@ -29,7 +29,7 @@
 							placeholder="密码"
 						></el-input>
 					</el-form-item>
-					<!-- <el-form-item prop="captcha">
+					<el-form-item prop="captcha">
             <el-row :gutter="20">
               <el-col :span="14">
                 <el-input v-model="dataForm.captcha"
@@ -43,7 +43,7 @@
                      alt="">
               </el-col>
             </el-row>
-          </el-form-item> -->
+          </el-form-item>
 					<el-form-item>
 						<div class="item-btn">
 							<el-button
@@ -70,82 +70,85 @@
 </template>
 
 <script>
-import { getUUID } from "@/utils";
-import Verify from "@/components/verifition/Verify";
-import { encrypt } from "@/utils/crypto";
+import { getUUID } from '@/utils'
+import Verify from '@/components/verifition/Verify'
+import { encrypt } from '@/utils/crypto'
 export default {
-	components: {
-		Verify,
-	},
-	data() {
-		return {
-			dataForm: {
-				userName: "",
-				password: "",
-				uuid: "",
-				captcha: "",
-			},
-			dataRule: {
-				userName: [
-					{ required: true, message: "帐号不能为空", trigger: "blur" },
-				],
-				password: [
-					{ required: true, message: "密码不能为空", trigger: "blur" },
-				],
-				captcha: [
-					{ required: true, message: "验证码不能为空", trigger: "blur" },
-				],
-			},
-			captchaPath: "",
-			isSubmit:false
-		};
-	},
-	beforeDestroy() {
-		document.removeEventListener("keyup", this.handerKeyup);
-	},
-	created() {
-		this.getCaptcha();
+  components: {
+    Verify
+  },
+  data () {
+    return {
+      dataForm: {
+        userName: '',
+        password: '',
+        uuid: '',
+        captcha: ''
+      },
+      dataRule: {
+        userName: [
+					{ required: true, message: '帐号不能为空', trigger: 'blur' }
+        ],
+        password: [
+					{ required: true, message: '密码不能为空', trigger: 'blur' }
+        ],
+        captcha: [
+					{ required: true, message: '验证码不能为空', trigger: 'blur' }
+        ]
+      },
+      captchaPath: '',
+      isSubmit: false,
+      time: new Date().getTime()
+    }
+  },
+  beforeDestroy () {
+    document.removeEventListener('keyup', this.handerKeyup)
+  },
+  created () {
+    this.getCaptcha()
 
-		document.addEventListener("keyup", this.handerKeyup);
-	},
-	methods: {
-		handerKeyup(e) {
-			var keycode = document.all ? event.keyCode : e.which;
-			if (keycode === 13) {
-				this.dataFormSubmit();
-			}
-		},
+    document.addEventListener('keyup', this.handerKeyup)
+  },
+  methods: {
+    handerKeyup (e) {
+      var keycode = document.all ? event.keyCode : e.which
+      if (keycode === 13) {
+        this.dataFormSubmit()
+      }
+    },
 		// 提交表单
-		dataFormSubmit() {
-			this.$refs["dataForm"].validate((valid) => {
-				if (valid) {
+    dataFormSubmit () {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
 					// this.$refs.verify.show()
-					this.login();
-				}
-			});
-		},
-		login() {
-			if (this.isSubmit) {
-				return;
-			}
-			this.isSubmit = true;
-			this.$http({
-				url: this.$http.adornUrl("/adminLogin"),
-				method: "post",
-				data: this.$http.adornData({
-					userName: this.dataForm.userName,
-					passWord: encrypt(this.dataForm.password),
+          this.login()
+        }
+      })
+    },
+    login () {
+      if (this.isSubmit) {
+        return
+      }
+      this.isSubmit = true
+      this.$http({
+        url: this.$http.adornUrl('/adminLogin'),
+        method: 'post',
+        data: this.$http.adornData({
+          userName: this.dataForm.userName,
+          passWord: encrypt(this.dataForm.password),
+          code: this.dataForm.captcha,
+          time: this.time
 					// 'captchaVerification': verifyResult.captchaVerification
-				}),
-			})
+        })
+      })
 				.then(({ data }) => {
-					this.$cookie.set("Authorization", data.accessToken);
-					this.$router.replace({ name: "home" });
-				})
+  this.$cookie.set('Authorization', data.accessToken)
+  this.$router.replace({ name: 'home' })
+})
 				.catch(() => {
-					this.isSubmit = false;
-				});
-		},
+  this.isSubmit = false
+})
+    },
 		// dataFormSubmit () {
 		//   this.$refs['dataForm'].validate((valid) => {
 		//     if (valid) {
@@ -168,14 +171,25 @@ export default {
 		//   })
 		// },
 		// 获取验证码
-		getCaptcha() {
-			this.dataForm.uuid = getUUID();
-			this.captchaPath = this.$http.adornUrl(
-				`/captcha.jpg?uuid=${this.dataForm.uuid}`
-			);
-		},
-	},
-};
+    getCaptcha () {
+      this.dataForm.uuid = getUUID()
+      this.time = new Date().getTime()
+      this.$http({
+		        url: this.$http.adornUrl(`/captcha/code?time=${this.time}`),
+        method: 'get',
+        responseType: 'blob'
+      }
+			).then((res) => {
+  const file = new FileReader()
+  const that = this
+  file.onloadend = function (e) {
+    that.captchaPath = e.target.result
+  }
+  file.readAsDataURL(res)
+})
+    }
+  }
+}
 </script>
 
 <style lang="scss">
