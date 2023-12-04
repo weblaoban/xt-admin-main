@@ -136,14 +136,14 @@ export default {
         data: this.$http.adornData({
           userName: this.dataForm.userName,
           passWord: encrypt(this.dataForm.password),
-          code: this.dataForm.captcha,
-          time: this.time
+          captchaVerification: this.dataForm.captcha,
+          t: this.time
 					// 'captchaVerification': verifyResult.captchaVerification
         })
       })
 				.then(({ data }) => {
   this.$cookie.set('Authorization', data.accessToken)
-  this.$router.replace({ name: 'home' })
+  this.$router.push('/home')
 })
 				.catch(() => {
   this.isSubmit = false
