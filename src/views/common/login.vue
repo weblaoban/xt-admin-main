@@ -147,6 +147,7 @@ export default {
 })
 				.catch(() => {
   this.isSubmit = false
+  this.getCaptcha()
 })
     },
 		// dataFormSubmit () {
