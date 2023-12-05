@@ -1,5 +1,6 @@
 <template>
 	<div class="mod-prod-info">
+		<el-button type="text" class="el-icon-back" @click="back">返回</el-button>
 		<el-form :model="dataForm" ref="dataForm" label-width="100px">
 			<!-- <el-form-item label="产品图片">
         <mul-pic-upload v-model="dataForm.imgs" />
@@ -537,6 +538,9 @@ export default {
 				});
 			});
 		}),
+		back() {
+			this.$router.push({ name: "prod-prodList" });
+		},
 		paramSetPriceAndStocks(param) {
 			// 获取规格属性信息
 			// param.skuList = this.$refs.prodSpec.getTableSpecData()

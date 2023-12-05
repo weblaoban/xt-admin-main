@@ -1,6 +1,6 @@
 <template>
 	<el-dialog
-		:title="!dataForm.userId ? '新增' : '编辑用户信息'"
+		:title="!dataForm.userId ? '新增' : '新增'"
 		:close-on-click-modal="false"
 		:visible.sync="visible"
 	>
@@ -10,47 +10,21 @@
 			ref="dataForm"
 			@keyup.enter.native="dataFormSubmit()"
 			label-width="80px"
-			><el-row>
-				<el-col :span="12"
-					><el-form-item label="注册时间" prop="userRegtime">
-						<span>{{ dataForm.userRegtime }}</span>
-					</el-form-item></el-col
-				>
-				<el-col :span="12">
-					<el-form-item label="用户名" prop="nickName">
-						<span>{{ dataForm.nickName }}</span>
-					</el-form-item></el-col
-				>
-				<el-col :span="12">
-					<el-form-item label="手机号" prop="userMobile">
-						<span>{{ dataForm.userMobile }}</span>
-					</el-form-item></el-col
-				>
-			</el-row>
-
-			<el-form-item label="姓名" prop="nickName">
-				<el-input v-model="dataForm.nickName" placeholder="姓名"></el-input>
+		>
+			<el-form-item label="手机号" prop="userId"
+				><el-select v-model="dataForm.userId" filterable placeholder="请选择">
+					<el-option
+						v-for="item in userList"
+						:key="item.value"
+						:label="item.userMobile"
+						:value="item.userId"
+					>
+					</el-option>
+				</el-select>
 			</el-form-item>
-			<el-form-item label="身份证" size="mini" prop="userMail">
-				<el-input
-					v-model="dataForm.userMail"
-					placeholder="身份证"
-				></el-input> </el-form-item
-			><el-row>
-				<el-col :span="12"
-					><el-form-item label="意向" prop="userRegtime">
-						<span>否</span>
-					</el-form-item></el-col
-				>
-				<el-col :span="12">
-					<el-form-item label="已购" prop="userName">
-						<span>否</span>
-					</el-form-item></el-col
-				>
-			</el-row>
 		</el-form>
 		<span slot="footer" class="dialog-footer">
-			<el-button type="primary" @click="dataFormSubmit()">确认修改</el-button>
+			<el-button type="primary" @click="dataFormSubmit()">确认</el-button>
 			<el-button @click="visible = false">关闭</el-button>
 		</span>
 	</el-dialog>
@@ -64,9 +38,6 @@ export default {
 			visible: false,
 			dataForm: {
 				userId: 0,
-				nickName: "",
-				pic: "",
-				status: 1,
 			},
 			page: {
 				total: 0, // 总页数
@@ -75,15 +46,20 @@ export default {
 			},
 			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
 			dataRule: {
-				nickName: [
-					{ required: true, message: "用户名不能为空", trigger: "blur" },
+				userId: [
+					{
+						required: true,
+						message: "请选择用户",
+						trigger: "blur",
+					},
 				],
 			},
+			userList: [],
 		};
 	},
 	methods: {
 		init(id) {
-			this.dataForm.userId = id || 0;
+			this.dataForm.userId = id || "";
 			this.visible = true;
 			this.$nextTick(() => {
 				this.$refs.dataForm.resetFields();
@@ -107,9 +83,7 @@ export default {
 						method: this.dataForm.userId ? "put" : "post",
 						data: this.$http.adornData({
 							userId: this.dataForm.userId || undefined,
-							nickName: this.dataForm.nickName,
-							userName: this.dataForm.userName,
-							status: this.dataForm.status,
+							planner: 1,
 						}),
 					}).then(({ data }) => {
 						this.$message({
