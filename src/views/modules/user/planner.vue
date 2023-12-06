@@ -222,7 +222,7 @@ export default {
         data.records.forEach((item) => {
           const { userDtm = [] } = item
           userDtm.forEach((user) => {
-            if ((user.puser = this.detailItem.id)) {
+            if ((user.puserId == this.detailItem.id)) {
               list.push({ ...item, ...user })
             }
           })
@@ -241,9 +241,15 @@ export default {
       _.query = form
       this.$nextTick(() => {
         const params = {...form}
+        console.log(params)
         const {detailList} = this
+        const {uname, idcard, pname, state} = params
+        if (!uname && !idcard && !pname && state == '') {
+          this.searchReset()
+          done()
+          return
+        }
         const list = detailList.filter(item => {
-          const {uname, idcard, pname, state} = params
           const hasname = item.nickName.indexOf(uname) > -1
           const hasidcard = item.userMail.indexOf(idcard) > -1
           const haspname = item.name.indexOf(pname) > -1
