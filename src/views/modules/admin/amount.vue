@@ -18,53 +18,51 @@
 
 <script>
 export default {
-	data() {
-		return {
-			info: {
-				pcount: 0,
-				mcount: 0,
-			},
-			form: {
-				pcount: 0,
-				mcount: 0,
-			},
-		};
-	},
-	mounted() {
-		this.getBaseInfo();
-	},
-	methods: {
-		getBaseInfo() {
-			this.$http({
-				url: this.$http.adornUrl("/admin/notice"),
-				method: "get",
-				params: this.$http.adornParams(
+  data () {
+    return {
+      info: {
+        pcount: 0,
+        mcount: 0
+      },
+      form: {
+        pcount: 0,
+        mcount: 0
+      }
+    }
+  },
+  mounted () {
+    this.getBaseInfo()
+  },
+  methods: {
+    getBaseInfo () {
+      this.$http({
+        url: this.$http.adornUrl('/admin/notice/'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-						},
-						params
+  {
+  },
+						{id:4}
 					)
-				),
-			}).then(({ data }) => {
-				this.info = data;
-				this.form = { ...data };
-			});
-		},
-		onSubmit() {
-			this.$http({
-				url: this.$http.adornUrl("/admin/notice"),
-				method: "put",
-				data: this.$http.adornParams(Object.assign(...this.form)),
-			}).then(({ data }) => {
-				this.info = data;
-				this.form = { ...data };
-			});
-		},
-		onCancel() {
-			this.form = { ...this.info };
-		},
-	},
-};
+				)
+      }).then(({ data }) => {
+        this.info = data
+        this.form = { ...data }
+      })
+    },
+    onSubmit () {
+      this.$http({
+        url: this.$http.adornUrl('/admin/notice'),
+        method: 'put',
+        data: this.$http.adornParams(Object.assign(...this.form))
+      }).then(({ data }) => {
+        this.info = data
+        this.form = { ...data }
+      })
+    },
+    onCancel () {
+      this.form = { ...this.info }
+    }
+  }
+}
 </script>

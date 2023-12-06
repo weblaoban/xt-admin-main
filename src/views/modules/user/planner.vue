@@ -6,6 +6,7 @@
 			:data="dataList"
 			:option="tableOption"
 			@search-change="searchChange"
+			@search-reset="listsearchReset"
 			@selection-change="selectionChange"
 			@on-load="getDataList"
 		>
@@ -61,12 +62,12 @@
 						:size="size"
 						@click="$refs.form.submit()"
 						icon="el-icon-search"
-						:loading="loading"
+						:loading="detaildataListLoading"
 					>
 						搜索
 					</el-button>
 					<el-button
-						:loading="loading"
+						:loading="detaildataListLoading"
 						:size="size"
 						@click="searchReset"
 						icon="el-icon-refresh"
@@ -93,210 +94,247 @@
 </template>
 
 <script>
-import { plannertableOption, plannerProdOption } from "@/crud/user/user";
-import AddOrUpdate from "./planner-add-or-update";
+import { plannertableOption, plannerProdOption } from '@/crud/user/user'
+import AddOrUpdate from './planner-add-or-update'
 export default {
-	data() {
-		return {
-			dataList: [],
-			dataListLoading: false,
-			dataListSelections: [],
-			addOrUpdateVisible: false,
-			tableOption: plannertableOption,
-			visibleBuyDetailDialog: false,
-			page: {
-				total: 0, // 总页数
-				currentPage: 1, // 当前页数
-				pageSize: 10, // 每页显示多少条
-			},
-			detailOption: plannerProdOption,
-			detailPage: {
-				total: 0, // 总页数
-				currentPage: 1, // 当前页数
-				pageSize: 10, // 每页显示多少条
-			},
-			detailList: [],
-			query: {},
-			searchOption: {
-				labelSuffix: " ", //隐藏label后面的：
-				labelWidth: "71",
+  data () {
+    return {
+      dataList: [],
+      dataListLoading: false,
+      detaildataListLoading: false,
+      dataListSelections: [],
+      addOrUpdateVisible: false,
+      tableOption: plannertableOption,
+      visibleBuyDetailDialog: false,
+      page: {
+        total: 0, // 总页数
+        currentPage: 1, // 当前页数
+        pageSize: 10 // 每页显示多少条
+      },
+      detailOption: plannerProdOption,
+      detailPage: {
+        total: 0, // 总页数
+        currentPage: 1, // 当前页数
+        pageSize: 10 // 每页显示多少条
+      },
+      detailList: [],
+      query: {},
+      searchOption: {
+        labelSuffix: ' ', // 隐藏label后面的：
+        labelWidth: '71',
 				// labelPosition:'left',
-				menuSpan: 5, //操作按钮居左
-				menuPosition: "left",
-				submitBtn: false, //不展示默认提交和清空按钮
-				emptyBtn: false,
-				size: "mini",
-				column: [
-					{
-						label: "姓名",
-						prop: "uname",
-						placeholder: "请输入姓名",
-						labelWidth: "48",
-						span: 4,
-					},
-					{
-						label: "身份证",
-						prop: "idcard",
-						placeholder: "请输入姓名",
-						labelWidth: "48",
-						span: 4,
-					},
-					{
-						label: "产品名称",
-						prop: "pname",
-						placeholder: "请输入",
-						labelWidth: "48",
-						span: 4,
-					},
-					{
-						label: "状态",
-						prop: "state",
-						placeholder: "请选择",
-						type: "select",
-						labelWidth: "80",
-						dicData: [
-							{
-								label: "存续中",
-								value: 0,
-							},
-							{
-								label: "已完成",
-								value: 1,
-							},
-						],
-						span: 5,
-					},
-				],
-			},
-		};
-	},
-	components: {
-		AddOrUpdate,
-	},
-	methods: {
+        menuSpan: 12, // 操作按钮居左
+        menuPosition: 'left',
+        submitBtn: false, // 不展示默认提交和清空按钮
+        emptyBtn: false,
+        size: 'mini',
+        column: [
+          {
+            label: '姓名',
+            prop: 'uname',
+            placeholder: '请输入姓名',
+            labelWidth: '100',
+            span: 12
+          },
+          {
+            label: '身份证',
+            prop: 'idcard',
+            placeholder: '请输入姓名',
+            labelWidth: '100',
+            span: 12
+          },
+          {
+            label: '产品名称',
+            prop: 'pname',
+            placeholder: '请输入',
+            labelWidth: '100',
+            span: 12
+          },
+          {
+            label: '状态',
+            prop: 'state',
+            placeholder: '请选择',
+            type: 'select',
+            labelWidth: '100',
+            dicData: [
+              {
+                label: '存续中',
+                value: 0
+              },
+              {
+                label: '已完成',
+                value: 1
+              }
+            ],
+            span: 12
+          }
+        ]
+      }
+    }
+  },
+  components: {
+    AddOrUpdate
+  },
+  methods: {
 		// 获取数据列表
-		getDataList(page, params, done) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/user/page"),
-				method: "get",
-				params: this.$http.adornParams(
+    getDataList (page, params, done) {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/user/page'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							score: 1,
-						},
+  {
+    current: page == null ? this.page.currentPage : page.currentPage,
+    size: page == null ? this.page.pageSize : page.pageSize,
+    score: 1
+  },
 						params
 					)
-				),
-			}).then(({ data }) => {
-				this.dataList = data.records;
-				this.page.total = data.total;
-				this.dataListLoading = false;
-				if (done) {
-					done();
-				}
-			});
-		},
-		getdetailDataList(page, params, done) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/prodTagReference/findByPuser"),
-				method: "get",
-				params: this.$http.adornParams(
+				)
+      }).then(({ data }) => {
+        this.dataList = data.records
+        this.page.total = data.total
+        this.dataListLoading = false
+        if (done) {
+          done()
+        }
+      })
+    },
+    getdetailDataList (page, params, done) {
+      if (this.detaildataListLoading) {
+        return
+      }
+      this.detaildataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/prodTagReference/findByPuser'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							uid: this.detailItem.id,
-						},
+  {
+    uid: this.detailItem.id
+  },
 						params
 					)
-				),
-			}).then(({ data }) => {
-				let list = [];
-				data.records.forEach((item) => {
-					const { userDtm = [] } = item;
-					userDtm.forEach((user) => {
-						if ((user.puser = this.detailItem.id)) {
-							list.push({ ...item, user: { ...user } });
-						}
-					});
-				});
-				this.detailList = list;
-				this.dataListLoading = false;
-				if (done) {
-					done();
-				}
-			});
-		},
+				)
+      }).then(({ data }) => {
+        let list = []
+        data.records.forEach((item) => {
+          const { userDtm = [] } = item
+          userDtm.forEach((user) => {
+            if ((user.puser = this.detailItem.id)) {
+              list.push({ ...item, ...user })
+            }
+          })
+        })
+        console.log(list)
+        this.detailList = list
+        this.detaildataListLoading = false
+        if (done) {
+          done()
+        }
+      })
+    },
 
-		onSearch(form, done) {
-			let _ = this;
-			_.query = form;
-			this.$nextTick(() => {
-				_.getdetailDataList({}, { ...this.query }, done);
-			});
-		},
-		searchReset() {
-			let _ = this;
-			_.$refs.form.resetForm();
-			_.query = {};
-			this.$nextTick(() => {
-				_.getdetailDataList({}, { ...this.query }, done);
-			});
-		},
+    onSearch (form, done) {
+      let _ = this
+      _.query = form
+      this.$nextTick(() => {
+        const params = {...form}
+        const {detailList} = this
+        const list = detailList.filter(item => {
+          const {uname, idcard, pname, state} = params
+          const hasname = item.nickName.indexOf(uname) > -1
+          const hasidcard = item.userMail.indexOf(idcard) > -1
+          const haspname = item.name.indexOf(pname) > -1
+          let hasState = true
+          if (state == 0 || state == 1) {
+            hasState = item.state == state
+          }
+          return hasname && hasState && hasidcard && haspname
+        })
+        this.detailList = list
+        done()
+      })
+    },
+    listsearchReset () {
+      this.query = {}
+      this.getDataList(this.page, {})
+    },
+    searchReset () {
+      let _ = this
+      _.$refs.form.resetForm()
+      _.query = {}
+      this.$nextTick(() => {
+        _.getdetailDataList({})
+      })
+    },
 		// 新增 / 修改
-		addOrUpdateHandle(id) {
-			this.addOrUpdateVisible = true;
-			this.$nextTick(() => {
-				this.$refs.addOrUpdate.init(id);
-			});
-		},
+    addOrUpdateHandle (id) {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.addOrUpdate.init(id)
+      })
+    },
 		// 删除
-		deleteHandle(id) {
-			this.$confirm(`确定进行[删除}]操作?`, "提示", {
-				confirmButtonText: "确定",
-				cancelButtonText: "取消",
-				type: "warning",
-			})
+    deleteHandle (id) {
+      this.$confirm(`确定进行[删除}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
 				.then(() => {
-					this.$http({
-						url: this.$http.adornUrl(`/admin/user`),
-						method: "put",
-						data: this.$http.adornData({
-							id: id,
-							score: 0,
-						}),
-					}).then(({ data }) => {
-						this.$message({
-							message: "操作成功",
-							type: "success",
-							duration: 1500,
-							onClose: () => {
-								this.visible = false;
-								this.getDataList();
-							},
-						});
-					});
-				})
-				.catch(() => {});
-		},
+  this.$http({
+    url: this.$http.adornUrl(`/admin/user`),
+    method: 'put',
+    data: this.$http.adornData({
+      id: id,
+      score: 0
+    })
+  }).then(({ data }) => {
+    this.$message({
+      message: '操作成功',
+      type: 'success',
+      duration: 1500,
+      onClose: () => {
+        this.visible = false
+        this.getDataList()
+      }
+    })
+  })
+})
+				.catch(() => {})
+    },
 		// 条件查询
-		searchChange(params, done) {
-			this.getDataList(this.page, params, done);
-		},
+    searchChange (params, done) {
+      this.getDataList(this.page, params, done)
+    },
 		// 条件查询
-		detailsearchChange(params, done) {
-			this.getdetailDataList(this.detailPage, params, done);
-		},
-		onShowDetail(row) {
-			this.detailItem = { ...row };
-			this.visibleBuyDetailDialog = true;
-		},
+    detailsearchChange (param, done) {
+      const params = {...param}
+      const {detailList} = this
+      const list = detailList.filter(item => {
+        const {uname, idcard, pname, state} = params
+        const hasname = item.nickName.indexOf(uname) > -1
+        const hasidcard = item.userMail.indexOf(idcard) > -1
+        const haspname = item.name.indexOf(pname) > -1
+        let hasState = true
+        if (state == 0 || state == 1) {
+          hasState = item.state == state
+        }
+        return hasname && hasState && hasidcard && haspname
+      })
+      this.detailList = list
+      done()
+    },
+    onShowDetail (row) {
+      this.detailItem = { ...row }
+      this.visibleBuyDetailDialog = true
+    },
 		// 多选变化
-		selectionChange(val) {
-			this.dataListSelections = val;
-		},
-	},
-};
+    selectionChange (val) {
+      this.dataListSelections = val
+    }
+  }
+}
 </script>
