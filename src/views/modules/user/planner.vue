@@ -25,7 +25,7 @@
 					icon="el-icon-delete"
 					size="small"
 					v-if="isAuth('admin:user:delete')"
-					@click.stop="deleteHandle(scope.row.userId)"
+					@click.stop="deleteHandle(scope.row.id)"
 					>删除</el-button
 				>
 			</template>
@@ -49,9 +49,33 @@
 			:close-on-click-modal="false"
 			:visible.sync="visibleBuyDetailDialog"
 		>
+			<avue-form
+				ref="form"
+				v-model="query"
+				:option="searchOption"
+				@submit="onSearch"
+			>
+				<template slot-scope="{ size }" slot="menuForm">
+					<el-button
+						type="primary"
+						:size="size"
+						@click="$refs.form.submit()"
+						icon="el-icon-search"
+						:loading="loading"
+					>
+						搜索
+					</el-button>
+					<el-button
+						:loading="loading"
+						:size="size"
+						@click="searchReset"
+						icon="el-icon-refresh"
+						>重置</el-button
+					>
+				</template>
+			</avue-form>
 			<avue-crud
 				ref="crud"
-				:page="detailPage"
 				:data="detailList"
 				:option="detailOption"
 				@search-change="detailsearchChange"
@@ -92,6 +116,58 @@ export default {
 				pageSize: 10, // 每页显示多少条
 			},
 			detailList: [],
+			query: {},
+			searchOption: {
+				labelSuffix: " ", //隐藏label后面的：
+				labelWidth: "71",
+				// labelPosition:'left',
+				menuSpan: 5, //操作按钮居左
+				menuPosition: "left",
+				submitBtn: false, //不展示默认提交和清空按钮
+				emptyBtn: false,
+				size: "mini",
+				column: [
+					{
+						label: "姓名",
+						prop: "uname",
+						placeholder: "请输入姓名",
+						labelWidth: "48",
+						span: 4,
+					},
+					{
+						label: "身份证",
+						prop: "idcard",
+						placeholder: "请输入姓名",
+						labelWidth: "48",
+						span: 4,
+					},
+					{
+						label: "产品名称",
+						prop: "pname",
+						placeholder: "请输入",
+						labelWidth: "48",
+						span: 4,
+					},
+					{
+						label: "状态",
+						prop: "state",
+						placeholder: "请选择",
+						type: "select",
+						labelWidth: "80",
+						dicData: [
+							{
+								label: "存续中",
+								value: 0,
+							},
+							{
+								label: "已完成",
+								value: 1,
+							},
+						],
+						span: 5,
+					},
+				],
+			},
 		};
 	},
 	components: {
@@ -109,6 +185,7 @@ export default {
 						{
 							current: page == null ? this.page.currentPage : page.currentPage,
 							size: page == null ? this.page.pageSize : page.pageSize,
+							score: 1,
 						},
 						params
 					)
@@ -125,25 +202,47 @@ export default {
 		getdetailDataList(page, params, done) {
 			this.dataListLoading = true;
 			this.$http({
-				url: this.$http.adornUrl("/admin/user/page"),
+				url: this.$http.adornUrl("/admin/prodTagReference/findByPuser"),
 				method: "get",
 				params: this.$http.adornParams(
 					Object.assign(
 						{
-							current:
-								page == null ? this.detailPage.currentPage : page.currentPage,
-							size: page == null ? this.detailPage.pageSize : page.pageSize,
+							uid: this.detailItem.id,
 						},
 						params
 					)
 				),
 			}).then(({ data }) => {
-				this.dataList = data.records;
-				this.detailPage.total = data.total;
+				let list = [];
+				data.records.forEach((item) => {
+					const { userDtm = [] } = item;
+					userDtm.forEach((user) => {
+						if ((user.puser = this.detailItem.id)) {
+							list.push({ ...item, user: { ...user } });
+						}
+					});
+				});
+				this.detailList = list;
 				this.dataListLoading = false;
 				if (done) {
 					done();
 				}
+			});
+		},
+
+		onSearch(form, done) {
+			let _ = this;
+			_.query = form;
+			this.$nextTick(() => {
+				_.getdetailDataList({}, { ...this.query }, done);
+			});
+		},
+		searchReset() {
+			let _ = this;
+			_.$refs.form.resetForm();
+			_.query = {};
+			this.$nextTick(() => {
+				_.getdetailDataList({}, { ...this.query }, done);
 			});
 		},
 		// 新增 / 修改
@@ -155,12 +254,7 @@ export default {
 		},
 		// 删除
 		deleteHandle(id) {
-			var ids = id
-				? [id]
-				: this.dataListSelections.map((item) => {
-						return item.userId;
-				  });
-			this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
+			this.$confirm(`确定进行[删除}]操作?`, "提示", {
 				confirmButtonText: "确定",
 				cancelButtonText: "取消",
 				type: "warning",
@@ -170,8 +264,8 @@ export default {
 						url: this.$http.adornUrl(`/admin/user`),
 						method: "put",
 						data: this.$http.adornData({
-							userId: id,
-							planner: 0,
+							id: id,
+							score: 0,
 						}),
 					}).then(({ data }) => {
 						this.$message({
@@ -180,7 +274,7 @@ export default {
 							duration: 1500,
 							onClose: () => {
 								this.visible = false;
-								this.$emit("refreshDataList", this.page);
+								this.getDataList();
 							},
 						});
 					});
@@ -193,17 +287,11 @@ export default {
 		},
 		// 条件查询
 		detailsearchChange(params, done) {
-			this.getDataList(this.detailPage, params, done);
+			this.getdetailDataList(this.detailPage, params, done);
 		},
 		onShowDetail(row) {
-			this.$http({
-				url: this.$http.adornUrl(`/admin/prodTagReference/find`),
-				method: "get",
-				params: this.$http.adornParams({ uid: row.userId, size: 100 }),
-			}).then(({ data }) => {
-				this.detailItem = { ...row, detail: data.records };
-				this.visibleBuyDetailDialog = true;
-			});
+			this.detailItem = { ...row };
+			this.visibleBuyDetailDialog = true;
 		},
 		// 多选变化
 		selectionChange(val) {

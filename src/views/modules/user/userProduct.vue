@@ -87,8 +87,20 @@
 							<el-input v-model="userForm.amount"></el-input> </el-form-item
 					></el-col>
 					<el-col :span="12">
-						<el-form-item label="理财师" prop="amount">
-							<el-input v-model="userForm.amount"></el-input> </el-form-item
+						<el-form-item label="理财师" prop="puserId">
+							<el-select
+								v-model="userForm.puserId"
+								filterable
+								placeholder="请选择"
+							>
+								<el-option
+									v-for="item in userList"
+									:key="item.value"
+									:label="item.userMobile"
+									:value="item.id"
+								>
+								</el-option>
+							</el-select> </el-form-item
 					></el-col>
 				</el-row>
 
@@ -113,7 +125,19 @@
 					<el-table-column prop="userMobile" label="手机号"> </el-table-column>
 					<el-table-column prop="userMail" label="身份证号"> </el-table-column>
 					<el-table-column prop="amount" label="购买金额"> </el-table-column>
-					<el-table-column prop="amount" label="理财师"> </el-table-column>
+					<el-table-column prop="puserId" label="理财师">
+						<template slot-scope="scope">
+							<span style="margin-left: 10px">{{
+								userList.find((item) => {
+									return item.id === scope.row.puserId;
+								})
+									? userList.find((item) => {
+											return item.id === scope.row.puserId;
+									  }).userMobile
+									: ""
+							}}</span>
+						</template>
+					</el-table-column>
 					<el-table-column prop="amount" label="操作">
 						<template slot-scope="scope">
 							<el-button type="danger" @click="deluser(scope.row)"
@@ -162,11 +186,21 @@ export default {
 					{ required: true, message: "请输入购买金额", trigger: "blur" },
 				],
 			},
-			userForm: { userMail: "", nickName: "", userMobile: "", amount: "" },
+			userForm: {
+				userMail: "",
+				nickName: "",
+				userMobile: "",
+				amount: "",
+				puserId: "",
+			},
+			userList: [],
 		};
 	},
 	components: {
 		AddOrUpdate,
+	},
+	mounted() {
+		this.getUserList();
 	},
 	methods: {
 		// 获取数据列表
@@ -193,6 +227,18 @@ export default {
 				}
 			});
 		},
+		getUserList() {
+			this.$http({
+				url: this.$http.adornUrl("/admin/user/list"),
+				method: "get",
+				params: this.$http.adornParams(Object.assign({}, { score: 1 })),
+			}).then(({ data }) => {
+				this.userList = data;
+				if (done) {
+					done();
+				}
+			});
+		},
 		onShowDetail(row) {
 			this.detailItem = row;
 			this.visibleBuyDetailDialog = true;
@@ -202,6 +248,7 @@ export default {
 				nickName: "",
 				userMobile: "",
 				amount: "",
+				puserId: "",
 			};
 		},
 		// 新增 / 修改

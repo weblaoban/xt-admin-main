@@ -11,13 +11,13 @@
 			@keyup.enter.native="dataFormSubmit()"
 			label-width="80px"
 		>
-			<el-form-item label="手机号" prop="userId"
-				><el-select v-model="dataForm.userId" filterable placeholder="请选择">
+			<el-form-item label="手机号" prop="id"
+				><el-select v-model="dataForm.id" filterable placeholder="请选择">
 					<el-option
 						v-for="item in userList"
 						:key="item.value"
 						:label="item.userMobile"
-						:value="item.userId"
+						:value="item.id"
 					>
 					</el-option>
 				</el-select>
@@ -37,7 +37,7 @@ export default {
 		return {
 			visible: false,
 			dataForm: {
-				userId: 0,
+				id: 0,
 			},
 			page: {
 				total: 0, // 总页数
@@ -46,7 +46,7 @@ export default {
 			},
 			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
 			dataRule: {
-				userId: [
+				id: [
 					{
 						required: true,
 						message: "请选择用户",
@@ -57,16 +57,19 @@ export default {
 			userList: [],
 		};
 	},
+	mounted() {
+		this.getUserList();
+	},
 	methods: {
 		init(id) {
-			this.dataForm.userId = id || "";
+			this.dataForm.id = id || "";
 			this.visible = true;
 			this.$nextTick(() => {
 				this.$refs.dataForm.resetFields();
 			});
-			if (this.dataForm.userId) {
+			if (this.dataForm.id) {
 				this.$http({
-					url: this.$http.adornUrl(`/admin/user/info/${this.dataForm.userId}`),
+					url: this.$http.adornUrl(`/admin/user/info/${this.dataForm.id}`),
 					method: "get",
 					params: this.$http.adornParams(),
 				}).then(({ data }) => {
@@ -74,16 +77,28 @@ export default {
 				});
 			}
 		},
+		getUserList() {
+			this.$http({
+				url: this.$http.adornUrl("/admin/user/list"),
+				method: "get",
+				params: this.$http.adornParams(Object.assign({}, { score: 0 })),
+			}).then(({ data }) => {
+				this.userList = data;
+				if (done) {
+					done();
+				}
+			});
+		},
 		// 表单提交
 		dataFormSubmit: Debounce(function () {
 			this.$refs["dataForm"].validate((valid) => {
 				if (valid) {
 					this.$http({
 						url: this.$http.adornUrl(`/admin/user`),
-						method: this.dataForm.userId ? "put" : "post",
+						method: this.dataForm.id ? "put" : "post",
 						data: this.$http.adornData({
-							userId: this.dataForm.userId || undefined,
-							planner: 1,
+							id: this.dataForm.id || undefined,
+							score: 1,
 						}),
 					}).then(({ data }) => {
 						this.$message({

@@ -31,7 +31,7 @@ export const tableOption = {
 		},
 		{
 			label: "手机号",
-			prop: "userMoblie",
+			prop: "userMobile",
 			search: true,
 		},
 		{
@@ -101,7 +101,7 @@ export const plannertableOption = {
 	indexLabel: "序号",
 	stripe: true,
 	menuAlign: "center",
-	menuWidth: 350,
+	menuWidth: 200,
 	align: "center",
 	refreshBtn: true,
 	searchSize: "mini",
@@ -121,7 +121,7 @@ export const plannertableOption = {
 		},
 		{
 			label: "手机号",
-			prop: "userMoblie",
+			prop: "userMobile",
 			search: true,
 		},
 		{
@@ -164,12 +164,12 @@ export const plannerProdOption = {
 	column: [
 		{
 			label: "客户名",
-			prop: "nickName",
+			prop: "name",
 			search: true,
 		},
 		{
 			label: "手机号",
-			prop: "userMoblie",
+			prop: "userMobile",
 			search: true,
 		},
 		{
@@ -217,7 +217,7 @@ export const buytableOption = {
 		},
 		{
 			label: "手机号",
-			prop: "userMoblie",
+			prop: "userMobile",
 			search: true,
 		},
 		{

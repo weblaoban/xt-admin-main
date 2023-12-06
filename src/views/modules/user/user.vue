@@ -15,7 +15,7 @@
 					icon="el-icon-edit"
 					size="small"
 					v-if="isAuth('admin:user:update')"
-					@click.stop="addOrUpdateHandle(scope.row.userId)"
+					@click.stop="addOrUpdateHandle(scope.row.id)"
 					>编辑</el-button
 				>
 
@@ -94,7 +94,7 @@ export default {
 			var ids = id
 				? [id]
 				: this.dataListSelections.map((item) => {
-						return item.userId;
+						return item.id;
 				  });
 			this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
 				confirmButtonText: "确定",
