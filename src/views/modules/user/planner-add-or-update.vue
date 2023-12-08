@@ -4,11 +4,11 @@
 		:close-on-click-modal="false"
 		:visible.sync="visible"
 	>
+			<!-- @keyup.enter.native="dataFormSubmit()" -->
 		<el-form
 			:model="dataForm"
 			:rules="dataRule"
 			ref="dataForm"
-			@keyup.enter.native="dataFormSubmit()"
 			label-width="80px"
 		>
 			<el-form-item label="手机号" prop="id"
