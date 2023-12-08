@@ -18,51 +18,47 @@
 
 <script>
 export default {
-  data () {
-    return {
-      info: {
-        pcount: 0,
-        mcount: 0
-      },
-      form: {
-        pcount: 0,
-        mcount: 0
-      }
-    }
-  },
-  mounted () {
-    this.getBaseInfo()
-  },
-  methods: {
-    getBaseInfo () {
-      this.$http({
-        url: this.$http.adornUrl('/admin/notice/'),
-        method: 'get',
-        params: this.$http.adornParams(
-					Object.assign(
-  {
-  },
-						{id:4}
-					)
-				)
-      }).then(({ data }) => {
-        this.info = data
-        this.form = { ...data }
-      })
-    },
-    onSubmit () {
-      this.$http({
-        url: this.$http.adornUrl('/admin/notice'),
-        method: 'put',
-        data: this.$http.adornParams(Object.assign(...this.form))
-      }).then(({ data }) => {
-        this.info = data
-        this.form = { ...data }
-      })
-    },
-    onCancel () {
-      this.form = { ...this.info }
-    }
-  }
-}
+	data() {
+		return {
+			info: {
+				pcount: 0,
+				mcount: 0,
+			},
+			form: {
+				pcount: 0,
+				mcount: 0,
+			},
+		};
+	},
+	mounted() {
+		this.getBaseInfo();
+	},
+	methods: {
+		getBaseInfo() {
+			this.$http({
+				url: this.$http.adornUrl("/admin/notice/info"),
+				method: "get",
+				params: this.$http.adornParams(Object.assign({}, { id: 4 })),
+			}).then(({ data }) => {
+				this.info = data;
+				this.form = { ...data };
+			});
+		},
+		onSubmit() {
+			this.$http({
+				url: this.$http.adornUrl("/admin/notice/"),
+				method: "put",
+				data: this.$http.adornParams(Object.assign({ ...this.form })),
+			}).then((data) => {
+				if (data.success) {
+					this.$message.success("修改成功");
+					this.getBaseInfo();
+				}
+			});
+		},
+		onCancel() {
+			this.form = { ...this.info };
+		},
+	},
+};
 </script>
