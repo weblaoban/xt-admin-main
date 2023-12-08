@@ -29,6 +29,12 @@ Vue.prototype.isAuth = isAuth // 权限方法
 // process.env.VUE_APP_RESOURCES_URL['storeState'] = cloneDeep(store.state)
 
 /* eslint-disable no-new */
+
+router.afterEach(to => {
+    console.log(to)
+
+    document.title = to.meta.title || '瑔石信托网'
+})
 new Vue({
     el: '#app',
     router,
