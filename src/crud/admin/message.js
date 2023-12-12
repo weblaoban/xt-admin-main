@@ -31,11 +31,11 @@ export const tableOption = {
 		{
 			label: "姓名",
 			prop: "name",
-			search: true,
 		},
 		{
 			label: "手机号",
 			prop: "tel",
+			search: true,
 		},
 		{
 			label: "咨询内容",
