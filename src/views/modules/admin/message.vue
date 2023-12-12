@@ -29,11 +29,18 @@
 				>
 			</template>
 
-			<template slot-scope="scope" slot="status">
-				<el-tag v-if="scope.row.status === 0" size="small" type="danger"
-					>未审核</el-tag
-				>
-				<el-tag v-else size="small">审核通过</el-tag>
+			<template slot-scope="scope" slot="replySts">
+				<span v-if="scope.row.status === 0">
+					未回复
+					<el-tag
+						size="small"
+						type="danger"
+						@click="updateState(scope.row)"
+						style="cursor: pointer"
+						>回复</el-tag
+					>
+				</span>
+				<el-tag v-if="scope.row.status === 1" size="small">已回复</el-tag>
 			</template>
 
 			<template slot-scope="scope" slot="menu">
@@ -130,6 +137,18 @@ export default {
 				if (done) {
 					done();
 				}
+			});
+		},
+		updateState(row) {
+			this.$http({
+				url: this.$http.adornUrl("/prod/prodComm/"),
+				method: "put",
+				data: this.$http.adornData({
+					id: row.id,
+					status: 1,
+				}),
+			}).then(({ data }) => {
+				this.getDataList();
 			});
 		},
 

@@ -1,7 +1,7 @@
 <template></template>
 <template>
 	<div class="mod-prod">
-		<h4>信托产品</h4>
+		<h4>移动端推荐产品</h4>
 		<avue-crud
 			ref="crud"
 			:data="dataList"
@@ -17,6 +17,9 @@
 					v-if="!scope.row.name"
 					>请选择产品</el-button
 				>
+			</template>
+			<template slot="menuLeft">
+				<el-button @click="addRow">新增</el-button>
 			</template>
 			<template slot-scope="scope" slot="menu">
 				<!-- 上衣 -->
@@ -45,95 +48,6 @@
 			</template>
 		</avue-crud>
 
-		<h4>集合资管</h4>
-		<avue-crud
-			ref="crud"
-			:data="dataList2"
-			:table-loading="dataListLoading"
-			:option="tableOption"
-			@on-load="getDataList1"
-		>
-			<template slot-scope="scope" slot="imgUrl">
-				<p v-if="scope.row.name">{{ scope.row.name }}</p>
-				<el-button
-					@click="onShowSelectProd(98, scope.index)"
-					type="text"
-					v-if="!scope.row.name"
-					>请选择产品</el-button
-				>
-			</template>
-			<template slot-scope="scope" slot="menu">
-				<!-- 上衣 -->
-				<el-button
-					type="primary"
-					v-if="scope.index > 0 && scope.row.id"
-					icon="el-icon-top"
-					@click="goUp(scope.row, scope.index, dataList2)"
-				></el-button>
-				<!-- 下衣 -->
-				<el-button
-					v-if="scope.index < dataList2.length - 1 && scope.row.id"
-					type="primary"
-					icon="el-icon-bottom"
-					@click="goDown(scope.row, scope.index, dataList2)"
-				></el-button>
-
-				<el-button
-					type="danger"
-					icon="el-icon-delete"
-					size="small"
-					v-if="isAuth('admin:indexImg:delete')"
-					@click="deleteHandle(scope.row)"
-					>清空</el-button
-				>
-			</template>
-		</avue-crud>
-
-		<h4>私募基金</h4>
-		<avue-crud
-			ref="crud"
-			:data="dataList3"
-			:table-loading="dataListLoading"
-			:option="tableOption"
-			@on-load="getDataList2"
-		>
-			<template slot-scope="scope" slot="imgUrl">
-				<p v-if="scope.row.name">{{ scope.row.name }}</p>
-				<el-button
-					@click="onShowSelectProd(99, scope.index)"
-					type="text"
-					v-if="!scope.row.name"
-					>请选择产品</el-button
-				>
-			</template>
-			<template slot-scope="scope" slot="menu">
-				<!-- 上衣 -->
-				<el-button
-					type="primary"
-					v-if="scope.index > 0 && scope.row.id"
-					icon="el-icon-top"
-					@click="goUp(scope.row, scope.index, dataList3)"
-				></el-button>
-				<!-- 下衣 -->
-				<el-button
-					v-if="scope.index < dataList3.length - 1 && scope.row.id"
-					type="primary"
-					icon="el-icon-bottom"
-					@click="goDown(scope.row, scope.index, dataList3)"
-				></el-button>
-
-				<el-button
-					type="danger"
-					icon="el-icon-delete"
-					size="small"
-					v-if="isAuth('admin:indexImg:delete')"
-					@click="deleteHandle(scope.row)"
-					>清空</el-button
-				>
-			</template>
-		</avue-crud>
-
-		<recommendH5></recommendH5>
 		<!-- 弹窗, 新增 / 修改 --><el-dialog
 			title="提示"
 			:visible.sync="showSelectProd"
@@ -160,7 +74,6 @@
 
 <script>
 import { tableOption } from "@/crud/admin/indexImg";
-import recommendH5 from "./recommendH5";
 const defaultList = [
 	{
 		imgUrl: "",
@@ -186,9 +99,7 @@ export default {
 			dataForm: {
 				indexImg: "",
 			},
-			dataList: [...defaultList],
-			dataList3: [...defaultList],
-			dataList2: [...defaultList],
+			dataList: [],
 			dataListLoading: false,
 			addOrUpdateVisible: false,
 			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
@@ -206,6 +117,12 @@ export default {
 		};
 	},
 	methods: {
+		addRow() {
+			this.dataList.push({
+				imgUrl: "",
+				default: true,
+			});
+		},
 		// 获取数据列表 信托产品
 		getDataList(page, params) {
 			this.dataListLoading = true;
@@ -217,90 +134,28 @@ export default {
 						{
 							current: page == null ? this.page.currentPage : page.currentPage,
 							size: page == null ? this.page.pageSize : page.pageSize,
-							categoryId: 97,
-							soldNum: 1,
-							status: -1,
+							tpy: 1,
 						},
 						params
 					)
 				),
 			}).then(({ data }) => {
-				const dataList = [...defaultList];
+				// const dataList = [...defaultList];
 				data.records = data.records.sort((a, b) => {
-					return a.soldNum > b.soldNum;
+					return a.tpy - b.tpy;
 				});
-				dataList.forEach((_, index) => {
-					if (data.records[index]) {
-						dataList[index] = data.records[index];
-					}
-				});
-				this.dataList = dataList;
-				this.dataListLoading = false;
-			});
-		},
-
-		getDataList1(page, params) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/prod/page"),
-				method: "get",
-				params: this.$http.adornParams(
-					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							categoryId: 98,
-							soldNum: 1,
-							status: -1,
-						},
-						params
-					)
-				),
-			}).then(({ data }) => {
-				const dataList = [...defaultList];
-				dataList.forEach((_, index) => {
-					if (data.records[index]) {
-						dataList[index] = data.records[index];
-					}
-				});
-				this.dataList2 = dataList;
-				this.dataListLoading = false;
-			});
-		},
-
-		getDataList2(page, params) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/prod/page"),
-				method: "get",
-				params: this.$http.adornParams(
-					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							categoryId: 99,
-							soldNum: 1,
-							status: -1,
-						},
-						params
-					)
-				),
-			}).then(({ data }) => {
-				const dataList = [...defaultList];
-				dataList.forEach((_, index) => {
-					if (data.records[index]) {
-						dataList[index] = data.records[index];
-					}
-				});
-				this.dataList3 = dataList;
+				// dataList.forEach((_, index) => {
+				// 	if (data.records[index]) {
+				// 		dataList[index] = data.records[index];
+				// 	}
+				// });
+				this.dataList = data.records;
 				this.dataListLoading = false;
 			});
 		},
 
 		getAllList() {
 			this.getDataList();
-			this.getDataList1();
-			this.getDataList2();
 		},
 		onShowSelectProd(classify, index) {
 			this.dataListLoading = true;
@@ -313,9 +168,7 @@ export default {
 					Object.assign({
 						current: 1,
 						size: 1000,
-						categoryId: classify,
-						soldNum: 0,
-						status: -1,
+						tpy: 0,
 					})
 				),
 			}).then(({ data }) => {
@@ -330,7 +183,7 @@ export default {
 			}
 			const param = {
 				id: this.selectItem,
-				soldNum: this.sold_num,
+				tpy: this.sold_num,
 			};
 			this.$http({
 				url: this.$http.adornUrl(`/admin/prod`),
@@ -356,7 +209,7 @@ export default {
 				return;
 			}
 			let param = Object.assign({}, row);
-			param.soldNum = 0;
+			param.tpy = 0;
 			this.$http({
 				url: this.$http.adornUrl(`/admin/prod`),
 				method: param.id ? "put" : "post",
@@ -383,14 +236,14 @@ export default {
 				this.$http({
 					url: this.$http.adornUrl(`/admin/prod`),
 					method: "put",
-					data: this.$http.adornData({ id: row.id, soldNum: index + 2 }),
+					data: this.$http.adornData({ id: row.id, tpy: index + 2 }),
 				}).then(() => {
 					this.loading = false;
 				});
 				this.$http({
 					url: this.$http.adornUrl(`/admin/prod`),
 					method: "put",
-					data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 }),
+					data: this.$http.adornData({ id: nextP.id, tpy: index + 1 }),
 				}).then(() => {
 					this.loading = false;
 					this.$message({
@@ -414,14 +267,14 @@ export default {
 				this.$http({
 					url: this.$http.adornUrl(`/admin/prod`),
 					method: "put",
-					data: this.$http.adornData({ id: row.id, soldNum: index }),
+					data: this.$http.adornData({ id: row.id, tpy: index }),
 				}).then(() => {
 					this.loading = false;
 				});
 				this.$http({
 					url: this.$http.adornUrl(`/admin/prod`),
 					method: "put",
-					data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 }),
+					data: this.$http.adornData({ id: nextP.id, tpy: index + 1 }),
 				}).then(() => {
 					this.loading = false;
 					this.$message({
@@ -435,9 +288,6 @@ export default {
 				});
 			}
 		},
-	},
-	components: {
-		recommendH5,
 	},
 };
 </script>
