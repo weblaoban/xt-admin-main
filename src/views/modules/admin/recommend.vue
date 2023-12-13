@@ -219,7 +219,6 @@ export default {
 							size: page == null ? this.page.pageSize : page.pageSize,
 							categoryId: 97,
 							soldNum: 1,
-							status: -1,
 						},
 						params
 					)
@@ -251,7 +250,6 @@ export default {
 							size: page == null ? this.page.pageSize : page.pageSize,
 							categoryId: 98,
 							soldNum: 1,
-							status: -1,
 						},
 						params
 					)
@@ -280,7 +278,6 @@ export default {
 							size: page == null ? this.page.pageSize : page.pageSize,
 							categoryId: 99,
 							soldNum: 1,
-							status: -1,
 						},
 						params
 					)
@@ -315,7 +312,6 @@ export default {
 						size: 1000,
 						categoryId: classify,
 						soldNum: 0,
-						status: -1,
 					})
 				),
 			}).then(({ data }) => {
