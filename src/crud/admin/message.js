@@ -27,6 +27,10 @@ export const tableOption = {
 			type: "datetime",
 			searchRange: true,
 			search: true,
+			disabledDate(time) {
+				return time.getTime() < Date.now();
+			},
+			valueFormat: "yyyy-MM-dd HH:mm:ss",
 		},
 		{
 			label: "姓名",

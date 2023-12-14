@@ -235,6 +235,11 @@ export default {
 		},
 		// 条件查询
 		searchChange(params, done) {
+			if (params.recTime) {
+				params.stime = params.recTime[0];
+				params.etime = params.recTime[1];
+				delete params.recTime;
+			}
 			this.getDataList(this.page, params, done);
 		},
 		// 多选变化
