@@ -42,37 +42,6 @@
 				</span>
 				<el-tag v-if="scope.row.status === 1" size="small">已回复</el-tag>
 			</template>
-
-			<template slot-scope="scope" slot="menu">
-				<el-button
-					type="text"
-					size="small"
-					v-if="isAuth('admin:message:release')"
-					@click="setMessageRelease(scope.row.id)"
-					>公开留言</el-button
-				>
-				<el-button
-					type="text"
-					size="small"
-					v-if="isAuth('admin:message:cancel')"
-					@click="setMessageCancel(scope.row.id)"
-					>取消公开</el-button
-				>
-				<el-button
-					type="text"
-					size="small"
-					v-if="isAuth('admin:message:update')"
-					@click="addOrUpdateHandle(scope.row.id)"
-					>修改</el-button
-				>
-				<el-button
-					type="text"
-					size="small"
-					v-if="isAuth('admin:message:delete')"
-					@click="deleteHandle(scope.row.id)"
-					>删除</el-button
-				>
-			</template>
 		</avue-crud>
 
 		<!-- 弹窗, 新增 / 修改 -->
