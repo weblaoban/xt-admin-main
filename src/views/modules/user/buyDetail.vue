@@ -6,6 +6,7 @@
 			:data="dataList"
 			:option="tableOption"
 			@search-change="searchChange"
+			@search-reset="searchReset"
 			@selection-change="selectionChange"
 			@on-load="getDataList"
 		>
@@ -154,10 +155,11 @@ export default {
 			});
 		},
 		onShowDetail(row) {
+			console.log(row);
 			this.$http({
 				url: this.$http.adornUrl(`/admin/prodTagReference/find`),
 				method: "get",
-				params: this.$http.adornParams({ uid: row.userId, size: 100 }),
+				params: this.$http.adornParams({ uid: row.id, size: 100 }),
 			}).then(({ data }) => {
 				this.detailItem = { ...row, detail: data.records };
 				this.visibleBuyDetailDialog = true;
@@ -203,6 +205,9 @@ export default {
 		// 条件查询
 		searchChange(params, done) {
 			this.getDataList(this.page, params, done);
+		},
+		searchReset() {
+			this.getDataList(this.page, {});
 		},
 		// 多选变化
 		selectionChange(val) {

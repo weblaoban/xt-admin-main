@@ -55,11 +55,11 @@ export const tableOption = {
 			dicData: [
 				{
 					label: "未回复",
-					value: 0,
+					value: 1,
 				},
 				{
 					label: "已回复",
-					value: 1,
+					value: 0,
 				},
 			],
 		},

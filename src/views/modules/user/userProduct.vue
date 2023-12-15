@@ -273,15 +273,26 @@ export default {
 							],
 						}),
 					}).then(({ data }) => {
-						this.$refs[formName].resetFields();
-						this.$message({
-							message: "操作成功",
-							type: "success",
-							duration: 1500,
-							onClose: () => {
-								this.getDataDetail(this.detailItem.id);
-							},
-						});
+						if (data) {
+							this.$refs[formName].resetFields();
+							this.$message({
+								message: "操作成功",
+								type: "success",
+								duration: 1500,
+								onClose: () => {
+									this.getDataDetail(this.detailItem.id);
+								},
+							});
+						} else {
+							this.$message({
+								message: "用户已存在",
+								type: "error",
+								duration: 1500,
+								onClose: () => {
+									this.getDataDetail(this.detailItem.id);
+								},
+							});
+						}
 					});
 				} else {
 					console.log("error submit!!");

@@ -7,6 +7,7 @@
 			:option="tableOption"
 			:permission="permission"
 			@search-change="searchChange"
+			@search-reset="searchReset"
 			@selection-change="selectionChange"
 			@on-load="getDataList"
 		>
@@ -210,6 +211,9 @@ export default {
 				delete params.recTime;
 			}
 			this.getDataList(this.page, params, done);
+		},
+		searchReset() {
+			this.getDataList(this.page, {});
 		},
 		// 多选变化
 		selectionChange(val) {

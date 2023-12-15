@@ -243,7 +243,7 @@ export const buytableOption = {
         },
         {
             label: '姓名',
-            prop: 'nickName',
+            prop: 'realName',
             search: true
         },
         {

@@ -93,7 +93,7 @@
             prop: 'title'
           }, {
             label: '上传人',
-            prop: 'prodName'
+            prop: 'pname'
           }, {
             label: '标题',
             prop: 'title'

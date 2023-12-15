@@ -107,7 +107,7 @@ export default {
           },
           {
             label: '上传人',
-            prop: 'prodName'
+            prop: 'pname'
           },
           {
             label: '标题',

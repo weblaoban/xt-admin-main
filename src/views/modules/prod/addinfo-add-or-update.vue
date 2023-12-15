@@ -23,7 +23,7 @@
 					label="分类名称"
 				></el-input>
 			</el-form-item>
-			<el-form-item label="上级分类">
+			<!-- <el-form-item label="上级分类">
 				<el-cascader
 					expand-trigger="hover"
 					:options="categoryList"
@@ -34,7 +34,7 @@
 					@change="handleChange"
 				>
 				</el-cascader>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item v-if="dataForm.type !== 2" label="排序号" prop="seq">
 				<el-input-number
 					v-model="dataForm.seq"
@@ -153,15 +153,15 @@ export default {
 		},
 		// 表单提交
 		dataFormSubmit: Debounce(function () {
-			if (this.selectedCategory.length === 1) {
-				this.dataForm.grade = 0;
-			}
-			if (this.selectedCategory.length === 2) {
-				this.dataForm.grade = 1;
-			}
-			if (this.selectedCategory.length === 3) {
-				this.dataForm.grade = 2;
-			}
+			// if (this.selectedCategory.length === 1) {
+			// 	this.dataForm.grade = 0;
+			// }
+			// if (this.selectedCategory.length === 2) {
+			// 	this.dataForm.grade = 1;
+			// }
+			// if (this.selectedCategory.length === 3) {
+			// 	this.dataForm.grade = 2;
+			// }
 			this.$refs["dataForm"].validate((valid) => {
 				if (valid) {
 					if (this.isSubmit) {
