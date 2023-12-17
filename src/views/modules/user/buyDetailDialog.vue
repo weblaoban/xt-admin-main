@@ -35,7 +35,7 @@
 					<el-form-item label="到期时间"
      prop="dtime"
 						><el-date-picker format="yyyy 年 MM 月 dd 日"
-      value-format="yyyy-MM-dd 00:00:00"  type="date" placeholder="选择日期" v-model="addForm.dtime" style="width: 100%;"></el-date-picker></el-form-item
+      value-format="yyyy-MM-dd 23:59:59"  type="date" placeholder="选择日期" v-model="addForm.dtime" style="width: 100%;"></el-date-picker></el-form-item
 				></el-col>
                 <el-col :span="18">
 					<el-form-item label-width="100px" label="回款计划" prop="bplan"
