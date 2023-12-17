@@ -206,7 +206,11 @@ export default {
           if (finished) {
             params.state = 1
           }
-          delete params.userDtm
+          if (params.id) {
+            delete params.userDtm
+          } else {
+            params.userDtm = []
+          }
           params.qlist = JSON.stringify([...params.qlist])
         //   delete params.id
           this.$http({
