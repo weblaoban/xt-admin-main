@@ -36,7 +36,7 @@ export const tableOption = {
         },
         {
             label: '姓名',
-            prop: 'nickName',
+            prop: 'realName',
             search: true
         },
         {
