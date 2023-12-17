@@ -18,6 +18,14 @@
 					label="资讯标题"
 				></el-input>
 			</el-form-item>
+            <el-form-item label="资讯摘要" prop="des">
+				<el-input
+					v-model="dataForm.des"
+					controls-position="right"
+					:min="0"
+					label="资讯摘要"
+				></el-input>
+			</el-form-item>
 			<el-form-item label="正文图片" prop="imgUrl">
 				<pic-upload v-model="dataForm.imgUrl"></pic-upload>
 			</el-form-item>
@@ -64,6 +72,7 @@ export default {
 				title: "",
 				content: "",
 				imgUrl: "",
+                des:''
 			},
 			dataRule: {
 				//   id: [
@@ -109,6 +118,7 @@ export default {
 				}).then(({ data }) => {
 					this.dataForm.id = data.id;
 					this.dataForm.title = data.title;
+					this.dataForm.des = data.des;
 					this.dataForm.imgUrl = data.imgUrl;
 					this.dataForm.content = data.content;
 				});
@@ -141,6 +151,7 @@ export default {
 						data: this.$http.adornData({
 							id: this.dataForm.id || "",
 							title: this.dataForm.title,
+							des: this.dataForm.des,
 							content: this.dataForm.content,
 							imgUrl: this.dataForm.imgUrl,
 							categoryId: 8,

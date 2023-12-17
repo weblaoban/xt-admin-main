@@ -19,7 +19,7 @@
 				></el-col>
 				<el-col :span="12">
 					<el-form-item label="状态" prop="state"
-						><span>存续中</span></el-form-item
+						><span>{{addForm.state==0?'存续中':'已完成'}}</span></el-form-item
 				></el-col><el-col :span="18">
 					<el-form-item label-width="100px" label="业绩比较基准" prop="brief"
 						><el-input
@@ -202,9 +202,13 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const params = {...this.addForm}
-          console.log([...params.qlist])
+          const finished = params.qlist.every(item => item.finish)
+          if (finished) {
+            params.state = 1
+          }
+          delete params.userDtm
           params.qlist = JSON.stringify([...params.qlist])
-          delete params.id
+        //   delete params.id
           this.$http({
             url: this.$http.adornUrl(`/admin/prodTagReference`),
             method: this.addForm.id ? 'put' : 'post',
