@@ -163,7 +163,7 @@
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl(`/prod/prod`),
+              url: this.$http.adornUrl(`/admin/content`),
               method: 'delete',
               data: this.$http.adornData(prodIds, false)
             }).then(({ data }) => {

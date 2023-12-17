@@ -29,7 +29,10 @@
 					>批量删除</el-button
 				>
 			</template>
-
+<template slot-scope="scope" slot="recommed">
+    <el-tag v-if="scope.row.soldNum || scope.row.tpy">是</el-tag>
+    <el-tag v-else>否</el-tag>
+</template>
 			<template slot-scope="scope" slot="other">
 				<el-button type="text" @click="showDetail(scope.row)">查看</el-button>
 			</template>
