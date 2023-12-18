@@ -301,7 +301,7 @@ export default {
 			});
 		},
 		deluser(user) {
-			const userId = user.userId;
+			const userId = user.id;
 			const prodid = this.detailItem.id;
 
 			this.$confirm(`确定进行[${prodid ? "删除" : "批量删除"}]操作?`, "提示", {
