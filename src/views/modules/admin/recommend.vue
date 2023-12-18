@@ -256,6 +256,9 @@ export default {
 				),
 			}).then(({ data }) => {
 				const dataList = [...defaultList];
+				data.records = data.records.sort((a, b) => {
+					return a.soldNum > b.soldNum;
+				});
 				dataList.forEach((_, index) => {
 					if (data.records[index]) {
 						dataList[index] = data.records[index];
@@ -284,6 +287,9 @@ export default {
 				),
 			}).then(({ data }) => {
 				const dataList = [...defaultList];
+				data.records = data.records.sort((a, b) => {
+					return a.soldNum > b.soldNum;
+				});
 				dataList.forEach((_, index) => {
 					if (data.records[index]) {
 						dataList[index] = data.records[index];
