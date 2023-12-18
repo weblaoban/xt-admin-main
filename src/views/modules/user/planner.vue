@@ -233,6 +233,8 @@ export default {
         if (done) {
           done()
         }
+      }).catch(() => {
+        this.detaildataListLoading = false
       })
     },
 

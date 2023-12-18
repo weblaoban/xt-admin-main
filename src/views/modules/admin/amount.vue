@@ -2,10 +2,10 @@
 	<div style="width: 300px">
 		<el-form label-width="80px">
 			<el-form-item label="累计交易"
-				><el-input v-model="form.pcount"></el-input
+				><el-input-number v-model="form.pcount"></el-input-number
 			></el-form-item>
 			<el-form-item label="累计客户"
-				><el-input v-model="form.mcount"></el-input
+				><el-input-number v-model="form.mcount"></el-input-number
 			></el-form-item>
 
 			<el-form-item>

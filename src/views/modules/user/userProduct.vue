@@ -84,7 +84,7 @@
 					></el-col>
 					<el-col :span="12">
 						<el-form-item label="认购金额" prop="amount">
-							<el-input v-model="userForm.amount"></el-input> </el-form-item
+							<el-input-number v-model="userForm.amount"></el-input-number> </el-form-item
 					></el-col>
 					<el-col :span="12">
 						<el-form-item label="理财师" prop="puserId">
