@@ -219,7 +219,7 @@ export default {
 				)
       }).then(({ data }) => {
         let list = []
-        data.records.forEach((item) => {
+        data.forEach((item) => {
           const { userDtm = [] } = item
           userDtm.forEach((user) => {
             if ((user.puserId == this.detailItem.id)) {
@@ -252,13 +252,15 @@ export default {
           return
         }
         const list = detailList.filter(item => {
-          const hasname = item.nickName.indexOf(uname) > -1
-          const hasidcard = item.userMail.indexOf(idcard) > -1
-          const haspname = item.name.indexOf(pname) > -1
+          const hasname = uname ? item.nickName.indexOf(uname) > -1 : true
+          const hasidcard = idcard ? item.userMail.indexOf(idcard) > -1 : true
+          const haspname = pname ? item.name.indexOf(pname) > -1 : true
           let hasState = true
-          if (state == 0 || state == 1) {
+          if (state === 0 || state === 1) {
+            console.log(state)
             hasState = item.state == state
           }
+          console.log(hasname , hasState , hasidcard , haspname)
           return hasname && hasState && hasidcard && haspname
         })
         this.detailList = list
