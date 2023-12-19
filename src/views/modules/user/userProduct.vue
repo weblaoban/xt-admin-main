@@ -289,6 +289,7 @@ export default {
 								{
 									...this.userForm,
 									amount: this.userForm.amount + "",
+									rad: new Date().getTime(),
 								},
 							],
 						}),
@@ -335,7 +336,14 @@ export default {
 						method: "delete",
 						data: this.$http.adornData({
 							id: prodid,
-							userDtm: [{ id: userId, amount: user.amount }],
+							userDtm: [
+								{
+									id: userId,
+									amount: user.amount,
+									rad: user.rad,
+									puserId: user.puserId,
+								},
+							],
 						}),
 					}).then(({ data }) => {
 						this.$message({
