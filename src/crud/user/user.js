@@ -246,10 +246,10 @@ export const buytableOption = {
 			prop: "realName",
 			search: true,
 		},
-		{
-			label: "性别",
-			prop: "sex",
-		},
+		// {
+		// 	label: "性别",
+		// 	prop: "sex",
+		// },
 		{
 			label: "身份证",
 			prop: "userMail",
