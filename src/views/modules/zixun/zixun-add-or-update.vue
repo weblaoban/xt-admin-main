@@ -18,13 +18,16 @@
 					label="资讯标题"
 				></el-input>
 			</el-form-item>
-            <el-form-item label="资讯摘要" prop="des">
+			<el-form-item label="资讯摘要" prop="des">
 				<el-input
 					v-model="dataForm.des"
 					controls-position="right"
 					:min="0"
 					label="资讯摘要"
 				></el-input>
+			</el-form-item>
+			<el-form-item label="正文视频" prop="link">
+				<file-upload v-model="dataForm.link"></file-upload>
 			</el-form-item>
 			<el-form-item label="正文图片" prop="imgUrl">
 				<pic-upload v-model="dataForm.imgUrl"></pic-upload>
@@ -62,6 +65,7 @@
 <script>
 import { idList } from "@/utils";
 import PicUpload from "@/components/pic-upload";
+import FileUpload from "@/components/file-upload";
 import { Debounce } from "@/utils/debounce";
 import TinyMce from "@/components/tiny-mce";
 export default {
@@ -72,7 +76,8 @@ export default {
 				title: "",
 				content: "",
 				imgUrl: "",
-                des:''
+				des: "",
+				link: "",
 			},
 			dataRule: {
 				//   id: [
@@ -103,6 +108,7 @@ export default {
 	components: {
 		PicUpload,
 		TinyMce,
+		FileUpload,
 	},
 	methods: {
 		init(id) {
@@ -121,6 +127,7 @@ export default {
 					this.dataForm.des = data.des;
 					this.dataForm.imgUrl = data.imgUrl;
 					this.dataForm.content = data.content;
+					this.dataForm.link = data.link;
 				});
 			}
 			this.visible = true;
@@ -154,6 +161,7 @@ export default {
 							des: this.dataForm.des,
 							content: this.dataForm.content,
 							imgUrl: this.dataForm.imgUrl,
+							link: this.dataForm.link,
 							categoryId: 8,
 						}),
 					}).then(({ data }) => {
