@@ -234,8 +234,11 @@ export default {
 				)
       }).then(({ data }) => {
         const dataList = [...defaultList]
+        for (var i = 0; i < data.records.length; i++) {
+          data.records[i].oldIndex = i
+        }
         data.records = data.records.sort((a, b) => {
-          return a.soldNum > b.soldNum
+          return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex
         })
         dataList.forEach((_, index) => {
           if (data.records[index]) {
@@ -265,8 +268,12 @@ export default {
 				)
       }).then(({ data }) => {
         const dataList = [...defaultList]
+
+        for (var i = 0; i < data.records.length; i++) {
+          data.records[i].oldIndex = i
+        }
         data.records = data.records.sort((a, b) => {
-          return a.soldNum > b.soldNum
+          return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex
         })
         dataList.forEach((_, index) => {
           if (data.records[index]) {
@@ -296,8 +303,11 @@ export default {
 				)
       }).then(({ data }) => {
         const dataList = [...defaultList]
+        for (var i = 0; i < data.records.length; i++) {
+          data.records[i].oldIndex = i
+        }
         data.records = data.records.sort((a, b) => {
-          return a.soldNum > b.soldNum
+          return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex
         })
         dataList.forEach((_, index) => {
           if (data.records[index]) {
@@ -388,9 +398,9 @@ export default {
       if (this.loading) {
         return
       }
-      this.loading = true
       const nextP = resource[index + 1]
       if (nextP && !nextP.default) {
+        this.loading = true
         this.$http({
           url: this.$http.adornUrl(`/admin/prod`),
           method: 'put',
@@ -419,9 +429,9 @@ export default {
       if (this.loading) {
         return
       }
-      this.loading = true
       const nextP = resource[index - 1]
       if (nextP && !nextP.default) {
+        this.loading = true
         this.$http({
           url: this.$http.adornUrl(`/admin/prod`),
           method: 'put',
