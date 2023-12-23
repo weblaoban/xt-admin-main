@@ -124,7 +124,7 @@ export const plannertableOption = {
     column: [
         {
             label: '用户名',
-            prop: 'nickName',
+            prop: 'realName',
             search: true
         },
         {
@@ -134,7 +134,7 @@ export const plannertableOption = {
         },
         {
             label: '姓名',
-            prop: 'userName',
+            prop: 'nickName',
             search: true
         },
         {
@@ -241,7 +241,7 @@ export const buytableOption = {
     column: [
         {
             label: '用户名',
-            prop: 'nickName',
+            prop: 'realName',
             search: true
         },
         {
@@ -251,7 +251,7 @@ export const buytableOption = {
         },
         {
             label: '姓名',
-            prop: 'realName',
+            prop: 'nickName',
             search: true
         },
         // {
