@@ -44,7 +44,7 @@
 				>
 				<el-col :span="12">
 					<el-form-item label="已购">
-						<span>{{dataForm.score==1?'是':'否'}}</span>
+						<span>{{dataForm.status==1?'是':'否'}}</span>
 					</el-form-item></el-col
 				>
 			</el-row>

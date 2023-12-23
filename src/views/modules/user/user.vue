@@ -28,6 +28,9 @@
             <template slot-scope="scope" slot="yy">
                 <span>{{ scope.row.yy==1?'是':'否' }}</span>
             </template>
+            <template slot-scope="scope" slot="status">
+                <span>{{ scope.row.amount>0?'是':'否' }}</span>
+            </template>
 		</avue-crud>
 
 		<!-- 弹窗, 新增 / 修改 -->

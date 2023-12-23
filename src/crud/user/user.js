@@ -80,7 +80,7 @@ export const tableOption = {
         },
         {
             label: '是否已购',
-            prop: 'score',
+            prop: 'status',
             type: 'radio',
             dicData: [
                 {
