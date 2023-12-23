@@ -1,6 +1,6 @@
 <template>
 	<el-dialog
-		:title="!dataForm.userId ? '新增' : '编辑用户信息'"
+		:title="!dataForm.id ? '新增' : '编辑用户信息'"
 		:close-on-click-modal="false"
 		:visible.sync="visible"
 	>
@@ -57,74 +57,73 @@
 </template>
 
 <script>
-import { Debounce } from "@/utils/debounce";
+import { Debounce } from '@/utils/debounce'
 export default {
-	data() {
-		return {
-			visible: false,
-			dataForm: {
-				userId: 0,
-				nickName: "",
-				pic: "",
-				status: 1,
-			},
-			page: {
-				total: 0, // 总页数
-				currentPage: 1, // 当前页数
-				pageSize: 10, // 每页显示多少条
-			},
-			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
-			dataRule: {
-				nickName: [
-					{ required: true, message: "用户名不能为空", trigger: "blur" },
-				],
-			},
-		};
-	},
-	methods: {
-		init(id) {
-			this.dataForm.userId = id || 0;
-			this.visible = true;
-			this.$nextTick(() => {
-				this.$refs.dataForm.resetFields();
-			});
-			if (this.dataForm.userId) {
-				this.$http({
-					url: this.$http.adornUrl(`/admin/user/info/${this.dataForm.userId}`),
-					method: "get",
-					params: this.$http.adornParams(),
-				}).then(({ data }) => {
-					this.dataForm = data;
-				});
-			}
-		},
+  data () {
+    return {
+      visible: false,
+      dataForm: {
+        userId: 0,
+        nickName: '',
+        pic: '',
+        status: 1
+      },
+      page: {
+        total: 0, // 总页数
+        currentPage: 1, // 当前页数
+        pageSize: 10 // 每页显示多少条
+      },
+      resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
+      dataRule: {
+        nickName: [
+					{ required: true, message: '用户名不能为空', trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    init (id) {
+      this.visible = true
+      this.$nextTick(() => {
+        this.$refs.dataForm.resetFields()
+      })
+      if (id) {
+        this.$http({
+          url: this.$http.adornUrl(`/admin/user/info/${id}`),
+          method: 'get',
+          params: this.$http.adornParams()
+        }).then(({ data }) => {
+          this.dataForm = data
+        })
+      }
+    },
 		// 表单提交
-		dataFormSubmit: Debounce(function () {
-			this.$refs["dataForm"].validate((valid) => {
-				if (valid) {
-					this.$http({
-						url: this.$http.adornUrl(`/admin/user`),
-						method: this.dataForm.userId ? "put" : "post",
-						data: this.$http.adornData({
-							userId: this.dataForm.userId || undefined,
-							nickName: this.dataForm.nickName,
-							userName: this.dataForm.userName,
-							status: this.dataForm.status,
-						}),
-					}).then(({ data }) => {
-						this.$message({
-							message: "操作成功",
-							type: "success",
-							duration: 1500,
-							onClose: () => {
-								this.visible = false;
-								this.$emit("refreshDataList", this.page);
-							},
-						});
-					});
-				}
-			});
-		}),
-	},
-};
+    dataFormSubmit: Debounce(function () {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.$http({
+            url: this.$http.adornUrl(`/admin/user`),
+            method: this.dataForm.id ? 'put' : 'post',
+            data: this.$http.adornData({
+              id: this.dataForm.id || undefined,
+              nickName: this.dataForm.nickName,
+              userName: this.dataForm.userName,
+              status: this.dataForm.status
+            })
+          }).then(({ data }) => {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                this.visible = false
+                this.$emit('refreshDataList', this.page)
+              }
+            })
+          })
+        }
+      })
+    })
+  }
+}
 </script>
