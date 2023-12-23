@@ -17,8 +17,8 @@
 					</el-form-item></el-col
 				>
 				<el-col :span="12">
-					<el-form-item label="用户名" prop="nickName">
-						<span>{{ dataForm.nickName }}</span>
+					<el-form-item label="用户名" prop="realName">
+						<span>{{ dataForm.realName }}</span>
 					</el-form-item></el-col
 				>
 				<el-col :span="12">
@@ -38,13 +38,13 @@
 				></el-input> </el-form-item
 			><el-row>
 				<el-col :span="12"
-					><el-form-item label="意向" prop="userRegtime">
-						<span>否</span>
+					><el-form-item label="意向">
+						<span>{{dataForm.yy==1?'是':'否'}}</span>
 					</el-form-item></el-col
 				>
 				<el-col :span="12">
-					<el-form-item label="已购" prop="userName">
-						<span>否</span>
+					<el-form-item label="已购">
+						<span>{{dataForm.score==1?'是':'否'}}</span>
 					</el-form-item></el-col
 				>
 			</el-row>
@@ -108,6 +108,7 @@ export default {
               id: this.dataForm.id || undefined,
               nickName: this.dataForm.nickName,
               userName: this.dataForm.userName,
+              userMail: this.dataForm.userMail,
               status: this.dataForm.status
             })
           }).then(({ data }) => {

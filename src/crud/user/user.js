@@ -7,7 +7,7 @@ export const tableOption = {
     indexLabel: '序号',
     stripe: true,
     menuAlign: 'center',
-    menuWidth: 350,
+    menuWidth: 220,
     align: 'center',
     refreshBtn: true,
     searchSize: 'mini',
@@ -61,7 +61,7 @@ export const tableOption = {
         },
         {
             label: '是否有意向',
-            prop: 'status',
+            prop: 'yy',
             type: 'radio',
             dicData: [
                 {
@@ -71,12 +71,16 @@ export const tableOption = {
                 {
                     label: '否',
                     value: 0
+                },
+                {
+                    label: '否',
+                    value: 'null'
                 }
             ]
         },
         {
             label: '是否已购',
-            prop: 'status',
+            prop: 'score',
             type: 'radio',
             dicData: [
                 {
@@ -86,6 +90,10 @@ export const tableOption = {
                 {
                     label: '否',
                     value: 0
+                },
+                {
+                    label: '否',
+                    value: null
                 }
             ]
         }
