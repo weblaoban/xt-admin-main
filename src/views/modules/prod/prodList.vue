@@ -29,10 +29,10 @@
 					>批量删除</el-button
 				>
 			</template>
-<template slot-scope="scope" slot="recommed">
-    <el-tag v-if="scope.row.soldNum || scope.row.tpy">是</el-tag>
-    <el-tag v-else>否</el-tag>
-</template>
+			<template slot-scope="scope" slot="recommed">
+				<el-tag v-if="scope.row.soldNum || scope.row.tpy">是</el-tag>
+				<el-tag v-else>否</el-tag>
+			</template>
 			<template slot-scope="scope" slot="other">
 				<el-button type="text" @click="showDetail(scope.row)">查看</el-button>
 			</template>
@@ -63,14 +63,20 @@
 			:visible.sync="detailVisible"
 		>
 			<el-descriptions title="">
-				<el-descriptions-item label="发行机构"
-					>kooriookami</el-descriptions-item
-				>
-				<el-descriptions-item label="收益类型"
-					>18100000000</el-descriptions-item
-				>
-				<el-descriptions-item label="规模">苏州市</el-descriptions-item>
-				<el-descriptions-item label="所在地区">苏州市</el-descriptions-item>
+				<el-descriptions-item label="发行机构">{{
+					organList.find((item) => item.id === detail.organId)
+						? organList.find((item) => item.id === detail.organId).name
+						: "--"
+				}}</el-descriptions-item>
+				<el-descriptions-item label="收益类型">{{
+					detail.investId
+				}}</el-descriptions-item>
+				<el-descriptions-item label="规模">{{
+					detail.totalStocks
+				}}</el-descriptions-item>
+				<el-descriptions-item label="所在地区">{{
+					detail.area
+				}}</el-descriptions-item>
 				<el-descriptions-item label="大小额配比"
 					>大小额配比</el-descriptions-item
 				>
@@ -99,7 +105,9 @@
 			</div>
 
 			<el-descriptions title="">
-				<el-descriptions-item label="进度详情"> 进度详情</el-descriptions-item>
+				<el-descriptions-item label="产品详情">
+					<div v-html="detail.content"></div>
+				</el-descriptions-item>
 			</el-descriptions>
 		</el-dialog>
 	</div>
@@ -129,12 +137,23 @@ export default {
 			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
 			detailVisible: false,
 			detail: {},
+			organList: [],
 		};
 	},
 	created() {
 		this.getCategoryList();
+		this.getOrganList();
 	},
 	methods: {
+		// 机构信息
+		getOrganList() {
+			return this.$http({
+				url: this.$http.adornUrl("/admin/organDetail/page?size=100"),
+				method: "get",
+			}).then(({ data }) => {
+				this.organList = data.records;
+			});
+		},
 		// 获取分类信息
 		getCategoryList() {
 			this.getBaseInfo();
@@ -271,3 +290,29 @@ export default {
 	},
 };
 </script>
+
+<style lang="scss">
+.sold_list {
+	width: 600px;
+	margin-bottom: 10px;
+	.empty {
+		text-align: center;
+		padding: 20px;
+	}
+	.soldItem {
+		display: flex;
+		& > div {
+			width: 100px;
+			flex-shrink: 0;
+			padding: 10px 0;
+			border: 1px solid #eee;
+			text-align: center;
+			&.soldDetail {
+				flex: 1;
+				text-align: center;
+				padding: 10px 20px;
+			}
+		}
+	}
+}
+</style>
