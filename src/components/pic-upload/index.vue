@@ -7,9 +7,25 @@
 			:show-file-list="false"
 			:on-success="handleUploadSuccess"
 			:before-upload="beforeAvatarUpload"
+			:on-progress="onUploadProgress"
 		>
+			<el-progress
+				class="file-progress"
+				v-if="progress.loaded"
+				:percentage="Math.floor((progress.loaded / progress.total) * 100)"
+			></el-progress>
 			<img v-if="value" :src="value" class="pic" />
-			<i v-else class="el-icon-plus pic-uploader-icon"></i>
+			<i
+				v-if="!value && !progress.loaded"
+				class="el-icon-plus pic-uploader-icon"
+			></i>
+			<el-button
+				class="del-file"
+				v-if="value"
+				type="text"
+				@click.stop="handeRemove"
+				>删除</el-button
+			>
 		</el-upload>
 	</div>
 </template>
@@ -19,6 +35,7 @@ export default {
 	data() {
 		return {
 			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
+			progress: { loaded: 0, total: 100 },
 		};
 	},
 	props: {
@@ -32,6 +49,7 @@ export default {
 		handleUploadSuccess(response, file, fileList) {
 			console.log(file);
 			this.$emit("input", this.resourcesUrl + "images/" + file.response.data);
+			this.progress = { loaded: 0, total: 100 };
 		},
 		// 限制图片上传大小
 		beforeAvatarUpload(file) {
@@ -49,6 +67,14 @@ export default {
 			}
 			return isLt2M && isJPG;
 		},
+		onUploadProgress(e, file, fileList) {
+			console.log(e, file, fileList);
+			this.progress = e;
+		},
+		handeRemove() {
+			this.$emit("change", "");
+			this.$emit("input", "");
+		},
 	},
 };
 </script>
@@ -60,6 +86,7 @@ export default {
 	cursor: pointer;
 	position: relative;
 	overflow: hidden;
+	min-width: 178px;
 	.pic-uploader-icon {
 		font-size: 28px;
 		color: #8c939d;
@@ -72,6 +99,9 @@ export default {
 		width: 178px;
 		height: 178px;
 		display: block;
+	}
+	.el-progress__text {
+		white-space: nowrap;
 	}
 }
 .pic-uploader-component .el-upload:hover {
