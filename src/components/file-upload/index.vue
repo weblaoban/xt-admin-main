@@ -52,9 +52,9 @@
         if (!isVideo) {
           this.$message.error('上传视频只能是mp4 格式!')
         }
-        const isLt2M = file.size / 1024 / 1024 < 20
+        const isLt2M = file.size / 1024 / 1024 < 400
         if (!isLt2M) {
-          this.$message.error('上传视频大小不能超过 20MB!')
+          this.$message.error('上传视频大小不能超过 400MB!')
         }
         return isLt2M
       },
