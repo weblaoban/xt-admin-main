@@ -26,171 +26,175 @@
  * docs:
  * https://panjiachen.github.io/vue-element-admin-site/feature/component/rich-editor.html#tinymce
  */
-import mulPicUpload from "@/components/mul-pic-upload";
-import plugins from "./plugins";
-import toolbar from "./toolbar";
-import load from "./dynamicLoadScript";
+import mulPicUpload from '@/components/mul-pic-upload'
+import plugins from './plugins'
+import toolbar from './toolbar'
+import load from './dynamicLoadScript'
+// import './tinymce.min.js'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
+// const resourceCdn1 =
+// 	'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
 const resourceCdn1 =
-	"https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js";
+	'./tinymce/tinymce.min.js'
 const resourceCdn2 =
-	"https://unpkg.zhimg.com/tinymce-all-in-one@4.9.3/tinymce.min.js";
+	'https://unpkg.zhimg.com/tinymce-all-in-one@4.9.3/tinymce.min.js'
 const resourceCdn3 =
-	"https://unpkg.com/tinymce-all-in-one@4.9.3/tinymce.min.js";
+	'https://unpkg.com/tinymce-all-in-one@4.9.3/tinymce.min.js'
 
 export default {
-	name: "Tinymce",
-	components: { mulPicUpload },
-	props: {
-		id: {
-			type: String,
-			default: function () {
-				return (
-					"vue-tinymce-" +
+  name: 'Tinymce',
+  components: { mulPicUpload },
+  props: {
+    id: {
+      type: String,
+      default: function () {
+        return (
+					'vue-tinymce-' +
 					+new Date() +
-					((Math.random() * 1000).toFixed(0) + "")
-				);
-			},
-		},
-		value: {
-			type: String,
-			default: "",
-		},
-		toolbar: {
-			type: Array,
-			required: false,
-			default() {
-				return [];
-			},
-		},
-		menubar: {
-			type: String,
-			default: "file edit insert view format table",
-		},
-		height: {
-			type: [Number, String],
-			required: false,
-			default: 360,
-		},
-		width: {
-			type: [Number, String],
-			required: false,
-			default: "auto",
-		},
-	},
-	data() {
-		return {
-			hasChange: false,
-			hasInit: false,
-			tinymceId: this.id,
-			fullscreen: false,
-			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
-		};
-	},
-	computed: {
-		language() {
-			return localStorage.getItem("lang") || "zh_CN";
-		},
-		containerWidth() {
-			const width = this.width;
-			if (/^[\d]+(\.[\d]+)?$/.test(width)) {
+					((Math.random() * 1000).toFixed(0) + '')
+        )
+      }
+    },
+    value: {
+      type: String,
+      default: ''
+    },
+    toolbar: {
+      type: Array,
+      required: false,
+      default () {
+        return []
+      }
+    },
+    menubar: {
+      type: String,
+      default: 'file edit insert view format table'
+    },
+    height: {
+      type: [Number, String],
+      required: false,
+      default: 360
+    },
+    width: {
+      type: [Number, String],
+      required: false,
+      default: 'auto'
+    }
+  },
+  data () {
+    return {
+      hasChange: false,
+      hasInit: false,
+      tinymceId: this.id,
+      fullscreen: false,
+      resourcesUrl: process.env.VUE_APP_RESOURCES_URL
+    }
+  },
+  computed: {
+    language () {
+      return localStorage.getItem('lang') || 'zh_CN'
+    },
+    containerWidth () {
+      const width = this.width
+      if (/^[\d]+(\.[\d]+)?$/.test(width)) {
 				// matches `100`, `'100'`
-				return `${width}px`;
-			}
-			return width;
-		},
-	},
-	watch: {
-		value(val) {
-			if (!this.hasChange && this.hasInit) {
-				this.$nextTick(() =>
-					window.tinymce.get(this.tinymceId).setContent(val || "")
-				);
-			}
-		},
-		language() {
-			this.destroyTinymce();
-			this.$nextTick(() => this.initTinymce());
-		},
-	},
-	mounted() {
-		this.init();
-	},
-	activated() {
-		if (window.tinymce) {
-			this.initTinymce();
-		}
-	},
-	deactivated() {
-		this.destroyTinymce();
-	},
-	destroyed() {
-		this.destroyTinymce();
-	},
-	methods: {
-		init() {
+        return `${width}px`
+      }
+      return width
+    }
+  },
+  watch: {
+    value (val) {
+      if (!this.hasChange && this.hasInit) {
+        this.$nextTick(() =>
+					window.tinymce.get(this.tinymceId).setContent(val || '')
+				)
+      }
+    },
+    language () {
+      this.destroyTinymce()
+      this.$nextTick(() => this.initTinymce())
+    }
+  },
+  mounted () {
+    this.init()
+  },
+  activated () {
+    if (window.tinymce) {
+      this.initTinymce()
+    }
+  },
+  deactivated () {
+    this.destroyTinymce()
+  },
+  destroyed () {
+    this.destroyTinymce()
+  },
+  methods: {
+    init () {
 			// dynamic load tinymce from cdn
-			load(resourceCdn1, (err) => {
-				if (!err) {
-					this.initTinymce();
-					return;
-				}
-				load(resourceCdn2, (err2) => {
-					if (!err2) {
-						this.initTinymce();
-						return;
-					}
-					load(resourceCdn3, (err3) => {
-						if (!err3) {
-							this.initTinymce();
-							return;
-						}
-						this.$message.error(err.message);
-					});
-				});
-			});
-		},
-		initTinymce() {
-			const _this = this;
-			window.tinymce.init({
-				language: this.language,
-				selector: `#${this.tinymceId}`,
-				height: this.height,
-				body_class: "panel-body ",
-				object_resizing: false,
-				toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
-				menubar: this.menubar,
-				plugins: plugins,
-				end_container_on_empty_block: true,
-				powerpaste_word_import: "clean",
-				code_dialog_height: 450,
-				code_dialog_width: 1000,
-				advlist_bullet_styles: "square",
-				advlist_number_styles: "default",
-				imagetools_cors_hosts: ["www.tinymce.com", "codepen.io"],
-				default_link_target: "_blank",
-				link_title: false,
-				nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
-				init_instance_callback: (editor) => {
-					if (_this.value) {
-						editor.setContent(_this.value);
-					}
-					_this.hasInit = true;
-					editor.on("NodeChange Change KeyUp SetContent", () => {
-						this.hasChange = true;
-						this.$emit("input", editor.getContent());
-					});
-				},
-				setup(editor) {
-					editor.on("FullscreenStateChanged", (e) => {
-						_this.fullscreen = e.state;
-					});
-				},
+      load(resourceCdn1, (err) => {
+        if (!err) {
+          this.initTinymce()
+          return
+        }
+        load(resourceCdn2, (err2) => {
+          if (!err2) {
+            this.initTinymce()
+            return
+          }
+          load(resourceCdn3, (err3) => {
+            if (!err3) {
+              this.initTinymce()
+              return
+            }
+            this.$message.error(err.message)
+          })
+        })
+      })
+    },
+    initTinymce () {
+      const _this = this
+      console.log(window.tinymce)
+      window.tinymce.init({
+        language: this.language,
+        selector: `#${this.tinymceId}`,
+        height: this.height,
+        body_class: 'panel-body ',
+        object_resizing: false,
+        toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
+        menubar: this.menubar,
+        plugins: plugins,
+        end_container_on_empty_block: true,
+        powerpaste_word_import: 'clean',
+        code_dialog_height: 450,
+        code_dialog_width: 1000,
+        advlist_bullet_styles: 'square',
+        advlist_number_styles: 'default',
+        imagetools_cors_hosts: ['www.tinymce.com', 'codepen.io'],
+        default_link_target: '_blank',
+        link_title: false,
+        nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
+        init_instance_callback: (editor) => {
+          if (_this.value) {
+            editor.setContent(_this.value)
+          }
+          _this.hasInit = true
+          editor.on('NodeChange Change KeyUp SetContent', () => {
+            this.hasChange = true
+            this.$emit('input', editor.getContent())
+          })
+        },
+        setup (editor) {
+          editor.on('FullscreenStateChanged', (e) => {
+            _this.fullscreen = e.state
+          })
+        },
 				// it will try to keep these URLs intact
 				// https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
 				// https://stackoverflow.com/questions/5196205/disable-tinymce-absolute-to-relative-url-conversions
-				convert_urls: false,
+        convert_urls: false
 				// 整合七牛上传
 				// images_dataimg_filter(img) {
 				//   setTimeout(() => {
@@ -224,56 +228,58 @@ export default {
 				//     console.log(err);
 				//   });
 				// },
-			});
-		},
-		destroyTinymce() {
-			const tinymce = window.tinymce.get(this.tinymceId);
-			if (this.fullscreen) {
-				tinymce.execCommand("mceFullScreen");
-			}
+      })
+    },
+    destroyTinymce () {
+      const tinymce = window.tinymce.get(this.tinymceId)
+      if (this.fullscreen) {
+        tinymce.execCommand('mceFullScreen')
+      }
 
-			if (tinymce) {
-				tinymce.destroy();
-			}
-		},
-		setContent(value) {
-			if (window.tinymce) {
-				window.tinymce.get(this.tinymceId).setContent(value);
-			}
-		},
-		getContent() {
-			window.tinymce.get(this.tinymceId).getContent();
-		},
+      if (tinymce) {
+        tinymce.destroy()
+      }
+    },
+    setContent (value) {
+      if (window.tinymce) {
+        window.tinymce.get(this.tinymceId).setContent(value)
+      }
+    },
+    getContent () {
+      window.tinymce.get(this.tinymceId).getContent()
+    },
 		// 限制图片上传大小
-		beforeAvatarUpload(file) {
-			const isJPG =
-				file.type === "image/jpeg" ||
-				file.type === "image/png" ||
-				file.type === "image/gif" ||
-				file.type === "image/jpg";
-			if (!isJPG) {
-				this.$message.error("上传图片只能是jpeg/jpg/png/gif 格式!");
-			}
-			const isLt2M = file.size / 1024 / 1024 < 200;
-			if (!isLt2M) {
-				this.$message.error("上传图片大小不能超过 200MB!");
-			}
-			return isLt2M && isJPG;
-		},
-		imageSuccessCBK(response, file, fileList) {
-			const _this = this;
-			fileList.forEach((v) => {
-				window.tinymce
+    beforeAvatarUpload (file) {
+      const isJPG =
+				file.type === 'image/jpeg' ||
+				file.type === 'image/png' ||
+				file.type === 'image/gif' ||
+				file.type === 'image/jpg'
+      if (!isJPG) {
+        this.$message.error('上传图片只能是jpeg/jpg/png/gif 格式!')
+      }
+      const isLt2M = file.size / 1024 / 1024 < 200
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 200MB!')
+      }
+      return isLt2M && isJPG
+    },
+    imageSuccessCBK (response, file, fileList) {
+      console.log(file)
+      console.log(fileList)
+      const _this = this
+			// fileList.forEach((v) => {
+      window.tinymce
 					.get(_this.tinymceId)
 					.insertContent(
 						`<img class="wscnph" src="${
-							this.resourcesUrl + "/images/" + v.response.data
+							this.resourcesUrl + '/images/' + file.response.data
 						}" >`
-					);
-			});
-		},
-	},
-};
+					)
+			// });
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
