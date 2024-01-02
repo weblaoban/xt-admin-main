@@ -28,7 +28,7 @@
 				>删除</el-button
 			>
 
-            <p v-if="err" class="filerr">1111{{ err }}</p>
+            <p v-if="err" class="filerr">{{ err }}</p>
 		</el-upload>
 	</div>
 </template>
@@ -79,7 +79,7 @@ export default {
       if (!isLt2M) {
         this.$message.error('上传视频大小不能超过 400MB!')
       }
-      return isLt2M
+      return isLt2M && isVideo
     },
     onUploadProgress (e, file, fileList) {
       console.log(e, file, fileList)

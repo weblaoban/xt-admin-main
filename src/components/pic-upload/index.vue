@@ -32,51 +32,51 @@
 
 <script>
 export default {
-	data() {
-		return {
-			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
-			progress: { loaded: 0, total: 100 },
-		};
-	},
-	props: {
-		value: {
-			default: "",
-			type: String,
-		},
-	},
-	methods: {
+  data () {
+    return {
+      resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
+      progress: { loaded: 0, total: 100 }
+    }
+  },
+  props: {
+    value: {
+      default: '',
+      type: String
+    }
+  },
+  methods: {
 		// 图片上传
-		handleUploadSuccess(response, file, fileList) {
-			console.log(file);
-			this.$emit("input", this.resourcesUrl + "images/" + file.response.data);
-			this.progress = { loaded: 0, total: 100 };
-		},
+    handleUploadSuccess (response, file, fileList) {
+      console.log(file)
+      this.$emit('input', this.resourcesUrl + 'images/' + file.response.data)
+      this.progress = { loaded: 0, total: 100 }
+    },
 		// 限制图片上传大小
-		beforeAvatarUpload(file) {
-			const isLt2M = file.size / 1024 / 1024 < 200;
-			const isJPG =
-				file.type === "image/jpeg" ||
-				file.type === "image/png" ||
-				file.type === "image/gif" ||
-				file.type === "image/jpg";
-			if (!isJPG) {
-				this.$message.error("上传图片只能是jpeg/jpg/png/gif 格式!");
-			}
-			if (!isLt2M) {
-				this.$message.error("上传图片大小不能超过 200MB!");
-			}
-			return isLt2M && isJPG;
-		},
-		onUploadProgress(e, file, fileList) {
-			console.log(e, file, fileList);
-			this.progress = e;
-		},
-		handeRemove() {
-			this.$emit("change", "");
-			this.$emit("input", "");
-		},
-	},
-};
+    beforeAvatarUpload (file) {
+      const isLt2M = file.size / 1024 / 1024 < 200
+      const isJPG =
+				file.type === 'image/jpeg' ||
+				file.type === 'image/png' ||
+				file.type === 'image/gif' ||
+				file.type === 'image/jpg'
+      if (!isJPG) {
+        this.$message.error('上传图片只能是jpeg/jpg/png/gif 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 200MB!')
+      }
+      return isLt2M && isJPG
+    },
+    onUploadProgress (e, file, fileList) {
+      console.log(e, file, fileList)
+      this.progress = e
+    },
+    handeRemove () {
+      this.$emit('change', '')
+      this.$emit('input', '')
+    }
+  }
+}
 </script>
 
 <style lang="scss">
@@ -96,8 +96,7 @@ export default {
 		text-align: center;
 	}
 	.pic {
-		width: 178px;
-		height: 178px;
+		width:90%;
 		display: block;
 	}
 	.el-progress__text {
