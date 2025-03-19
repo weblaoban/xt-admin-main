@@ -4,7 +4,7 @@
 		:close-on-click-modal="false"
 		:visible.sync="visible"
 	>
-			<!-- @keyup.enter.native="dataFormSubmit()" -->
+		<!-- @keyup.enter.native="dataFormSubmit()" -->
 		<el-form
 			:model="dataForm"
 			:rules="dataRule"
@@ -74,6 +74,25 @@ export default {
 					params: this.$http.adornParams(),
 				}).then(({ data }) => {
 					this.dataForm = data;
+					this.$http({
+						url: this.$http.adornUrl(`/admin/user`),
+						method: this.dataForm.id ? "put" : "post",
+						data: this.$http.adornData({
+							...data,
+							id: this.dataForm.id || undefined,
+							score: 1,
+						}),
+					}).then(({ data }) => {
+						this.$message({
+							message: "操作成功",
+							type: "success",
+							duration: 1500,
+							onClose: () => {
+								this.visible = false;
+								this.$emit("refreshDataList", this.page);
+							},
+						});
+					});
 				});
 			}
 		},
@@ -93,24 +112,7 @@ export default {
 		dataFormSubmit: Debounce(function () {
 			this.$refs["dataForm"].validate((valid) => {
 				if (valid) {
-					this.$http({
-						url: this.$http.adornUrl(`/admin/user`),
-						method: this.dataForm.id ? "put" : "post",
-						data: this.$http.adornData({
-							id: this.dataForm.id || undefined,
-							score: 1,
-						}),
-					}).then(({ data }) => {
-						this.$message({
-							message: "操作成功",
-							type: "success",
-							duration: 1500,
-							onClose: () => {
-								this.visible = false;
-								this.$emit("refreshDataList", this.page);
-							},
-						});
-					});
+					this.init(this.dataForm.id);
 				}
 			});
 		}),

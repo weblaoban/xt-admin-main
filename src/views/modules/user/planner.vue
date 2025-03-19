@@ -26,7 +26,7 @@
 					icon="el-icon-delete"
 					size="small"
 					v-if="isAuth('admin:user:delete')"
-					@click.stop="deleteHandle(scope.row.id)"
+					@click.stop="deleteHandle(scope.row)"
 					>删除</el-button
 				>
 			</template>
@@ -378,7 +378,7 @@ export default {
             console.log(state)
             hasState = item.state == state
           }
-          console.log(hasname , hasState , hasidcard , haspname)
+          console.log(hasname, hasState, hasidcard, haspname)
           return hasname && hasState && hasidcard && haspname
         })
         this.detailList = list
@@ -441,7 +441,8 @@ export default {
       })
     },
 		// 删除
-    deleteHandle (id) {
+    deleteHandle (row) {
+      const id = row.id
       this.$confirm(`确定进行[删除}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -453,6 +454,7 @@ export default {
     method: 'put',
     data: this.$http.adornData({
       id: id,
+      ...row,
       score: 0
     })
   }).then(({ data }) => {

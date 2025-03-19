@@ -1,19 +1,24 @@
 <template>
-  <div :class="{fullscreen:fullscreen}" class="tinymce-container" :style="{width:containerWidth}">
-    <textarea :id="tinymceId" class="tinymce-textarea" />
-    <div class="editor-custom-btn-container">
-      <el-upload
-        class="upload-demo"
-        list-type="picture"
-        :action="$http.adornUrl('/admin/file/upload/element')"
-        :headers="{Authorization: $cookie.get('Authorization')}"
-        :on-success="imageSuccessCBK"
-        :show-file-list="false"
-        :before-upload="beforeAvatarUpload">
-        <el-button size="small" type="primary">点击上传图片</el-button>
-      </el-upload>
-    </div>
-  </div>
+	<div
+		:class="{ fullscreen: fullscreen }"
+		class="tinymce-container"
+		:style="{ width: containerWidth }"
+	>
+		<textarea :id="tinymceId" class="tinymce-textarea" />
+		<div class="editor-custom-btn-container">
+			<el-upload
+				class="upload-demo"
+				list-type="picture"
+				:action="$http.adornUrl('/admin/file/upload/element')"
+				:headers="{ Authorization: $cookie.get('Authorization') }"
+				:on-success="imageSuccessCBK"
+				:show-file-list="false"
+				:before-upload="beforeAvatarUpload"
+			>
+				<el-button size="small" type="primary">点击上传图片</el-button>
+			</el-upload>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -25,11 +30,17 @@ import mulPicUpload from '@/components/mul-pic-upload'
 import plugins from './plugins'
 import toolbar from './toolbar'
 import load from './dynamicLoadScript'
+// import './tinymce.min.js'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
-const resourceCdn1 = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
-const resourceCdn2 = 'https://unpkg.zhimg.com/tinymce-all-in-one@4.9.3/tinymce.min.js'
-const resourceCdn3 = 'https://unpkg.com/tinymce-all-in-one@4.9.3/tinymce.min.js'
+// const resourceCdn1 =
+// 	'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
+const resourceCdn1 =
+	'./tinymce/tinymce.min.js'
+const resourceCdn2 =
+	'https://unpkg.zhimg.com/tinymce-all-in-one@4.9.3/tinymce.min.js'
+const resourceCdn3 =
+	'https://unpkg.com/tinymce-all-in-one@4.9.3/tinymce.min.js'
 
 export default {
   name: 'Tinymce',
@@ -38,7 +49,11 @@ export default {
     id: {
       type: String,
       default: function () {
-        return 'vue-tinymce-' + +new Date() + ((Math.random() * 1000).toFixed(0) + '')
+        return (
+					'vue-tinymce-' +
+					+new Date() +
+					((Math.random() * 1000).toFixed(0) + '')
+        )
       }
     },
     value: {
@@ -82,7 +97,8 @@ export default {
     },
     containerWidth () {
       const width = this.width
-      if (/^[\d]+(\.[\d]+)?$/.test(width)) { // matches `100`, `'100'`
+      if (/^[\d]+(\.[\d]+)?$/.test(width)) {
+				// matches `100`, `'100'`
         return `${width}px`
       }
       return width
@@ -92,7 +108,8 @@ export default {
     value (val) {
       if (!this.hasChange && this.hasInit) {
         this.$nextTick(() =>
-          window.tinymce.get(this.tinymceId).setContent(val || ''))
+					window.tinymce.get(this.tinymceId).setContent(val || '')
+				)
       }
     },
     language () {
@@ -116,7 +133,7 @@ export default {
   },
   methods: {
     init () {
-      // dynamic load tinymce from cdn
+			// dynamic load tinymce from cdn
       load(resourceCdn1, (err) => {
         if (!err) {
           this.initTinymce()
@@ -139,6 +156,7 @@ export default {
     },
     initTinymce () {
       const _this = this
+      console.log(window.tinymce)
       window.tinymce.init({
         language: this.language,
         selector: `#${this.tinymceId}`,
@@ -158,7 +176,7 @@ export default {
         default_link_target: '_blank',
         link_title: false,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
-        init_instance_callback: editor => {
+        init_instance_callback: (editor) => {
           if (_this.value) {
             editor.setContent(_this.value)
           }
@@ -173,43 +191,43 @@ export default {
             _this.fullscreen = e.state
           })
         },
-        // it will try to keep these URLs intact
-        // https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
-        // https://stackoverflow.com/questions/5196205/disable-tinymce-absolute-to-relative-url-conversions
+				// it will try to keep these URLs intact
+				// https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@convert_urls/
+				// https://stackoverflow.com/questions/5196205/disable-tinymce-absolute-to-relative-url-conversions
         convert_urls: false
-        // 整合七牛上传
-        // images_dataimg_filter(img) {
-        //   setTimeout(() => {
-        //     const $image = $(img);
-        //     $image.removeAttr('width');
-        //     $image.removeAttr('height');
-        //     if ($image[0].height && $image[0].width) {
-        //       $image.attr('data-wscntype', 'image');
-        //       $image.attr('data-wscnh', $image[0].height);
-        //       $image.attr('data-wscnw', $image[0].width);
-        //       $image.addClass('wscnph');
-        //     }
-        //   }, 0);
-        //   return img
-        // },
-        // images_upload_handler(blobInfo, success, failure, progress) {
-        //   progress(0);
-        //   const token = _this.$store.getters.token;
-        //   getToken(token).then(response => {
-        //     const url = response.data.qiniu_url;
-        //     const formData = new FormData();
-        //     formData.append('token', response.data.qiniu_token);
-        //     formData.append('key', response.data.qiniu_key);
-        //     formData.append('file', blobInfo.blob(), url);
-        //     upload(formData).then(() => {
-        //       success(url);
-        //       progress(100);
-        //     })
-        //   }).catch(err => {
-        //     failure('出现未知问题，刷新页面，或者联系程序员')
-        //     console.log(err);
-        //   });
-        // },
+				// 整合七牛上传
+				// images_dataimg_filter(img) {
+				//   setTimeout(() => {
+				//     const $image = $(img);
+				//     $image.removeAttr('width');
+				//     $image.removeAttr('height');
+				//     if ($image[0].height && $image[0].width) {
+				//       $image.attr('data-wscntype', 'image');
+				//       $image.attr('data-wscnh', $image[0].height);
+				//       $image.attr('data-wscnw', $image[0].width);
+				//       $image.addClass('wscnph');
+				//     }
+				//   }, 0);
+				//   return img
+				// },
+				// images_upload_handler(blobInfo, success, failure, progress) {
+				//   progress(0);
+				//   const token = _this.$store.getters.token;
+				//   getToken(token).then(response => {
+				//     const url = response.data.qiniu_url;
+				//     const formData = new FormData();
+				//     formData.append('token', response.data.qiniu_token);
+				//     formData.append('key', response.data.qiniu_key);
+				//     formData.append('file', blobInfo.blob(), url);
+				//     upload(formData).then(() => {
+				//       success(url);
+				//       progress(100);
+				//     })
+				//   }).catch(err => {
+				//     failure('出现未知问题，刷新页面，或者联系程序员')
+				//     console.log(err);
+				//   });
+				// },
       })
     },
     destroyTinymce () {
@@ -230,23 +248,35 @@ export default {
     getContent () {
       window.tinymce.get(this.tinymceId).getContent()
     },
-    // 限制图片上传大小
+		// 限制图片上传大小
     beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/gif' || file.type === 'image/jpg'
+      const isJPG =
+				file.type === 'image/jpeg' ||
+				file.type === 'image/png' ||
+				file.type === 'image/gif' ||
+				file.type === 'image/jpg'
       if (!isJPG) {
         this.$message.error('上传图片只能是jpeg/jpg/png/gif 格式!')
       }
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isLt2M = file.size / 1024 / 1024 < 200
       if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!')
+        this.$message.error('上传图片大小不能超过 200MB!')
       }
       return isLt2M && isJPG
     },
     imageSuccessCBK (response, file, fileList) {
+      console.log(file)
+      console.log(fileList)
       const _this = this
-      fileList.forEach(v => {
-        window.tinymce.get(_this.tinymceId).insertContent(`<img class="wscnph" src="${this.resourcesUrl + '/images/' + v.response.data}" >`)
-      })
+			// fileList.forEach((v) => {
+      window.tinymce
+					.get(_this.tinymceId)
+					.insertContent(
+						`<img class="wscnph" src="${
+							this.resourcesUrl + '/images/' + file.response.data
+						}" >`
+					)
+			// });
     }
   }
 }
@@ -254,36 +284,36 @@ export default {
 
 <style lang="scss" scoped>
 .tinymce-container {
-  position: relative;
-  line-height: normal;
+	position: relative;
+	line-height: normal;
 }
 
 .tinymce-container {
-  ::v-deep {
-    .mce-fullscreen {
-      z-index: 10000;
-    }
-  }
+	::v-deep {
+		.mce-fullscreen {
+			z-index: 10000;
+		}
+	}
 }
 
 .tinymce-textarea {
-  visibility: hidden;
-  z-index: -1;
+	visibility: hidden;
+	z-index: -1;
 }
 
 .editor-custom-btn-container {
-  position: absolute;
-  right: 4px;
-  top: 4px;
-  /*z-index: 2005;*/
+	position: absolute;
+	right: 4px;
+	top: 4px;
+	/*z-index: 2005;*/
 }
 
 .fullscreen .editor-custom-btn-container {
-  z-index: 10000;
-  position: fixed;
+	z-index: 10000;
+	position: fixed;
 }
 
 .editor-upload-btn {
-  display: inline-block;
+	display: inline-block;
 }
 </style>

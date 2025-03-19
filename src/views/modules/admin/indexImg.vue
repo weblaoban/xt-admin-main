@@ -112,209 +112,209 @@
 </template>
 
 <script>
-import AddOrUpdate from "./indexImg-add-or-update";
-import { tableOption } from "@/crud/admin/indexImg";
+import AddOrUpdate from './indexImg-add-or-update'
+import { tableOption } from '@/crud/admin/indexImg'
 export default {
-	data() {
-		return {
-			dataForm: {
-				indexImg: "",
-			},
-			dataList: [],
-			dataListH5: [],
-			dataListLoading: false,
-			dataListSelections: [],
-			addOrUpdateVisible: false,
+  data () {
+    return {
+      dataForm: {
+        indexImg: ''
+      },
+      dataList: [],
+      dataListH5: [],
+      dataListLoading: false,
+      dataListSelections: [],
+      addOrUpdateVisible: false,
 			// 修改
-			tableOption: tableOption,
-			page: {
-				total: 0, // 总页数
-				currentPage: 1, // 当前页数
-				pageSize: 10, // 每页显示多少条
-			},
-			loading: false,
-		};
-	},
-	components: {
-		AddOrUpdate,
-	},
-	methods: {
-		getList() {
-			this.getDataList();
-			this.getDataListH5();
-		},
+      tableOption: tableOption,
+      page: {
+        total: 0, // 总页数
+        currentPage: 1, // 当前页数
+        pageSize: 10 // 每页显示多少条
+      },
+      loading: false
+    }
+  },
+  components: {
+    AddOrUpdate
+  },
+  methods: {
+    getList () {
+      this.getDataList()
+      this.getDataListH5()
+    },
 		// 获取数据列表
-		getDataList(page, params, done) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/content/page"),
-				method: "get",
-				params: this.$http.adornParams(
+    getDataList (page, params, done) {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/content/page'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							categoryId: 10,
-						},
+  {
+    current: page == null ? this.page.currentPage : page.currentPage,
+    size: page == null ? this.page.pageSize : page.pageSize,
+    categoryId: 10
+  },
 						params
 					)
-				),
-			}).then(({ data }) => {
-				let hasImg = [];
-				const noImg = [];
-				data.records.forEach((item) => {
-					if (item.imgUrl) {
-						hasImg.push(item);
-					} else {
-						noImg.push(item);
-					}
-				});
-				hasImg = hasImg.sort((a, b) => {
-					return a.seq - b.seq;
-				});
-				this.dataList = [...hasImg, ...noImg];
-				this.page.total = data.total;
-				this.dataListLoading = false;
-				if (done) {
-					done();
-				}
-			});
-		},
+				)
+      }).then(({ data }) => {
+        let hasImg = []
+        const noImg = []
+        data.records.forEach((item) => {
+          if (item.imgUrl) {
+            hasImg.push(item)
+          } else {
+            noImg.push(item)
+          }
+        })
+        hasImg = hasImg.sort((a, b) => {
+          return a.seq - b.seq
+        })
+        this.dataList = [...hasImg, ...noImg]
+        this.page.total = data.total
+        this.dataListLoading = false
+        if (done) {
+          done()
+        }
+      })
+    },
 
 		// 获取h5数据列表
-		getDataListH5(page, params, done) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/content/page"),
-				method: "get",
-				params: this.$http.adornParams(
+    getDataListH5 (page, params, done) {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/content/page'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							categoryId: 11,
-						},
+  {
+    current: page == null ? this.page.currentPage : page.currentPage,
+    size: page == null ? this.page.pageSize : page.pageSize,
+    categoryId: 11
+  },
 						params
 					)
-				),
-			}).then(({ data }) => {
-				let hasImg = [];
-				const noImg = [];
-				data.records.forEach((item) => {
-					if (item.imgUrl) {
-						hasImg.push(item);
-					} else {
-						noImg.push(item);
-					}
-				});
-				hasImg = hasImg.sort((a, b) => {
-					return a.seq - b.seq;
-				});
-				this.dataListH5 = [...hasImg, ...noImg];
-				this.page.total = data.total;
-				this.dataListLoading = false;
-				if (done) {
-					done();
-				}
-			});
-		},
+				)
+      }).then(({ data }) => {
+        let hasImg = []
+        const noImg = []
+        data.records.forEach((item) => {
+          if (item.imgUrl) {
+            hasImg.push(item)
+          } else {
+            noImg.push(item)
+          }
+        })
+        hasImg = hasImg.sort((a, b) => {
+          return a.seq - b.seq
+        })
+        this.dataListH5 = [...hasImg, ...noImg]
+        this.page.total = data.total
+        this.dataListLoading = false
+        if (done) {
+          done()
+        }
+      })
+    },
 
 		// 新增 / 修改
-		addOrUpdateHandle(id) {
-			this.addOrUpdateVisible = true;
-			this.$nextTick(() => {
-				this.$refs.addOrUpdate.init(id);
-			});
-		},
+    addOrUpdateHandle (id) {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.addOrUpdate.init(id)
+      })
+    },
 		// 删除
-		deleteHandle(row) {
-			let param = {
-				id: row.id,
-				imgUrl: "",
-				title: row.title,
-				categoryId: row.categoryId,
-				content: row.content,
-				link: row.link || "",
-			};
-			this.$http({
-				url: this.$http.adornUrl(`/admin/content`),
-				method: param.id ? "put" : "post",
-				data: this.$http.adornData(param),
-			}).then(({ data }) => {
-				this.$message({
-					message: "操作成功",
-					type: "success",
-					duration: 1500,
-					onClose: () => {
-						this.getDataList();
-						this.getDataListH5();
-					},
-				});
-			});
-		},
+    deleteHandle (row) {
+      let param = {
+        id: row.id,
+        imgUrl: '',
+        title: row.title,
+        categoryId: row.categoryId,
+        content: row.content,
+        link: row.link || ''
+      }
+      this.$http({
+        url: this.$http.adornUrl(`/admin/content`),
+        method: param.id ? 'put' : 'post',
+        data: this.$http.adornData(param)
+      }).then(({ data }) => {
+        this.$message({
+          message: '操作成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            this.getDataList()
+            this.getDataListH5()
+          }
+        })
+      })
+    },
 
-		goDown(row, index, resource) {
-			if (this.loading) {
-				return;
-			}
-			this.loading = true;
-			const nextP = resource[index + 1];
-			if (nextP && !nextP.default) {
-				this.$http({
-					url: this.$http.adornUrl(`/admin/content`),
-					method: "put",
-					data: this.$http.adornData({ id: row.id, seq: index + 2 }),
-				}).then(() => {
-					this.loading = false;
-				});
-				this.$http({
-					url: this.$http.adornUrl(`/admin/content`),
-					method: "put",
-					data: this.$http.adornData({ id: nextP.id, seq: index + 1 }),
-				}).then(() => {
-					this.loading = false;
-					this.$message({
-						message: "操作成功",
-						type: "success",
-						duration: 1500,
-						onClose: () => {
-							this.getList();
-						},
-					});
-				});
-			}
-		},
-		goUp(row, index, resource) {
-			if (this.loading) {
-				return;
-			}
-			this.loading = true;
-			const nextP = resource[index - 1];
-			if (nextP && !nextP.default) {
-				this.$http({
-					url: this.$http.adornUrl(`/admin/content`),
-					method: "put",
-					data: this.$http.adornData({ id: row.id, seq: index }),
-				}).then(() => {
-					this.loading = false;
-				});
-				this.$http({
-					url: this.$http.adornUrl(`/admin/content`),
-					method: "put",
-					data: this.$http.adornData({ id: nextP.id, seq: index + 1 }),
-				}).then(() => {
-					this.loading = false;
-					this.$message({
-						message: "操作成功",
-						type: "success",
-						duration: 1500,
-						onClose: () => {
-							this.getList();
-						},
-					});
-				});
-			}
-		},
-	},
-};
+    goDown (row, index, resource) {
+      if (this.loading) {
+        return
+      }
+      const nextP = resource[index + 1]
+      if (nextP && !nextP.default) {
+        this.loading = true
+        this.$http({
+          url: this.$http.adornUrl(`/admin/content`),
+          method: 'put',
+          data: this.$http.adornData({ id: row.id, seq: index + 2 })
+        }).then(() => {
+          this.loading = false
+        })
+        this.$http({
+          url: this.$http.adornUrl(`/admin/content`),
+          method: 'put',
+          data: this.$http.adornData({ id: nextP.id, seq: index + 1 })
+        }).then(() => {
+          this.loading = false
+          this.$message({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.getList()
+            }
+          })
+        })
+      }
+    },
+    goUp (row, index, resource) {
+      if (this.loading) {
+        return
+      }
+      const nextP = resource[index - 1]
+      if (nextP && !nextP.default) {
+        this.loading = true
+        this.$http({
+          url: this.$http.adornUrl(`/admin/content`),
+          method: 'put',
+          data: this.$http.adornData({ id: row.id, seq: index })
+        }).then(() => {
+          this.loading = false
+        })
+        this.$http({
+          url: this.$http.adornUrl(`/admin/content`),
+          method: 'put',
+          data: this.$http.adornData({ id: nextP.id, seq: index + 1 })
+        }).then(() => {
+          this.loading = false
+          this.$message({
+            message: '操作成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.getList()
+            }
+          })
+        })
+      }
+    }
+  }
+}
 </script>

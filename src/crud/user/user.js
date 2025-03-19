@@ -7,7 +7,7 @@ export const tableOption = {
     indexLabel: '序号',
     stripe: true,
     menuAlign: 'center',
-    menuWidth: 350,
+    menuWidth: 220,
     align: 'center',
     refreshBtn: true,
     searchSize: 'mini',
@@ -26,7 +26,7 @@ export const tableOption = {
         },
         {
             label: '用户名',
-            prop: 'nickName',
+            prop: 'realName',
             search: true
         },
         {
@@ -36,32 +36,32 @@ export const tableOption = {
         },
         {
             label: '姓名',
-            prop: 'realName',
+            prop: 'nickName',
             search: true
         },
-        {
-            label: '性别',
-            prop: 'sex',
-            search: true,
-            type: 'radio',
-            dicData: [
-                {
-                    label: '男',
-                    value: 'M'
-                },
-                {
-                    label: '女',
-                    value: 'F'
-                }
-            ]
-        },
+        // {
+        //     label: '性别',
+        //     prop: 'sex',
+        //     search: true,
+        //     type: 'radio',
+        //     dicData: [
+        //         {
+        //             label: '男',
+        //             value: 'M'
+        //         },
+        //         {
+        //             label: '女',
+        //             value: 'F'
+        //         }
+        //     ]
+        // },
         {
             label: '身份证',
             prop: 'userMail'
         },
         {
             label: '是否有意向',
-            prop: 'status',
+            prop: 'yy',
             type: 'radio',
             dicData: [
                 {
@@ -71,6 +71,10 @@ export const tableOption = {
                 {
                     label: '否',
                     value: 0
+                },
+                {
+                    label: '否',
+                    value: 'null'
                 }
             ]
         },
@@ -86,6 +90,10 @@ export const tableOption = {
                 {
                     label: '否',
                     value: 0
+                },
+                {
+                    label: '否',
+                    value: null
                 }
             ]
         }
@@ -116,7 +124,7 @@ export const plannertableOption = {
     column: [
         {
             label: '用户名',
-            prop: 'nickName',
+            prop: 'realName',
             search: true
         },
         {
@@ -126,7 +134,7 @@ export const plannertableOption = {
         },
         {
             label: '姓名',
-            prop: 'userName',
+            prop: 'nickName',
             search: true
         },
         {
@@ -283,7 +291,7 @@ export const buytableOption = {
     column: [
         {
             label: '用户名',
-            prop: 'nickName',
+            prop: 'realName',
             search: true
         },
         {
@@ -293,13 +301,13 @@ export const buytableOption = {
         },
         {
             label: '姓名',
-            prop: 'realName',
+            prop: 'nickName',
             search: true
         },
-        {
-            label: '性别',
-            prop: 'sex'
-        },
+        // {
+        // 	label: "性别",
+        // 	prop: "sex",
+        // },
         {
             label: '身份证',
             prop: 'userMail'

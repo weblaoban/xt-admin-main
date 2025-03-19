@@ -32,6 +32,7 @@
                    icon="el-icon-delete"
                    size="small"
                    v-if="isAuth('sys:user:delete')"
+                   :disabled="scope.row.userId==1"
                    @click.stop="deleteHandle(scope.row.userId)">删除</el-button>
       </template>
     </avue-crud>

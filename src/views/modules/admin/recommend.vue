@@ -21,6 +21,7 @@
 			<template slot-scope="scope" slot="menu">
 				<!-- 上衣 -->
 				<el-button
+                :loading="loading"
 					type="primary"
 					v-if="scope.index > 0 && scope.row.id"
 					icon="el-icon-top"
@@ -28,6 +29,7 @@
 				></el-button>
 				<!-- 下衣 -->
 				<el-button
+                :loading="loading"
 					v-if="scope.index < dataList.length - 1 && scope.row.id"
 					type="primary"
 					icon="el-icon-bottom"
@@ -35,6 +37,7 @@
 				></el-button>
 
 				<el-button
+                :loading="loading"
 					type="danger"
 					icon="el-icon-delete"
 					size="small"
@@ -65,6 +68,7 @@
 			<template slot-scope="scope" slot="menu">
 				<!-- 上衣 -->
 				<el-button
+                :loading="loading"
 					type="primary"
 					v-if="scope.index > 0 && scope.row.id"
 					icon="el-icon-top"
@@ -72,6 +76,7 @@
 				></el-button>
 				<!-- 下衣 -->
 				<el-button
+                :loading="loading"
 					v-if="scope.index < dataList2.length - 1 && scope.row.id"
 					type="primary"
 					icon="el-icon-bottom"
@@ -79,6 +84,7 @@
 				></el-button>
 
 				<el-button
+                :loading="loading"
 					type="danger"
 					icon="el-icon-delete"
 					size="small"
@@ -109,6 +115,7 @@
 			<template slot-scope="scope" slot="menu">
 				<!-- 上衣 -->
 				<el-button
+                :loading="loading"
 					type="primary"
 					v-if="scope.index > 0 && scope.row.id"
 					icon="el-icon-top"
@@ -116,6 +123,7 @@
 				></el-button>
 				<!-- 下衣 -->
 				<el-button
+                :loading="loading"
 					v-if="scope.index < dataList3.length - 1 && scope.row.id"
 					type="primary"
 					icon="el-icon-bottom"
@@ -123,6 +131,7 @@
 				></el-button>
 
 				<el-button
+                :loading="loading"
 					type="danger"
 					icon="el-icon-delete"
 					size="small"
@@ -159,287 +168,296 @@
 </template>
 
 <script>
-import { tableOption } from "@/crud/admin/indexImg";
-import recommendH5 from "./recommendH5";
+import { tableOption } from '@/crud/admin/indexImg'
+import recommendH5 from './recommendH5'
 const defaultList = [
-	{
-		imgUrl: "",
-		default: true,
-	},
-	{
-		imgUrl: "",
-		default: true,
-	},
-	{
-		imgUrl: "",
-		default: true,
-	},
-	{
-		imgUrl: "",
-		default: true,
-	},
-];
+  {
+    imgUrl: '',
+    default: true
+  },
+  {
+    imgUrl: '',
+    default: true
+  },
+  {
+    imgUrl: '',
+    default: true
+  },
+  {
+    imgUrl: '',
+    default: true
+  }
+]
 export default {
-	data() {
-		return {
-			selectItem: "",
-			dataForm: {
-				indexImg: "",
-			},
-			dataList: [...defaultList],
-			dataList3: [...defaultList],
-			dataList2: [...defaultList],
-			dataListLoading: false,
-			addOrUpdateVisible: false,
-			resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
+  data () {
+    return {
+      selectItem: '',
+      dataForm: {
+        indexImg: ''
+      },
+      dataList: [...defaultList],
+      dataList3: [...defaultList],
+      dataList2: [...defaultList],
+      dataListLoading: false,
+      addOrUpdateVisible: false,
+      resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
 			// 修改
-			tableOption: tableOption,
-			page: {
-				total: 0, // 总页数
-				currentPage: 1, // 当前页数
-				pageSize: 10, // 每页显示多少条
-			},
-			showSelectProd: false,
-			selectList: [],
-			sold_num: "",
-			loading: false,
-		};
-	},
-	methods: {
+      tableOption: tableOption,
+      page: {
+        total: 0, // 总页数
+        currentPage: 1, // 当前页数
+        pageSize: 10 // 每页显示多少条
+      },
+      showSelectProd: false,
+      selectList: [],
+      sold_num: '',
+      loading: false
+    }
+  },
+  methods: {
 		// 获取数据列表 信托产品
-		getDataList(page, params) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/prod/page"),
-				method: "get",
-				params: this.$http.adornParams(
+    getDataList (page, params) {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/prod/page'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							categoryId: 97,
-							soldNum: 1,
-						},
+  {
+    current: page == null ? this.page.currentPage : page.currentPage,
+    size: page == null ? this.page.pageSize : page.pageSize,
+    categoryId: 97,
+    soldNum: 1
+  },
 						params
 					)
-				),
-			}).then(({ data }) => {
-				const dataList = [...defaultList];
-				data.records = data.records.sort((a, b) => {
-					return a.soldNum > b.soldNum;
-				});
-				dataList.forEach((_, index) => {
-					if (data.records[index]) {
-						dataList[index] = data.records[index];
-					}
-				});
-				this.dataList = dataList;
-				this.dataListLoading = false;
-			});
-		},
+				)
+      }).then(({ data }) => {
+        const dataList = [...defaultList]
+        for (var i = 0; i < data.records.length; i++) {
+          data.records[i].oldIndex = i
+        }
+        data.records = data.records.sort((a, b) => {
+          return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex
+        })
+        dataList.forEach((_, index) => {
+          if (data.records[index]) {
+            dataList[index] = data.records[index]
+          }
+        })
+        this.dataList = dataList
+        this.dataListLoading = false
+      })
+    },
 
-		getDataList1(page, params) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/prod/page"),
-				method: "get",
-				params: this.$http.adornParams(
+    getDataList1 (page, params) {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/prod/page'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							categoryId: 98,
-							soldNum: 1,
-						},
+  {
+    current: page == null ? this.page.currentPage : page.currentPage,
+    size: page == null ? this.page.pageSize : page.pageSize,
+    categoryId: 98,
+    soldNum: 1
+  },
 						params
 					)
-				),
-			}).then(({ data }) => {
-				const dataList = [...defaultList];
-				data.records = data.records.sort((a, b) => {
-					return a.soldNum > b.soldNum;
-				});
-				dataList.forEach((_, index) => {
-					if (data.records[index]) {
-						dataList[index] = data.records[index];
-					}
-				});
-				this.dataList2 = dataList;
-				this.dataListLoading = false;
-			});
-		},
+				)
+      }).then(({ data }) => {
+        const dataList = [...defaultList]
 
-		getDataList2(page, params) {
-			this.dataListLoading = true;
-			this.$http({
-				url: this.$http.adornUrl("/admin/prod/page"),
-				method: "get",
-				params: this.$http.adornParams(
+        for (var i = 0; i < data.records.length; i++) {
+          data.records[i].oldIndex = i
+        }
+        data.records = data.records.sort((a, b) => {
+          return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex
+        })
+        dataList.forEach((_, index) => {
+          if (data.records[index]) {
+            dataList[index] = data.records[index]
+          }
+        })
+        this.dataList2 = dataList
+        this.dataListLoading = false
+      })
+    },
+
+    getDataList2 (page, params) {
+      this.dataListLoading = true
+      this.$http({
+        url: this.$http.adornUrl('/admin/prod/page'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign(
-						{
-							current: page == null ? this.page.currentPage : page.currentPage,
-							size: page == null ? this.page.pageSize : page.pageSize,
-							categoryId: 99,
-							soldNum: 1,
-						},
+  {
+    current: page == null ? this.page.currentPage : page.currentPage,
+    size: page == null ? this.page.pageSize : page.pageSize,
+    categoryId: 99,
+    soldNum: 1
+  },
 						params
 					)
-				),
-			}).then(({ data }) => {
-				const dataList = [...defaultList];
-				data.records = data.records.sort((a, b) => {
-					return a.soldNum > b.soldNum;
-				});
-				dataList.forEach((_, index) => {
-					if (data.records[index]) {
-						dataList[index] = data.records[index];
-					}
-				});
-				this.dataList3 = dataList;
-				this.dataListLoading = false;
-			});
-		},
+				)
+      }).then(({ data }) => {
+        const dataList = [...defaultList]
+        for (var i = 0; i < data.records.length; i++) {
+          data.records[i].oldIndex = i
+        }
+        data.records = data.records.sort((a, b) => {
+          return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex
+        })
+        dataList.forEach((_, index) => {
+          if (data.records[index]) {
+            dataList[index] = data.records[index]
+          }
+        })
+        this.dataList3 = dataList
+        this.dataListLoading = false
+      })
+    },
 
-		getAllList() {
-			this.getDataList();
-			this.getDataList1();
-			this.getDataList2();
-		},
-		onShowSelectProd(classify, index) {
-			this.dataListLoading = true;
-			this.selectItem = "";
-			this.sold_num = index + 1;
-			this.$http({
-				url: this.$http.adornUrl("/admin/prod/page"),
-				method: "get",
-				params: this.$http.adornParams(
+    getAllList () {
+      this.getDataList()
+      this.getDataList1()
+      this.getDataList2()
+    },
+    onShowSelectProd (classify, index) {
+      this.dataListLoading = true
+      this.selectItem = ''
+      this.sold_num = index + 1
+      this.$http({
+        url: this.$http.adornUrl('/admin/prod/page'),
+        method: 'get',
+        params: this.$http.adornParams(
 					Object.assign({
-						current: 1,
-						size: 1000,
-						categoryId: classify,
-						soldNum: 0,
-					})
-				),
-			}).then(({ data }) => {
-				this.selectList = data.records;
-				this.dataListLoading = false;
-				this.showSelectProd = true;
-			});
-		},
-		onSetProd() {
-			if (!this.selectItem) {
-				return;
-			}
-			const param = {
-				id: this.selectItem,
-				soldNum: this.sold_num,
-			};
-			this.$http({
-				url: this.$http.adornUrl(`/admin/prod`),
-				method: param.id ? "put" : "post",
-				data: this.$http.adornData(param),
-			}).then(() => {
-				this.$message({
-					message: "操作成功",
-					type: "success",
-					duration: 1500,
-					onClose: () => {
-						this.getAllList();
-						this.showSelectProd = false;
-						this.selectItem = "";
-					},
-				});
-			});
-		},
+  current: 1,
+  size: 1000,
+  categoryId: classify,
+  soldNum: 0
+})
+				)
+      }).then(({ data }) => {
+        this.selectList = data.records
+        this.dataListLoading = false
+        this.showSelectProd = true
+      })
+    },
+    onSetProd () {
+      if (!this.selectItem) {
+        return
+      }
+      const param = {
+        id: this.selectItem,
+        soldNum: this.sold_num
+      }
+      this.$http({
+        url: this.$http.adornUrl(`/admin/prod`),
+        method: param.id ? 'put' : 'post',
+        data: this.$http.adornData(param)
+      }).then(() => {
+        this.$message({
+          message: '操作成功',
+          type: 'success',
+          duration: 1500,
+          onClose: () => {
+            this.getAllList()
+            this.showSelectProd = false
+            this.selectItem = ''
+          }
+        })
+      })
+    },
 
 		// 清空
-		deleteHandle(row) {
-			if (row.default) {
-				return;
-			}
-			let param = Object.assign({}, row);
-			param.soldNum = 0;
-			this.$http({
-				url: this.$http.adornUrl(`/admin/prod`),
-				method: param.id ? "put" : "post",
-				data: this.$http.adornData(param),
-			}).then(() => {
-				this.$message({
-					message: "操作成功",
-					type: "success",
-					duration: 2000,
-					onClose: () => {
-						this.getAllList();
-					},
-				});
-			});
-		},
+    deleteHandle (row) {
+      if (row.default) {
+        return
+      }
+      let param = Object.assign({}, row)
+      param.soldNum = 0
+      this.$http({
+        url: this.$http.adornUrl(`/admin/prod`),
+        method: param.id ? 'put' : 'post',
+        data: this.$http.adornData(param)
+      }).then(() => {
+        this.$message({
+          message: '操作成功',
+          type: 'success',
+          duration: 2000,
+          onClose: () => {
+            this.getAllList()
+          }
+        })
+      })
+    },
 
-		goDown(row, index, resource) {
-			if (this.loading) {
-				return;
-			}
-			this.loading = true;
-			const nextP = resource[index + 1];
-			if (nextP && !nextP.default) {
-				this.$http({
-					url: this.$http.adornUrl(`/admin/prod`),
-					method: "put",
-					data: this.$http.adornData({ id: row.id, soldNum: index + 2 }),
-				}).then(() => {
-					this.loading = false;
-				});
-				this.$http({
-					url: this.$http.adornUrl(`/admin/prod`),
-					method: "put",
-					data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 }),
-				}).then(() => {
-					this.loading = false;
-					this.$message({
-						message: "操作成功",
-						type: "success",
-						duration: 1500,
-						onClose: () => {
-							this.getAllList();
-						},
-					});
-				});
-			}
-		},
-		goUp(row, index, resource) {
-			if (this.loading) {
-				return;
-			}
-			this.loading = true;
-			const nextP = resource[index - 1];
-			if (nextP && !nextP.default) {
-				this.$http({
-					url: this.$http.adornUrl(`/admin/prod`),
-					method: "put",
-					data: this.$http.adornData({ id: row.id, soldNum: index }),
-				}).then(() => {
-					this.loading = false;
-				});
-				this.$http({
-					url: this.$http.adornUrl(`/admin/prod`),
-					method: "put",
-					data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 }),
-				}).then(() => {
-					this.loading = false;
-					this.$message({
-						message: "操作成功",
-						type: "success",
-						duration: 1500,
-						onClose: () => {
-							this.getAllList();
-						},
-					});
-				});
-			}
-		},
-	},
-	components: {
-		recommendH5,
-	},
-};
+    goDown (row, index, resource) {
+      if (this.loading) {
+        return
+      }
+      const nextP = resource[index + 1]
+      if (nextP && !nextP.default) {
+        this.loading = true
+        this.$http({
+          url: this.$http.adornUrl(`/admin/prod`),
+          method: 'put',
+          data: this.$http.adornData({ id: row.id, soldNum: index + 2 })
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl(`/admin/prod`),
+            method: 'put',
+            data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 })
+          }).then(() => {
+            this.loading = false
+            this.getAllList()
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+              }
+            })
+          })
+        })
+      }
+    },
+    goUp (row, index, resource) {
+      console.log(this.loading)
+      if (this.loading) {
+        return
+      }
+      const nextP = resource[index - 1]
+      if (nextP && !nextP.default) {
+        this.loading = true
+        this.$http({
+          url: this.$http.adornUrl(`/admin/prod`),
+          method: 'put',
+          data: this.$http.adornData({ id: row.id, soldNum: index })
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl(`/admin/prod`),
+            method: 'put',
+            data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 })
+          }).then(() => {
+            this.getAllList()
+            this.loading = false
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+              }
+            })
+          })
+        })
+      }
+    }
+  },
+  components: {
+    recommendH5
+  }
+}
 </script>
