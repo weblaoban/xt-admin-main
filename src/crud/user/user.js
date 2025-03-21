@@ -142,6 +142,10 @@ export const plannertableOption = {
             prop: 'userRegtime'
         },
         {
+            label: '理财师客户明细',
+            prop: 'userRegtime1'
+        },
+        {
             label: '产品明细',
             prop: 'detail'
         }
@@ -214,6 +218,52 @@ export const plannerProdOption = {
             label: '到期时间',
             prop: 'dtime'
         }
+    ]
+}
+export const plannerCustomOption = {
+    searchMenuSpan: 6,
+    columnBtn: false,
+    border: true,
+    // selection: true,
+    index: false,
+    indexLabel: '序号',
+    stripe: true,
+    menuAlign: 'center',
+    // menuWidth: 350,
+    menu: false,
+    align: 'center',
+    refreshBtn: true,
+    searchSize: 'mini',
+    addBtn: false,
+    editBtn: false,
+    delBtn: false,
+    viewBtn: false,
+    props: {
+        label: 'label',
+        value: 'value'
+    },
+    column: [
+        {
+            label: '客户名',
+            prop: 'nickName'
+        },
+        {
+            label: '身份证',
+            prop: 'userMail',
+            labelWidth: '80',
+        },
+        {
+            label: '手机号',
+            prop: 'userMobile'
+        },
+        {
+            label: '持有产品数量',
+            prop: 'amount'
+        },
+        {
+            label: '持有金额',
+            prop: 'amount'
+        },
     ]
 }
 export const buytableOption = {
