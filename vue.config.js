@@ -27,17 +27,13 @@ module.exports = {
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
-
   devServer: {
-    port: 8080,
-    proxy: {
-      "/apis": {
-        target: "https://hts.quanshixintuo.com/",
-        pathRewrite: {
-          "^/apis": "/apis",
-        },
-      },
-    },
+    port: port,
+    open: true,
+    overlay: {
+      warnings: false,
+      errors: true
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
