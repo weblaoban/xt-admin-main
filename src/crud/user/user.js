@@ -229,10 +229,11 @@ export const plannerCustomOption = {
     indexLabel: '序号',
     stripe: true,
     menuAlign: 'center',
+    header: false,
     // menuWidth: 350,
     menu: false,
     align: 'center',
-    refreshBtn: true,
+    refreshBtn: false,
     searchSize: 'mini',
     addBtn: false,
     editBtn: false,
@@ -250,7 +251,7 @@ export const plannerCustomOption = {
         {
             label: '身份证',
             prop: 'userMail',
-            labelWidth: '80',
+            labelWidth: '80'
         },
         {
             label: '手机号',
@@ -263,7 +264,7 @@ export const plannerCustomOption = {
         {
             label: '持有金额',
             prop: 'amount'
-        },
+        }
     ]
 }
 export const buytableOption = {
@@ -369,6 +370,14 @@ export const userbuytableOption = {
         {
             label: '成立时间',
             prop: 'otime'
+        },
+        {
+            label: '计息时间',
+            prop: 'periods'
+        },
+        {
+            label: '计息天数',
+            prop: 'days'
         },
         {
             label: '到期时间',

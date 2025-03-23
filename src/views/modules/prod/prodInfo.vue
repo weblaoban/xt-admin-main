@@ -257,21 +257,21 @@
         ></el-col>
 
         <el-col :span="8">
-          <el-form-item label="计息天数" prop="investRatio">
+          <el-form-item label="计息天数" prop="days">
             <el-col :span="20">
               <el-input-number
-                v-model="dataForm.investRatio"
+                v-model="dataForm.days"
                 placeholder="计息天数"
-                min="1"
+                :min="1"
               ></el-input-number>
             </el-col> </el-form-item
         ></el-col>
 
         <el-col :span="12">
-          <el-form-item label="期数" prop="scount">
+          <el-form-item label="期数" prop="periods">
             <el-select
               @change="initContent"
-              v-model="dataForm.scount"
+              v-model="dataForm.periods"
               placeholder="请选择"
             >
               <el-option
@@ -289,8 +289,8 @@
           <div class="soldItem soldhead">
             <div>序号</div>
             <div class="soldDetail">进度详情</div>
-            <div>计息天数</div>
-            <div>操作</div>
+            <div style="width: 200px">计息天数</div>
+            <!-- <div>操作</div> -->
           </div>
           <div
             class="soldItem"
@@ -307,20 +307,19 @@
                 type="textarea"
               ></el-input>
             </div>
-            <div>
+            <div style="width: 200px">
               <el-input-number
                 v-model="dataForm.porder[index].day"
                 placeholder="计息天数"
-                maxlength="500"
                 :min="0"
               ></el-input-number>
             </div>
-            <div @click="delSold(index)" style="color: red; cursor: pointer">
+            <!-- <div @click="delSold(index)" style="color: red; cursor: pointer">
               删除
-            </div>
+            </div> -->
           </div>
         </div>
-        <el-button @click="addSold" type="text">新增进度</el-button>
+        <!-- <el-button @click="addSold" type="text">新增进度</el-button> -->
       </el-form-item>
 
       <el-form-item label="产品详情" prop="content">
@@ -662,7 +661,6 @@
       },
 
       initContent(value) {
-        console.log(value);
         const content = [];
         for (let i = 0; i < value; i++) {
           content.push({
@@ -671,7 +669,7 @@
             day: "",
           });
         }
-        this.addForm.porder = content;
+        this.dataForm.porder = content;
       },
     },
   };

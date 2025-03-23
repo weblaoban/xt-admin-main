@@ -3,6 +3,7 @@
     :title="!addForm.id ? '新增购买详情' : '编辑购买详情'"
     :close-on-click-modal="false"
     :visible.sync="visible"
+    width="650px"
   >
     <el-form
       :model="addForm"
@@ -43,13 +44,13 @@
         ></el-col>
 
         <el-col :span="12">
-          <el-form-item label="计息时间" prop="mtime"
+          <el-form-item label="计息时间" prop="periods"
             ><el-date-picker
               type="date"
               format="yyyy 年 MM 月 dd 日"
               value-format="yyyy-MM-dd 00:00:00"
               placeholder="选择日期"
-              v-model="addForm.otime"
+              v-model="addForm.periods"
               style="width: 100%"
             ></el-date-picker></el-form-item
         ></el-col>
@@ -65,9 +66,9 @@
             ></el-date-picker></el-form-item
         ></el-col>
         <el-col :span="12">
-          <el-form-item label="计息天数" prop="day">
+          <el-form-item label="计息天数" prop="days">
             <el-input-number
-              v-model="addForm.day"
+              v-model="addForm.days"
               placeholder="请输入计息天数"
               :min="1"
             ></el-input-number> </el-form-item
@@ -77,6 +78,7 @@
             ><el-input
               v-model="addForm.bplan"
               placeholder="回款计划"
+              type="textarea"
             ></el-input> </el-form-item
         ></el-col>
         <el-col :span="12">
@@ -98,7 +100,7 @@
       <!-- <el-button @click="addDetail" type="text">新增条目</el-button> -->
       <div class="dynamic" style="line-height: 42px">
         <el-row :gutter="20">
-          <el-col :span="6">期数</el-col>
+          <el-col :span="4">期数</el-col>
           <el-col :span="6">回款计划表述</el-col>
           <el-col :span="6">计息天数</el-col>
           <el-col :span="6">是否完成</el-col>
@@ -114,7 +116,7 @@
           :key="index"
         >
           <el-row :gutter="20">
-            <el-col :span="6">
+            <el-col :span="4">
               <span style="line-height: 36px">{{ index + 1 }}</span>
             </el-col>
             <el-col :span="6">
@@ -126,10 +128,12 @@
             ></el-col>
             <el-col :span="6">
               <el-form-item label="" prop="" label-width="0">
-                <el-input
+                <el-input-number
+                  style="width: 150px"
                   v-model="addForm.qlist[index].days"
                   placeholder="计息天数"
-                ></el-input> </el-form-item
+                  :min="0"
+                ></el-input-number> </el-form-item
             ></el-col>
             <!-- <el-col :span="6">
 							<el-form-item label="" size="mini" prop="" label-width="0">
@@ -173,10 +177,12 @@
           dtime: "",
           zmount: "",
           bplan: "",
+          periods: "",
           qlist: [
             {
               finish: false,
               desc: "",
+              days: "",
             },
           ],
         },
