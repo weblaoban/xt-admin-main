@@ -214,6 +214,25 @@
 
             console.log(data);
           });
+        } else {
+          this.addForm = {
+            name: "",
+            scount: 1,
+            brief: "",
+            state: 0,
+            otime: "",
+            dtime: "",
+            zmount: "",
+            bplan: "",
+            periods: "",
+            qlist: [
+              {
+                finish: false,
+                desc: "",
+                days: "",
+              },
+            ],
+          };
         }
       },
       getProductList() {
