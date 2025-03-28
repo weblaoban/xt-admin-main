@@ -32,7 +32,7 @@ module.exports = {
         port: 8080,
         proxy: {
             "/apis": {
-                target: "https://hts.quanshixintuo.com/",
+                target: "https://hts.quanshizixun.com",
                 pathRewrite: {
                     "^/apis": "/",
                 },
