@@ -64,17 +64,17 @@
         ></el-col>
         <el-col :span="8">
           <el-form-item
-            label="期限"
+            label="缴费模式"
             prop="investLimitId"
             :rules="[
-              { required: true, message: '请选择期限', trigger: 'change' },
+              { required: true, message: '请选择缴费模式', trigger: 'change' },
             ]"
           >
             <el-col :span="20">
               <el-select
                 v-model="dataForm.investLimitId"
                 style="width: 250px"
-                placeholder="请选择期限"
+                placeholder="请选择缴费模式"
               >
                 <el-option
                   v-for="item in searchs.investLimitId"
@@ -89,13 +89,13 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
-            label="业绩比较基准"
+            label="IRR"
             label-width="120px"
             prop="brief"
             :rules="[
               {
                 required: true,
-                message: '业绩比较基准不能为空',
+                message: 'IRR不能为空',
                 trigger: 'blur',
               },
             ]"
@@ -103,11 +103,36 @@
             <el-col :span="20">
               <el-input
                 v-model="dataForm.brief"
-                placeholder="业绩比较基准"
+                placeholder="IRR"
                 maxlength="50"
               ></el-input>
             </el-col> </el-form-item
         ></el-col>
+        <el-col :span="8">
+          <el-form-item
+            label="类型"
+            prop="pmStand"
+            :rules="[
+              { required: true, message: '请选择类型', trigger: 'change' },
+            ]"
+          >
+            <el-col :span="20">
+              <el-select
+                v-model="dataForm.type"
+                style="width: 250px"
+                placeholder="请选择类型"
+              >
+                <el-option
+                  v-for="item in searchs.type"
+                  :key="item.label"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-form-item>
+        </el-col>
         <el-col :span="8">
           <el-form-item
             label="投资门槛"
@@ -134,193 +159,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="付息方式" prop="inrestMethodId">
-            <el-col :span="20">
-              <el-select
-                v-model="dataForm.inrestMethodId"
-                style="width: 250px"
-                placeholder="付息方式"
-              >
-                <el-option
-                  v-for="item in searchs.inrestMethodId"
-                  :key="item.label"
-                  :label="item.name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
-            </el-col>
+          <el-form-item label="是否推荐">
+            <el-radio-group v-model="dataForm.recommed">
+              <el-radio :label="1">是</el-radio>
+              <el-radio :label="0">否</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="投资领域" prop="prodEffId">
-            <el-col :span="20">
-              <el-select
-                v-model="dataForm.prodEffId"
-                style="width: 250px"
-                placeholder="请选择投资领域"
-              >
-                <el-option
-                  v-for="item in searchs.prodEffid"
-                  :key="item.label"
-                  :label="item.name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="防控级别" prop="lev">
-            <el-col :span="20">
-              <el-input
-                v-model="dataForm.lev"
-                placeholder="防控级别"
-                maxlength="50"
-              ></el-input>
-            </el-col>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8"> </el-col>
-        <!-- <el-col :span="16">
-					<el-form-item label="是否推荐">
-						<el-radio-group v-model="dataForm.recommed">
-							<el-radio :label="1">是</el-radio>
-							<el-radio :label="0">否</el-radio>
-						</el-radio-group>
-					</el-form-item>
-				</el-col> -->
       </el-row>
-
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="发行机构" prop="organId">
-            <el-select
-              v-model="dataForm.organId"
-              style="width: 250px"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in this.organList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-
-        <el-col :span="8">
-          <el-form-item label="收益类型" prop="investId">
-            <el-col :span="20">
-              <el-input
-                v-model="dataForm.investId"
-                placeholder="收益类型"
-                maxlength="50"
-              ></el-input
-            ></el-col>
-          </el-form-item>
-        </el-col>
-
-        <el-col :span="8">
-          <el-form-item label="规模" prop="totalStocks">
-            <el-col :span="20"
-              ><el-input
-                v-model="dataForm.totalStocks"
-                placeholder="规模"
-                maxlength="50"
-              ></el-input
-            ></el-col> </el-form-item
-        ></el-col>
-
-        <el-col :span="8">
-          <el-form-item label="所在地区" prop="area">
-            <el-col :span="20">
-              <el-input
-                v-model="dataForm.area"
-                placeholder="所在地区"
-                maxlength="50"
-              ></el-input>
-            </el-col> </el-form-item
-        ></el-col>
-        <el-col :span="8">
-          <el-form-item label="大小额配比" prop="investRatio">
-            <el-col :span="20">
-              <el-input
-                v-model="dataForm.investRatio"
-                placeholder="大小额配比"
-                maxlength="50"
-              ></el-input>
-            </el-col> </el-form-item
-        ></el-col>
-
-        <el-col :span="8">
-          <el-form-item label="计息天数" prop="days">
-            <el-col :span="20">
-              <el-input-number
-                v-model="dataForm.days"
-                placeholder="计息天数"
-                :min="1"
-              ></el-input-number>
-            </el-col> </el-form-item
-        ></el-col>
-
-        <el-col :span="12">
-          <el-form-item label="期数" prop="periods">
-            <el-select
-              @change="initContent"
-              v-model="dataForm.periods"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in 30"
-                :key="item"
-                :label="item"
-                :value="item"
-              >
-              </el-option> </el-select></el-form-item
-        ></el-col>
-      </el-row>
-
-      <el-form-item label="" prop="porder">
-        <div class="sold_list">
-          <div class="soldItem soldhead">
-            <div>序号</div>
-            <div class="soldDetail">进度详情</div>
-            <div style="width: 200px">计息天数</div>
-            <!-- <div>操作</div> -->
-          </div>
-          <div
-            class="soldItem"
-            v-for="(item, index) in dataForm.porder"
-            :key="index"
-          >
-            <div>{{ index + 1 }}</div>
-            <div class="soldDetail">
-              <el-input
-                v-model="dataForm.porder[index].detail"
-                placeholder="进度详情"
-                maxlength="500"
-                show-word-limit
-                type="textarea"
-              ></el-input>
-            </div>
-            <div style="width: 200px">
-              <el-input-number
-                v-model="dataForm.porder[index].day"
-                placeholder="计息天数"
-                :min="0"
-              ></el-input-number>
-            </div>
-            <!-- <div @click="delSold(index)" style="color: red; cursor: pointer">
-              删除
-            </div> -->
-          </div>
-        </div>
-        <!-- <el-button @click="addSold" type="text">新增进度</el-button> -->
-      </el-form-item>
 
       <el-form-item label="产品详情" prop="content">
         <tiny-mce
@@ -436,6 +282,16 @@
             {
               label: "300万以上",
               value: "4",
+            },
+          ],
+          type: [
+            {
+              label: "储蓄型",
+              value: "1",
+            },
+            {
+              label: "重疾型",
+              value: "2",
             },
           ],
           inrestMethodId: [
@@ -559,7 +415,7 @@
           method: "get",
           params: this.$http.adornParams(),
         }).then(({ data }) => {
-          data = data.filter((item) => item.categoryId < 100);
+          data = data.filter((item) => item.categoryId >= 100);
           this.category.list = treeDataTranslate(data, "categoryId", "parentId");
         });
       },

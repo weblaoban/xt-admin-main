@@ -401,3 +401,73 @@ export const userbuytableOption = {
         }
     ]
 }
+
+export const userbuyBtableOption = {
+    searchMenuSpan: 6,
+    columnBtn: false,
+    border: true,
+    // selection: true,
+    index: false,
+    indexLabel: '序号',
+    stripe: true,
+    menuAlign: 'center',
+    menuWidth: 200,
+    align: 'center',
+    refreshBtn: false,
+    searchSize: 'mini',
+    addBtn: false,
+    editBtn: false,
+    delBtn: false,
+    viewBtn: false,
+    props: {
+        label: 'label',
+        value: 'value'
+    },
+    column: [
+        {
+            label: '产品名称',
+            prop: 'name',
+            search: true
+        },
+        {
+            label: '状态',
+            prop: 'state',
+            search: true,
+            type: 'select',
+            dicData: [
+                {
+                    label: '存续中',
+                    value: 0
+                },
+                {
+                    label: '已完成',
+                    value: 1
+                }
+            ]
+        },
+        {
+            label: 'IRR',
+            prop: 'brief'
+        },
+        {
+            label: '成立时间',
+            prop: 'otime'
+        },
+        {
+            label: '缴费模式',
+            prop: 'periods'
+        },
+        {
+            label: '总认购金额',
+            prop: 'zmount'
+        },
+        {
+            label: '期数',
+            prop: 'scount'
+        },
+        {
+            label: '认购用户',
+            prop: 'ucount'
+        }
+    ]
+}

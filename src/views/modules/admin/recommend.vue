@@ -1,7 +1,7 @@
 <template></template>
 <template>
-	<div class="mod-prod">
-		<h4>信托产品</h4>
+  <div class="mod-prod">
+    <!-- <h4>信托产品</h4>÷
 		<avue-crud
 			ref="crud"
 			:data="dataList"
@@ -19,7 +19,6 @@
 				>
 			</template>
 			<template slot-scope="scope" slot="menu">
-				<!-- 上衣 -->
 				<el-button
                 :loading="loading"
 					type="primary"
@@ -27,7 +26,6 @@
 					icon="el-icon-top"
 					@click="goUp(scope.row, scope.index, dataList)"
 				></el-button>
-				<!-- 下衣 -->
 				<el-button
                 :loading="loading"
 					v-if="scope.index < dataList.length - 1 && scope.row.id"
@@ -66,7 +64,7 @@
 				>
 			</template>
 			<template slot-scope="scope" slot="menu">
-				<!-- 上衣 -->
+			
 				<el-button
                 :loading="loading"
 					type="primary"
@@ -74,7 +72,7 @@
 					icon="el-icon-top"
 					@click="goUp(scope.row, scope.index, dataList2)"
 				></el-button>
-				<!-- 下衣 -->
+			
 				<el-button
                 :loading="loading"
 					v-if="scope.index < dataList2.length - 1 && scope.row.id"
@@ -113,7 +111,7 @@
 				>
 			</template>
 			<template slot-scope="scope" slot="menu">
-				<!-- 上衣 -->
+			
 				<el-button
                 :loading="loading"
 					type="primary"
@@ -121,7 +119,6 @@
 					icon="el-icon-top"
 					@click="goUp(scope.row, scope.index, dataList3)"
 				></el-button>
-				<!-- 下衣 -->
 				<el-button
                 :loading="loading"
 					v-if="scope.index < dataList3.length - 1 && scope.row.id"
@@ -140,324 +137,322 @@
 					>清空</el-button
 				>
 			</template>
-		</avue-crud>
+		</avue-crud> -->
 
-		<recommendH5></recommendH5>
-		<!-- 弹窗, 新增 / 修改 --><el-dialog
-			title="提示"
-			:visible.sync="showSelectProd"
-			width="30%"
-		>
-			<div class="content">
-				<el-select v-model="selectItem" filterable placeholder="请选择">
-					<el-option
-						v-for="item in selectList"
-						:key="item.value"
-						:label="item.name"
-						:value="item.id"
-					>
-					</el-option>
-				</el-select>
-			</div>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="showSelectProd = false">取 消</el-button>
-				<el-button type="primary" @click="onSetProd">确 定</el-button>
-			</span>
-		</el-dialog>
-	</div>
+    <recommendH5></recommendH5>
+    <!-- 弹窗, 新增 / 修改 --><el-dialog
+      title="提示"
+      :visible.sync="showSelectProd"
+      width="30%"
+    >
+      <div class="content">
+        <el-select v-model="selectItem" filterable placeholder="请选择">
+          <el-option
+            v-for="item in selectList"
+            :key="item.value"
+            :label="item.name"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="showSelectProd = false">取 消</el-button>
+        <el-button type="primary" @click="onSetProd">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-import { tableOption } from '@/crud/admin/indexImg'
-import recommendH5 from './recommendH5'
-const defaultList = [
-  {
-    imgUrl: '',
-    default: true
-  },
-  {
-    imgUrl: '',
-    default: true
-  },
-  {
-    imgUrl: '',
-    default: true
-  },
-  {
-    imgUrl: '',
-    default: true
-  }
-]
-export default {
-  data () {
-    return {
-      selectItem: '',
-      dataForm: {
-        indexImg: ''
+  import { tableOption } from "@/crud/admin/indexImg";
+  import recommendH5 from "./recommendH5";
+  const defaultList = [
+    {
+      imgUrl: "",
+      default: true,
+    },
+    {
+      imgUrl: "",
+      default: true,
+    },
+    {
+      imgUrl: "",
+      default: true,
+    },
+    {
+      imgUrl: "",
+      default: true,
+    },
+  ];
+  export default {
+    data() {
+      return {
+        selectItem: "",
+        dataForm: {
+          indexImg: "",
+        },
+        dataList: [...defaultList],
+        dataList3: [...defaultList],
+        dataList2: [...defaultList],
+        dataListLoading: false,
+        addOrUpdateVisible: false,
+        resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
+        // 修改
+        tableOption: tableOption,
+        page: {
+          total: 0, // 总页数
+          currentPage: 1, // 当前页数
+          pageSize: 10, // 每页显示多少条
+        },
+        showSelectProd: false,
+        selectList: [],
+        sold_num: "",
+        loading: false,
+      };
+    },
+    methods: {
+      // 获取数据列表 信托产品
+      getDataList(page, params) {
+        this.dataListLoading = true;
+        this.$http({
+          url: this.$http.adornUrl("/admin/prod/page"),
+          method: "get",
+          params: this.$http.adornParams(
+            Object.assign(
+              {
+                current: page == null ? this.page.currentPage : page.currentPage,
+                size: page == null ? this.page.pageSize : page.pageSize,
+                categoryId: 97,
+                soldNum: 1,
+              },
+              params
+            )
+          ),
+        }).then(({ data }) => {
+          const dataList = [...defaultList];
+          for (var i = 0; i < data.records.length; i++) {
+            data.records[i].oldIndex = i;
+          }
+          data.records = data.records.sort((a, b) => {
+            return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex;
+          });
+          dataList.forEach((_, index) => {
+            if (data.records[index]) {
+              dataList[index] = data.records[index];
+            }
+          });
+          this.dataList = dataList;
+          this.dataListLoading = false;
+        });
       },
-      dataList: [...defaultList],
-      dataList3: [...defaultList],
-      dataList2: [...defaultList],
-      dataListLoading: false,
-      addOrUpdateVisible: false,
-      resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
-			// 修改
-      tableOption: tableOption,
-      page: {
-        total: 0, // 总页数
-        currentPage: 1, // 当前页数
-        pageSize: 10 // 每页显示多少条
+
+      getDataList1(page, params) {
+        this.dataListLoading = true;
+        this.$http({
+          url: this.$http.adornUrl("/admin/prod/page"),
+          method: "get",
+          params: this.$http.adornParams(
+            Object.assign(
+              {
+                current: page == null ? this.page.currentPage : page.currentPage,
+                size: page == null ? this.page.pageSize : page.pageSize,
+                categoryId: 98,
+                soldNum: 1,
+              },
+              params
+            )
+          ),
+        }).then(({ data }) => {
+          const dataList = [...defaultList];
+
+          for (var i = 0; i < data.records.length; i++) {
+            data.records[i].oldIndex = i;
+          }
+          data.records = data.records.sort((a, b) => {
+            return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex;
+          });
+          dataList.forEach((_, index) => {
+            if (data.records[index]) {
+              dataList[index] = data.records[index];
+            }
+          });
+          this.dataList2 = dataList;
+          this.dataListLoading = false;
+        });
       },
-      showSelectProd: false,
-      selectList: [],
-      sold_num: '',
-      loading: false
-    }
-  },
-  methods: {
-		// 获取数据列表 信托产品
-    getDataList (page, params) {
-      this.dataListLoading = true
-      this.$http({
-        url: this.$http.adornUrl('/admin/prod/page'),
-        method: 'get',
-        params: this.$http.adornParams(
-					Object.assign(
-  {
-    current: page == null ? this.page.currentPage : page.currentPage,
-    size: page == null ? this.page.pageSize : page.pageSize,
-    categoryId: 97,
-    soldNum: 1
-  },
-						params
-					)
-				)
-      }).then(({ data }) => {
-        const dataList = [...defaultList]
-        for (var i = 0; i < data.records.length; i++) {
-          data.records[i].oldIndex = i
+
+      getDataList2(page, params) {
+        this.dataListLoading = true;
+        this.$http({
+          url: this.$http.adornUrl("/admin/prod/page"),
+          method: "get",
+          params: this.$http.adornParams(
+            Object.assign(
+              {
+                current: page == null ? this.page.currentPage : page.currentPage,
+                size: page == null ? this.page.pageSize : page.pageSize,
+                categoryId: 99,
+                soldNum: 1,
+              },
+              params
+            )
+          ),
+        }).then(({ data }) => {
+          const dataList = [...defaultList];
+          for (var i = 0; i < data.records.length; i++) {
+            data.records[i].oldIndex = i;
+          }
+          data.records = data.records.sort((a, b) => {
+            return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex;
+          });
+          dataList.forEach((_, index) => {
+            if (data.records[index]) {
+              dataList[index] = data.records[index];
+            }
+          });
+          this.dataList3 = dataList;
+          this.dataListLoading = false;
+        });
+      },
+
+      getAllList() {
+        this.getDataList();
+        this.getDataList1();
+        this.getDataList2();
+      },
+      onShowSelectProd(classify, index) {
+        this.dataListLoading = true;
+        this.selectItem = "";
+        this.sold_num = index + 1;
+        this.$http({
+          url: this.$http.adornUrl("/admin/prod/page"),
+          method: "get",
+          params: this.$http.adornParams(
+            Object.assign({
+              current: 1,
+              size: 1000,
+              categoryId: classify,
+              soldNum: 0,
+            })
+          ),
+        }).then(({ data }) => {
+          this.selectList = data.records;
+          this.dataListLoading = false;
+          this.showSelectProd = true;
+        });
+      },
+      onSetProd() {
+        if (!this.selectItem) {
+          return;
         }
-        data.records = data.records.sort((a, b) => {
-          return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex
-        })
-        dataList.forEach((_, index) => {
-          if (data.records[index]) {
-            dataList[index] = data.records[index]
-          }
-        })
-        this.dataList = dataList
-        this.dataListLoading = false
-      })
-    },
-
-    getDataList1 (page, params) {
-      this.dataListLoading = true
-      this.$http({
-        url: this.$http.adornUrl('/admin/prod/page'),
-        method: 'get',
-        params: this.$http.adornParams(
-					Object.assign(
-  {
-    current: page == null ? this.page.currentPage : page.currentPage,
-    size: page == null ? this.page.pageSize : page.pageSize,
-    categoryId: 98,
-    soldNum: 1
-  },
-						params
-					)
-				)
-      }).then(({ data }) => {
-        const dataList = [...defaultList]
-
-        for (var i = 0; i < data.records.length; i++) {
-          data.records[i].oldIndex = i
-        }
-        data.records = data.records.sort((a, b) => {
-          return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex
-        })
-        dataList.forEach((_, index) => {
-          if (data.records[index]) {
-            dataList[index] = data.records[index]
-          }
-        })
-        this.dataList2 = dataList
-        this.dataListLoading = false
-      })
-    },
-
-    getDataList2 (page, params) {
-      this.dataListLoading = true
-      this.$http({
-        url: this.$http.adornUrl('/admin/prod/page'),
-        method: 'get',
-        params: this.$http.adornParams(
-					Object.assign(
-  {
-    current: page == null ? this.page.currentPage : page.currentPage,
-    size: page == null ? this.page.pageSize : page.pageSize,
-    categoryId: 99,
-    soldNum: 1
-  },
-						params
-					)
-				)
-      }).then(({ data }) => {
-        const dataList = [...defaultList]
-        for (var i = 0; i < data.records.length; i++) {
-          data.records[i].oldIndex = i
-        }
-        data.records = data.records.sort((a, b) => {
-          return a.soldNum - b.soldNum || a.oldIndex - b.oldIndex
-        })
-        dataList.forEach((_, index) => {
-          if (data.records[index]) {
-            dataList[index] = data.records[index]
-          }
-        })
-        this.dataList3 = dataList
-        this.dataListLoading = false
-      })
-    },
-
-    getAllList () {
-      this.getDataList()
-      this.getDataList1()
-      this.getDataList2()
-    },
-    onShowSelectProd (classify, index) {
-      this.dataListLoading = true
-      this.selectItem = ''
-      this.sold_num = index + 1
-      this.$http({
-        url: this.$http.adornUrl('/admin/prod/page'),
-        method: 'get',
-        params: this.$http.adornParams(
-					Object.assign({
-  current: 1,
-  size: 1000,
-  categoryId: classify,
-  soldNum: 0
-})
-				)
-      }).then(({ data }) => {
-        this.selectList = data.records
-        this.dataListLoading = false
-        this.showSelectProd = true
-      })
-    },
-    onSetProd () {
-      if (!this.selectItem) {
-        return
-      }
-      const param = {
-        id: this.selectItem,
-        soldNum: this.sold_num
-      }
-      this.$http({
-        url: this.$http.adornUrl(`/admin/prod`),
-        method: param.id ? 'put' : 'post',
-        data: this.$http.adornData(param)
-      }).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success',
-          duration: 1500,
-          onClose: () => {
-            this.getAllList()
-            this.showSelectProd = false
-            this.selectItem = ''
-          }
-        })
-      })
-    },
-
-		// 清空
-    deleteHandle (row) {
-      if (row.default) {
-        return
-      }
-      let param = Object.assign({}, row)
-      param.soldNum = 0
-      this.$http({
-        url: this.$http.adornUrl(`/admin/prod`),
-        method: param.id ? 'put' : 'post',
-        data: this.$http.adornData(param)
-      }).then(() => {
-        this.$message({
-          message: '操作成功',
-          type: 'success',
-          duration: 2000,
-          onClose: () => {
-            this.getAllList()
-          }
-        })
-      })
-    },
-
-    goDown (row, index, resource) {
-      if (this.loading) {
-        return
-      }
-      const nextP = resource[index + 1]
-      if (nextP && !nextP.default) {
-        this.loading = true
+        const param = {
+          id: this.selectItem,
+          soldNum: this.sold_num,
+        };
         this.$http({
           url: this.$http.adornUrl(`/admin/prod`),
-          method: 'put',
-          data: this.$http.adornData({ id: row.id, soldNum: index + 2 })
+          method: param.id ? "put" : "post",
+          data: this.$http.adornData(param),
         }).then(() => {
-          this.$http({
-            url: this.$http.adornUrl(`/admin/prod`),
-            method: 'put',
-            data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 })
-          }).then(() => {
-            this.loading = false
-            this.getAllList()
-            this.$message({
-              message: '操作成功',
-              type: 'success',
-              duration: 1500,
-              onClose: () => {
-              }
-            })
-          })
-        })
-      }
-    },
-    goUp (row, index, resource) {
-      console.log(this.loading)
-      if (this.loading) {
-        return
-      }
-      const nextP = resource[index - 1]
-      if (nextP && !nextP.default) {
-        this.loading = true
+          this.$message({
+            message: "操作成功",
+            type: "success",
+            duration: 1500,
+            onClose: () => {
+              this.getAllList();
+              this.showSelectProd = false;
+              this.selectItem = "";
+            },
+          });
+        });
+      },
+
+      // 清空
+      deleteHandle(row) {
+        if (row.default) {
+          return;
+        }
+        let param = Object.assign({}, row);
+        param.soldNum = 0;
         this.$http({
           url: this.$http.adornUrl(`/admin/prod`),
-          method: 'put',
-          data: this.$http.adornData({ id: row.id, soldNum: index })
+          method: param.id ? "put" : "post",
+          data: this.$http.adornData(param),
         }).then(() => {
+          this.$message({
+            message: "操作成功",
+            type: "success",
+            duration: 2000,
+            onClose: () => {
+              this.getAllList();
+            },
+          });
+        });
+      },
+
+      goDown(row, index, resource) {
+        if (this.loading) {
+          return;
+        }
+        const nextP = resource[index + 1];
+        if (nextP && !nextP.default) {
+          this.loading = true;
           this.$http({
             url: this.$http.adornUrl(`/admin/prod`),
-            method: 'put',
-            data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 })
+            method: "put",
+            data: this.$http.adornData({ id: row.id, soldNum: index + 2 }),
           }).then(() => {
-            this.getAllList()
-            this.loading = false
-            this.$message({
-              message: '操作成功',
-              type: 'success',
-              duration: 1500,
-              onClose: () => {
-              }
-            })
-          })
-        })
-      }
-    }
-  },
-  components: {
-    recommendH5
-  }
-}
+            this.$http({
+              url: this.$http.adornUrl(`/admin/prod`),
+              method: "put",
+              data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 }),
+            }).then(() => {
+              this.loading = false;
+              this.getAllList();
+              this.$message({
+                message: "操作成功",
+                type: "success",
+                duration: 1500,
+                onClose: () => {},
+              });
+            });
+          });
+        }
+      },
+      goUp(row, index, resource) {
+        console.log(this.loading);
+        if (this.loading) {
+          return;
+        }
+        const nextP = resource[index - 1];
+        if (nextP && !nextP.default) {
+          this.loading = true;
+          this.$http({
+            url: this.$http.adornUrl(`/admin/prod`),
+            method: "put",
+            data: this.$http.adornData({ id: row.id, soldNum: index }),
+          }).then(() => {
+            this.$http({
+              url: this.$http.adornUrl(`/admin/prod`),
+              method: "put",
+              data: this.$http.adornData({ id: nextP.id, soldNum: index + 1 }),
+            }).then(() => {
+              this.getAllList();
+              this.loading = false;
+              this.$message({
+                message: "操作成功",
+                type: "success",
+                duration: 1500,
+                onClose: () => {},
+              });
+            });
+          });
+        }
+      },
+    },
+    components: {
+      recommendH5,
+    },
+  };
 </script>
