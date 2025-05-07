@@ -148,7 +148,6 @@
 					>
 				</el-form-item>
 			</el-form>
-			
 			<div
 					class="tablecon"
 					style="max-height: 300px; overflow-y: scroll; width: 100%"
@@ -180,10 +179,10 @@
 						<template slot-scope="scope">
               <span style="margin-left: 10px">{{
 									userList.find((item) => {
-										return item.id === scope.row.puserId
+										return item.id === scope.row.puserid
 									})
 											? userList.find((item) => {
-												return item.id === scope.row.puserId
+												return item.id === scope.row.puserid
 											}).userMobile
 											: ''
 								}}</span>
@@ -332,14 +331,16 @@ export default {
 				method: 'get',
 				params: this.$http.adornParams({id: row.id})
 			}).then(({data}) => {
-				this.detailItem = row
-				this.detailItem.userDtm = []
+				this.detailItem = {row,userDtm : []}
 				let result  = []
 				data.forEach(item=>{
-					result.push(item.userDtm)
+					result.push({...item,...item.userDtm,id:item.id})
 				})
 				console.log(result)
-				this.detailItem.userDtm = result
+				this.detailItem = {
+					...this.detailItem,
+					userDtm: result
+				}
 			console.log(this.detailItem.userDtm)
 				this.visibleBuyDetailDialog = true
 				//   this.$refs.ruleForm.resetFields()
@@ -386,7 +387,7 @@ export default {
 						method: 'post',
 						data: this.$http.adornData({
 							productId: this.detailItem.id,
-							puserId: this.userForm.puserId,
+							puserid: this.userForm.puserId,
 							totalAmount:this.detailItem.totalAmount+totalAmount,
 							userDtm:
 								{
