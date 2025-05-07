@@ -159,7 +159,7 @@ export const bTableOption = {
         },
         {
             label: '生成时间',
-            prop: 'createTime'
+            prop: 'createdAt'
         },
         {
             width: 150,
@@ -189,7 +189,7 @@ export const bTableOption = {
             search: true
         },
         {
-            label: '类型',
+            label: '产品分类',
             prop: 'categoryId',
             dicData: [],
             props: {
@@ -200,7 +200,7 @@ export const bTableOption = {
         },
         {
             label: '缴费模式',
-            prop: 'investLimitId',
+            prop: 'paymentMode',
             type: 'select',
             dicData: [],
             props: {
@@ -210,30 +210,11 @@ export const bTableOption = {
         },
         {
             label: 'IRR',
-            prop: 'brief'
-        },
-        {
-            label: '类型',
-            prop: 'type',
-            type: 'select',
-            dicData: [[
-                {
-                    label: '储蓄型',
-                    value: '1'
-                },
-                {
-                    label: '重疾型',
-                    value: '2'
-                }
-            ]],
-            props: {
-                label: 'name',
-                value: 'id'
-            }
+            prop: 'irr'
         },
         {
             label: '投资门槛',
-            prop: 'pmStand',
+            prop: 'investmentThreshold',
             type: 'select',
             dicData: [],
             props: {
@@ -241,18 +222,24 @@ export const bTableOption = {
                 value: 'id'
             }
         },
+
         {
             label: '是否推荐',
-            prop: 'recommed',
+            prop: 'recommended',
             type: 'select',
-            dicData: [{
-                label: '是',
-                value: 1
-            }, {
-                label: '否',
-                value: 0
-            }],
-            search: true
-        }
+            dicData: [
+                {
+                    label: '是',
+                    value: 1
+                }, {
+                    label: '否',
+                    value: 0
+                }
+            ],
+            search: true,
+            formatter(row){
+                return row.recommended === 1 ? '是' : '否'
+            }
+        },
     ]
 }

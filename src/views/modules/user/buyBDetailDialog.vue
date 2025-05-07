@@ -23,58 +23,63 @@
         <el-col :span="12">
           <el-form-item label="状态" prop="state"
             ><span>{{
-              addForm.state == 0 ? "存续中" : "已结束"
+              addForm.status == 0 ? "存续中" : "已结束"
             }}</span></el-form-item
           ></el-col
         ><el-col :span="12">
-          <el-form-item label-width="100px" label="IRR" prop="brief"
+          <el-form-item label-width="100px" label="IRR" prop="irr"
             ><el-input
-              v-model="addForm.brief"
+              v-model="addForm.irr"
               placeholder="IRR"
             ></el-input> </el-form-item
         ></el-col>
         <el-col :span="12">
-          <el-form-item label="成立时间" prop="otime"
+          <el-form-item label="成立时间" prop="updatedAt"
             ><el-date-picker
               type="date"
               format="yyyy 年 MM 月 dd 日"
               value-format="yyyy-MM-dd 00:00:00"
               placeholder="选择日期"
-              v-model="addForm.otime"
+              v-model="addForm.updatedAt"
               style="width: 100%"
             ></el-date-picker></el-form-item
         ></el-col>
-
         <el-col :span="13">
           <el-form-item
             label="缴费模式"
-            prop="investLimitId"
+            prop="paymentMode"
             :rules="[
               { required: true, message: '请选择缴费模式', trigger: 'change' },
             ]"
           >
             <el-col :span="20">
-              <el-select
-                v-model="addForm.investLimitId"
-                style="width: 250px"
-                placeholder="请选择缴费模式"
-              >
-                <el-option
-                  v-for="item in searchs.investLimitId"
-                  :key="item.label"
-                  :label="item.name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
+							
+							<el-input
+									v-model="addForm.paymentMode"
+									placeholder="缴费模式"
+									maxlength="50"
+							></el-input>
+<!--              <el-select-->
+<!--                v-model="addForm.paymentMode"-->
+<!--                style="width: 250px"-->
+<!--                placeholder="请选择缴费模式"-->
+<!--              >-->
+<!--                <el-option-->
+<!--                  v-for="item in searchs.paymentMode"-->
+<!--                  :key="item.label"-->
+<!--									:label="item.name"-->
+<!--									:value="item.id"-->
+<!--                >-->
+<!--                </el-option>-->
+<!--              </el-select>-->
             </el-col>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="期数" prop="scount">
+          <el-form-item label="期数" prop="totalPhases">
             <el-select
               @change="initContent"
-              v-model="addForm.scount"
+              v-model="addForm.totalPhases"
               placeholder="请选择"
             >
               <el-option
@@ -107,15 +112,19 @@
       return {
         visible: false,
         addForm: {
+					status:0,
           name: "",
-          scount: 1,
-          brief: "",
+          totalPhases: 1,
+          irr: "",
           state: 0,
-          otime: "",
+					updatedAt: "",
           dtime: "",
           zmount: "",
           bplan: "",
           periods: "",
+					irr:'',
+					paidType:'0',
+					paymentMode:'',
           qlist: [
             {
               finish: false,
@@ -125,20 +134,7 @@
           ],
         },
         searchs: {
-          investLimitId: [
-            {
-              label: "一年内（含）",
-              value: "1",
-            },
-            {
-              label: "一年至两年（含）",
-              value: "2",
-            },
-            {
-              label: "两年以上",
-              value: "3",
-            },
-          ],
+					paymentMode: [],
         },
         page: {
           total: 0, // 总页数
@@ -158,27 +154,30 @@
         if (this.addForm.id) {
           this.$http({
             url: this.$http.adornUrl(
-              `/admin/prodTagReference/info/${this.addForm.id}`
+              `/insurance/product/findPaidbyId`
             ),
             method: "get",
-            params: this.$http.adornParams(),
+            params: this.$http.adornParams({id:this.addForm.id}),
           }).then(({ data }) => {
             data.qlist = data.qlist ? JSON.parse(data.qlist) : [];
             this.addForm = data;
-
             console.log(data);
           });
         } else {
           this.addForm = {
+						status:0,
             name: "",
-            scount: 1,
-            brief: "",
+            totalPhases: 1,
+            irr: "",
             state: 0,
-            otime: "",
+						updatedAt: "",
             dtime: "",
             zmount: "",
             bplan: "",
             periods: "",
+						irr:'',
+						paidType:'0',
+						paymentMode:'',
             qlist: [
               {
                 finish: false,
@@ -244,9 +243,10 @@
             }
             params.qlist = JSON.stringify([...params.qlist]);
             //   delete params.id
+						const url = params.id ? '/insurance/product/update':'/insurance/product/add'
             this.$http({
-              url: this.$http.adornUrl(`/admin/prodTagReference`),
-              method: this.addForm.id ? "put" : "post",
+              url: this.$http.adornUrl(url),
+              method: "post",
               data: this.$http.adornData({
                 id: this.addForm.id || "",
                 ...params,

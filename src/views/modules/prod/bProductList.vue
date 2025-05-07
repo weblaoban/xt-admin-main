@@ -1,8 +1,8 @@
 <template>
   <div class="mod-prod">
+<!--		:page="page"-->
     <avue-crud
       ref="crud"
-      :page="page"
       :data="dataList"
       :table-loading="dataListLoading"
       :permission="permission"
@@ -157,17 +157,17 @@
       // 获取分类信息
       getCategoryList() {
         this.getBaseInfo();
-        return this.$http({
-          url: this.$http.adornUrl("/admin/category/listCategory"),
-          method: "get",
-          params: this.$http.adornParams(),
-        }).then(({ data }) => {
-          this.tableOption.column[4].dicData = treeDataTranslate(
-            data,
-            "categoryId",
-            "parentId"
-          );
-        });
+        // return this.$http({
+        //   url: this.$http.adornUrl("/admin/category/listCategory"),
+        //   method: "get",
+        //   params: this.$http.adornParams(),
+        // }).then(({ data }) => {
+        //   this.tableOption.column[4].dicData = treeDataTranslate(
+        //     data,
+        //     "categoryId",
+        //     "parentId"
+        //   );
+        // });
       },
       // 获取枚举信息
       getBaseInfo() {
@@ -180,11 +180,11 @@
           // 期限
           this.tableOption.column[5].dicData = this.getDataByParent(12, data);
           // 付息方式
-          this.tableOption.column[8].dicData = this.getDataByParent(13, data);
+          // this.tableOption.column[8].dicData = this.getDataByParent(13, data);
           // 投资门槛
           this.tableOption.column[7].dicData = this.getDataByParent(14, data);
           // 投资领域
-          this.tableOption.column[9].dicData = this.getDataByParent(15, data);
+          // this.tableOption.column[9].dicData = this.getDataByParent(15, data);
         });
       },
       getDataByParent(parentId, origin) {
@@ -194,22 +194,26 @@
       },
       // 获取数据列表
       getDataList(page, params, done) {
+				// params: this.$http.adornParams(
+				// 		Object.assign(
+				// 				{
+				// 					current: page == null ? this.page.currentPage : page.currentPage,
+				// 					size: page == null ? this.page.pageSize : page.pageSize,
+				// 				},
+				// 				params
+				// 		)
+				// ),
         this.dataListLoading = true;
         this.$http({
-          url: this.$http.adornUrl("/admin/prod/page"),
+          url: this.$http.adornUrl("/insurance/product/listByUnPaid"),
           method: "get",
-          params: this.$http.adornParams(
-            Object.assign(
-              {
-                current: page == null ? this.page.currentPage : page.currentPage,
-                size: page == null ? this.page.pageSize : page.pageSize,
-              },
-              params
-            )
-          ),
+					params:params,
         }).then(({ data }) => {
-          this.dataList = data.records.map((item) => {
-
+          // this.dataList = data.records.map((item) => {
+					//
+          //   return item;
+          // });
+          this.dataList = data.map((item) => {
             return item;
           });
           console.log(this.tableOption.column);

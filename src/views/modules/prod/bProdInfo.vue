@@ -51,39 +51,57 @@
             prop="categoryId"
           >
             <el-col :span="24">
-              <el-cascader
-                expand-trigger="hover"
-                :options="category.list"
-                :props="category.props"
-                v-model="category.selected"
-                change-on-select
-                @change="handleCategoryChange"
-              >
-              </el-cascader>
+							              <el-select
+							                v-model="dataForm.categoryId"
+							                style="width: 250px"
+							                placeholder="请选择产品分类"
+							              >
+							                <el-option
+							                  v-for="item in category.list"
+							                  :key="item.label"
+							                  :label="item.categoryName"
+							                  :value="item.categoryId"
+							                >
+							                </el-option>
+							              </el-select>
+<!--              <el-cascader-->
+<!--                expand-trigger="hover"-->
+<!--                :options="category.list"-->
+<!--                :props="category.props"-->
+<!--                v-model="category.selected"-->
+<!--                change-on-select-->
+<!--                @change="handleCategoryChange"-->
+<!--              >-->
+<!--              </el-cascader>-->
             </el-col> </el-form-item
         ></el-col>
         <el-col :span="8">
           <el-form-item
             label="缴费模式"
-            prop="investLimitId"
+            prop="paymentMode"
             :rules="[
               { required: true, message: '请选择缴费模式', trigger: 'change' },
             ]"
           >
             <el-col :span="20">
-              <el-select
-                v-model="dataForm.investLimitId"
-                style="width: 250px"
-                placeholder="请选择缴费模式"
-              >
-                <el-option
-                  v-for="item in searchs.investLimitId"
-                  :key="item.label"
-                  :label="item.name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
+							<el-input
+									v-model="dataForm.paymentMode"
+									placeholder="缴费模式"
+									maxlength="50"
+							></el-input>
+<!--              <el-select-->
+<!--                v-model="dataForm.paymentMode"-->
+<!--                style="width: 250px"-->
+<!--                placeholder="请选择缴费模式"-->
+<!--              >-->
+<!--                <el-option-->
+<!--                  v-for="item in searchs.paymentMode"-->
+<!--                  :key="item.label"-->
+<!--                  :label="item.name"-->
+<!--                  :value="item.id"-->
+<!--                >-->
+<!--                </el-option>-->
+<!--              </el-select>-->
             </el-col>
           </el-form-item>
         </el-col>
@@ -91,7 +109,7 @@
           <el-form-item
             label="IRR"
             label-width="120px"
-            prop="brief"
+            prop="irr"
             :rules="[
               {
                 required: true,
@@ -102,8 +120,8 @@
           >
             <el-col :span="20">
               <el-input
-                v-model="dataForm.brief"
-                placeholder="IRR"
+                v-model="dataForm.irr"
+                placeholder="Irr"
                 maxlength="50"
               ></el-input>
             </el-col> </el-form-item
@@ -111,22 +129,22 @@
         <el-col :span="8">
           <el-form-item
             label="类型"
-            prop="pmStand"
+            prop="tpe"
             :rules="[
               { required: true, message: '请选择类型', trigger: 'change' },
             ]"
           >
             <el-col :span="20">
               <el-select
-                v-model="dataForm.type"
+                v-model="dataForm.tpe"
                 style="width: 250px"
                 placeholder="请选择类型"
               >
                 <el-option
                   v-for="item in searchs.type"
                   :key="item.label"
-                  :label="item.name"
-                  :value="item.id"
+                  :label="item.label"
+                  :value="item.value"
                 >
                 </el-option>
               </el-select>
@@ -136,19 +154,19 @@
         <el-col :span="8">
           <el-form-item
             label="投资门槛"
-            prop="pmStand"
+            prop="investmentThreshold"
             :rules="[
               { required: true, message: '请选择投资门槛', trigger: 'change' },
             ]"
           >
             <el-col :span="20">
               <el-select
-                v-model="dataForm.pmStand"
+                v-model="dataForm.investmentThreshold"
                 style="width: 250px"
                 placeholder="请选择投资门槛"
               >
                 <el-option
-                  v-for="item in searchs.pmStand"
+                  v-for="item in searchs.investmentThreshold"
                   :key="item.label"
                   :label="item.name"
                   :value="item.id"
@@ -160,7 +178,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="是否推荐">
-            <el-radio-group v-model="dataForm.recommed">
+            <el-radio-group v-model="dataForm.recommended">
               <el-radio :label="1">是</el-radio>
               <el-radio :label="0">否</el-radio>
             </el-radio-group>
@@ -168,9 +186,9 @@
         </el-col>
       </el-row>
 
-      <el-form-item label="产品详情" prop="content">
+      <el-form-item label="产品详情" prop="description">
         <tiny-mce
-          v-model="dataForm.content"
+          v-model="dataForm.description"
           ref="content"
           style="width: 100%"
         ></tiny-mce>
@@ -205,15 +223,16 @@
         },
         // 规格列表
         dataForm: {
+					irr:'',
           name: "",
           brief: "",
-          categoryId: 0,
+          categoryId:'',
           id: 0,
-          investLimitId: "",
-          content: "",
+          paymentMode: "",
+					description: "",
           status: 1,
-          recommed: 1,
-          pmStand: "",
+          recommended: 1,
+          investmentThreshold: "",
           inrestMethodId: "",
           prodEffId: "",
           lev: "",
@@ -224,6 +243,8 @@
           investRatio: "",
           contentItem: "",
           porder: [],
+					paidType:'1',
+					tpe:''
         },
         searchs: {
           prodEffid: [
@@ -252,7 +273,7 @@
               value: "5",
             },
           ],
-          investLimitId: [
+          paymentMode: [
             {
               label: "一年内（含）",
               value: "1",
@@ -266,7 +287,7 @@
               value: "3",
             },
           ],
-          pmStand: [
+          investmentThreshold: [
             {
               label: "50万以内（含）",
               value: "1",
@@ -287,11 +308,11 @@
           type: [
             {
               label: "储蓄型",
-              value: "1",
+              value: 0,
             },
             {
               label: "重疾型",
-              value: "2",
+              value: 1,
             },
           ],
           inrestMethodId: [
@@ -348,9 +369,9 @@
           if (this.dataForm.id) {
             // 获取产品数据
             this.$http({
-              url: this.$http.adornUrl(`/admin/prod/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/insurance/product/findUnPaidbyId`),
               method: "get",
-              params: this.$http.adornParams(),
+              params: this.$http.adornParams({id:this.dataForm.id}),
             }).then(({ data }) => {
               this.dataForm = data;
 
@@ -385,11 +406,11 @@
           params: this.$http.adornParams(),
         }).then(({ data }) => {
           // 期限
-          this.searchs.investLimitId = this.getDataByParent(12, data);
+          this.searchs.paymentMode = this.getDataByParent(12, data);
           // 付息方式
           this.searchs.inrestMethodId = this.getDataByParent(13, data);
           // 投资门槛
-          this.searchs.pmStand = this.getDataByParent(14, data);
+          this.searchs.investmentThreshold = this.getDataByParent(14, data);
           // 投资领域
           this.searchs.prodEffid = this.getDataByParent(15, data);
         });
@@ -415,12 +436,13 @@
           method: "get",
           params: this.$http.adornParams(),
         }).then(({ data }) => {
-          data = data.filter((item) => item.categoryId >= 100);
+          data = data.filter((item) => item.parentId === 100);
           this.category.list = treeDataTranslate(data, "categoryId", "parentId");
         });
       },
       // 选择分类改变事件
       handleCategoryChange(val) {
+        // this.dataForm.categoryId = val;
         this.dataForm.categoryId = val[val.length - 1];
       },
       addSold() {
@@ -439,11 +461,12 @@
           }
           let param = Object.assign({}, this.dataForm);
           param.porder = JSON.stringify(param.porder);
+					const url = param.id ? '/insurance/product/update':'/insurance/product/add'
           this.$http({
-            url: this.$http.adornUrl(`/admin/prod`),
-            method: param.id ? "put" : "post",
+            url: this.$http.adornUrl(url),
+            method: "post",
             data: this.$http.adornData(param),
-          }).then(({ data }) => {
+          }).then(() => {
             this.$message({
               message: "操作成功",
               type: "success",
@@ -451,7 +474,7 @@
               onClose: () => {
                 this.visible = false;
                 this.$store.commit("common/removeMainActiveTab");
-                this.$router.push({ name: "prod-prodList" });
+                this.$router.push({ name: "prod-bProductList" });
                 this.$emit("refreshDataList");
               },
             });

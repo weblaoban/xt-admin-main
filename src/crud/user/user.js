@@ -431,7 +431,7 @@ export const userbuyBtableOption = {
         },
         {
             label: '状态',
-            prop: 'state',
+            prop: 'status',
             search: true,
             type: 'select',
             dicData: [
@@ -447,23 +447,25 @@ export const userbuyBtableOption = {
         },
         {
             label: 'IRR',
-            prop: 'brief'
+            prop: 'irr'
         },
         {
             label: '成立时间',
-            prop: 'otime'
+            prop: 'updatedAt'
         },
         {
             label: '缴费模式',
-            prop: 'periods'
+            prop: 'paymentMode',
+            type:'select',
+            dicData:[]
         },
         {
             label: '总认购金额',
-            prop: 'zmount'
+            prop: 'totalAmount'
         },
         {
             label: '期数',
-            prop: 'scount'
+            prop: 'totalPhases'
         },
         {
             label: '认购用户',

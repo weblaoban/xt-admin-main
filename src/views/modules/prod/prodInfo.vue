@@ -51,15 +51,28 @@
             prop="categoryId"
           >
             <el-col :span="24">
-              <el-cascader
-                expand-trigger="hover"
-                :options="category.list"
-                :props="category.props"
-                v-model="category.selected"
-                change-on-select
-                @change="handleCategoryChange"
-              >
-              </el-cascader>
+							<el-select
+									v-model="dataForm.categoryId"
+									style="width: 250px"
+									placeholder="请选择产品分类"
+							>
+								<el-option
+										v-for="item in category.list"
+										:key="item.label"
+										:label="item.categoryName"
+										:value="item.categoryId"
+								>
+								</el-option>
+							</el-select>
+<!--              <el-cascader-->
+<!--                expand-trigger="hover"-->
+<!--                :options="category.list"-->
+<!--                :props="category.props"-->
+<!--                v-model="category.selected"-->
+<!--                change-on-select-->
+<!--                @change="handleCategoryChange"-->
+<!--              >-->
+<!--              </el-cascader>-->
             </el-col> </el-form-item
         ></el-col>
         <el-col :span="8">
@@ -361,7 +374,7 @@
         dataForm: {
           name: "",
           brief: "",
-          categoryId: 0,
+          categoryId: '',
           id: 0,
           investLimitId: "",
           content: "",
@@ -559,7 +572,7 @@
           method: "get",
           params: this.$http.adornParams(),
         }).then(({ data }) => {
-          data = data.filter((item) => item.categoryId < 100);
+          data = data.filter((item) => item.parentId===1);
           this.category.list = treeDataTranslate(data, "categoryId", "parentId");
         });
       },

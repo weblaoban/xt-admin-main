@@ -159,9 +159,9 @@ http.adornUrl = (actionName) => {
  * @param {*} params 参数对象
  * @param {*} openDefultParams 是否开启默认参数?
  */
-http.adornParams = (params = {}, openDefultParams = true) => {
+http.adornParams = (params = {}, openDefultParams = false) => {
     var defaults = {
-        t: new Date().getTime()
+        // t: new Date().getTime()
     }
     return openDefultParams ? merge(defaults, params) : params
 }
@@ -174,7 +174,7 @@ http.adornParams = (params = {}, openDefultParams = true) => {
  *  json: 'application/json; charset=utf-8'
  *  form: 'application/x-www-form-urlencoded; charset=utf-8'
  */
-http.adornData = (data = {}, openDefultdata = true, contentType = 'json') => {
+http.adornData = (data = {}, openDefultdata = false, contentType = 'json') => {
     var defaults = {
         t: new Date().getTime()
     }
