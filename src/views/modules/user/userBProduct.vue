@@ -111,7 +111,7 @@
             :key="index"
           >
             <el-form-item
-              :label="`第机器缴费时间`"
+              :label="`第${index+1}期缴费时间`"
               :prop="'times.' + index + '.value'"
             >
               <el-date-picker
@@ -149,7 +149,7 @@
             v-for="(item, index) in 4"
             :key="index"
             :prop="'amount' + item"
-            :label="`第机器购买时间`"
+            :label="`第${index+1}期购买时间`"
           >
           </el-table-column>
           <el-table-column prop="puserId" label="理财师">
@@ -291,17 +291,19 @@
           this.detailItem = data;
           this.visibleBuyDetailDialog = true;
           //   this.$refs.ruleForm.resetFields()
+					const times = [];
+        for(let i = 0;i<data.scount;i++){
+						times.push({
+							value:''
+						})
+					}
           this.userForm = {
             userMail: "",
             nickName: "",
             userMobile: "",
             amount: "",
             puserId: "",
-            times: [
-              {
-                value: "",
-              },
-            ],
+            times: times,
           };
         });
       },

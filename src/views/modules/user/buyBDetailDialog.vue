@@ -23,14 +23,14 @@
         <el-col :span="12">
           <el-form-item label="状态" prop="state"
             ><span>{{
-              addForm.state == 0 ? "存续中" : "已完成"
+              addForm.state == 0 ? "存续中" : "已结束"
             }}</span></el-form-item
           ></el-col
         ><el-col :span="12">
           <el-form-item label-width="100px" label="IRR" prop="brief"
             ><el-input
               v-model="addForm.brief"
-              placeholder="业绩比较基准"
+              placeholder="IRR"
             ></el-input> </el-form-item
         ></el-col>
         <el-col :span="12">

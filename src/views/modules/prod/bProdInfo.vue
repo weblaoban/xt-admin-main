@@ -459,7 +459,7 @@
         });
       }),
       back() {
-        this.$router.push({ name: "prod-prodList" });
+        this.$router.push({ name: "prod-bProductList" });
       },
       paramSetPriceAndStocks(param) {
         // 获取规格属性信息

@@ -209,20 +209,10 @@
           ),
         }).then(({ data }) => {
           this.dataList = data.records.map((item) => {
-            // item.inrestMethodId = item.inrestMethodId
-            // 	? item.inrestMethodId * 1
-            // 	: 0;
-            // item.investLimitId = item.investLimitId ? item.investLimitId * 1 : 0;
 
             return item;
           });
           console.log(this.tableOption.column);
-          // for (const key in this.dataList) {
-          //   if (this.dataList.hasOwnProperty(key)) {
-          //     const element = this.dataList[key]
-          //     element.imgs = element.imgs.split(',')[0]
-          //   }
-          // }
           this.page.total = data.total;
           this.dataListLoading = false;
           if (done) {
