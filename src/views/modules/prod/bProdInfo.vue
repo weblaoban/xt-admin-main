@@ -51,30 +51,31 @@
             prop="categoryId"
           >
             <el-col :span="24">
-							              <el-select
-							                v-model="dataForm.categoryId"
-							                style="width: 250px"
-							                placeholder="请选择产品分类"
-							              >
-							                <el-option
-							                  v-for="item in category.list"
-							                  :key="item.label"
-							                  :label="item.categoryName"
-							                  :value="item.categoryId"
-							                >
-							                </el-option>
-							              </el-select>
-<!--              <el-cascader-->
-<!--                expand-trigger="hover"-->
-<!--                :options="category.list"-->
-<!--                :props="category.props"-->
-<!--                v-model="category.selected"-->
-<!--                change-on-select-->
-<!--                @change="handleCategoryChange"-->
-<!--              >-->
-<!--              </el-cascader>-->
-            </el-col> </el-form-item
-        ></el-col>
+              <el-select
+                v-model="dataForm.categoryId"
+                style="width: 250px"
+                placeholder="请选择产品分类"
+              >
+                <el-option
+                  v-for="item in category.list"
+                  :key="item.label"
+                  :label="item.categoryName"
+                  :value="item.categoryId"
+                >
+                </el-option>
+              </el-select>
+              <!--              <el-cascader-->
+              <!--                expand-trigger="hover"-->
+              <!--                :options="category.list"-->
+              <!--                :props="category.props"-->
+              <!--                v-model="category.selected"-->
+              <!--                change-on-select-->
+              <!--                @change="handleCategoryChange"-->
+              <!--              >-->
+              <!--              </el-cascader>-->
+            </el-col>
+          </el-form-item></el-col
+        >
         <el-col :span="8">
           <el-form-item
             label="缴费模式"
@@ -84,24 +85,24 @@
             ]"
           >
             <el-col :span="20">
-							<el-input
-									v-model="dataForm.paymentMode"
-									placeholder="缴费模式"
-									maxlength="50"
-							></el-input>
-<!--              <el-select-->
-<!--                v-model="dataForm.paymentMode"-->
-<!--                style="width: 250px"-->
-<!--                placeholder="请选择缴费模式"-->
-<!--              >-->
-<!--                <el-option-->
-<!--                  v-for="item in searchs.paymentMode"-->
-<!--                  :key="item.label"-->
-<!--                  :label="item.name"-->
-<!--                  :value="item.id"-->
-<!--                >-->
-<!--                </el-option>-->
-<!--              </el-select>-->
+              <el-input
+                v-model="dataForm.paymentMode"
+                placeholder="缴费模式"
+                maxlength="50"
+              ></el-input>
+              <!--              <el-select-->
+              <!--                v-model="dataForm.paymentMode"-->
+              <!--                style="width: 250px"-->
+              <!--                placeholder="请选择缴费模式"-->
+              <!--              >-->
+              <!--                <el-option-->
+              <!--                  v-for="item in searchs.paymentMode"-->
+              <!--                  :key="item.label"-->
+              <!--                  :label="item.name"-->
+              <!--                  :value="item.id"-->
+              <!--                >-->
+              <!--                </el-option>-->
+              <!--              </el-select>-->
             </el-col>
           </el-form-item>
         </el-col>
@@ -223,13 +224,13 @@
         },
         // 规格列表
         dataForm: {
-					irr:'',
+          irr: "",
           name: "",
           brief: "",
-          categoryId:'',
+          categoryId: "",
           id: 0,
           paymentMode: "",
-					description: "",
+          description: "",
           status: 1,
           recommended: 1,
           investmentThreshold: "",
@@ -243,8 +244,8 @@
           investRatio: "",
           contentItem: "",
           porder: [],
-					paidType:'1',
-					tpe:''
+          paidType: "1",
+          tpe: "",
         },
         searchs: {
           prodEffid: [
@@ -371,7 +372,7 @@
             this.$http({
               url: this.$http.adornUrl(`/insurance/product/findUnPaidbyId`),
               method: "get",
-              params: this.$http.adornParams({id:this.dataForm.id}),
+              params: this.$http.adornParams({ id: this.dataForm.id }),
             }).then(({ data }) => {
               this.dataForm = data;
 
@@ -461,7 +462,9 @@
           }
           let param = Object.assign({}, this.dataForm);
           param.porder = JSON.stringify(param.porder);
-					const url = param.id ? '/insurance/product/update':'/insurance/product/add'
+          const url = param.id
+            ? "/insurance/product/update"
+            : "/insurance/product/add";
           this.$http({
             url: this.$http.adornUrl(url),
             method: "post",
