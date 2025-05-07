@@ -86,7 +86,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="每期认购金额" prop="amount">
+            <el-form-item
+              label="每期认购金额"
+              label-width="120px"
+              prop="amount"
+            >
               <el-input-number
                 :min="1"
                 v-model="userForm.amount"
@@ -110,12 +114,15 @@
               </el-select>
             </el-form-item>
           </el-col>
+
+          <el-col :span="12"><div style="height: 62px"></div></el-col>
           <el-col
             :span="12"
             v-for="(time, index) in userForm.paidList"
             :key="index"
           >
             <el-form-item
+              label-width="120px"
               :label="`第${index + 1}期缴费时间`"
               :prop="'paidList.' + index + '.value'"
             >

@@ -23,7 +23,7 @@
         <el-col :span="12">
           <el-form-item label="状态" prop="state"
             ><span>{{
-              addForm.status == 0 ? "存续中" : "已结束"
+              addForm.status == 0 ? "存续中" : "已完成"
             }}</span></el-form-item
           ></el-col
         ><el-col :span="12">
@@ -53,25 +53,24 @@
             ]"
           >
             <el-col :span="20">
-							
-							<el-input
-									v-model="addForm.paymentMode"
-									placeholder="缴费模式"
-									maxlength="50"
-							></el-input>
-<!--              <el-select-->
-<!--                v-model="addForm.paymentMode"-->
-<!--                style="width: 250px"-->
-<!--                placeholder="请选择缴费模式"-->
-<!--              >-->
-<!--                <el-option-->
-<!--                  v-for="item in searchs.paymentMode"-->
-<!--                  :key="item.label"-->
-<!--									:label="item.name"-->
-<!--									:value="item.id"-->
-<!--                >-->
-<!--                </el-option>-->
-<!--              </el-select>-->
+              <el-input
+                v-model="addForm.paymentMode"
+                placeholder="缴费模式"
+                maxlength="50"
+              ></el-input>
+              <!--              <el-select-->
+              <!--                v-model="addForm.paymentMode"-->
+              <!--                style="width: 250px"-->
+              <!--                placeholder="请选择缴费模式"-->
+              <!--              >-->
+              <!--                <el-option-->
+              <!--                  v-for="item in searchs.paymentMode"-->
+              <!--                  :key="item.label"-->
+              <!--									:label="item.name"-->
+              <!--									:value="item.id"-->
+              <!--                >-->
+              <!--                </el-option>-->
+              <!--              </el-select>-->
             </el-col>
           </el-form-item>
         </el-col>
@@ -112,19 +111,19 @@
       return {
         visible: false,
         addForm: {
-					status:0,
+          status: 0,
           name: "",
           totalPhases: 1,
           irr: "",
           state: 0,
-					updatedAt: "",
+          updatedAt: "",
           dtime: "",
           zmount: "",
           bplan: "",
           periods: "",
-					irr:'',
-					paidType:'0',
-					paymentMode:'',
+          irr: "",
+          paidType: "0",
+          paymentMode: "",
           qlist: [
             {
               finish: false,
@@ -134,7 +133,7 @@
           ],
         },
         searchs: {
-					paymentMode: [],
+          paymentMode: [],
         },
         page: {
           total: 0, // 总页数
@@ -153,11 +152,9 @@
         });
         if (this.addForm.id) {
           this.$http({
-            url: this.$http.adornUrl(
-              `/insurance/product/findPaidbyId`
-            ),
+            url: this.$http.adornUrl(`/insurance/product/findPaidbyId`),
             method: "get",
-            params: this.$http.adornParams({id:this.addForm.id}),
+            params: this.$http.adornParams({ id: this.addForm.id }),
           }).then(({ data }) => {
             data.qlist = data.qlist ? JSON.parse(data.qlist) : [];
             this.addForm = data;
@@ -165,19 +162,19 @@
           });
         } else {
           this.addForm = {
-						status:0,
+            status: 0,
             name: "",
             totalPhases: 1,
             irr: "",
             state: 0,
-						updatedAt: "",
+            updatedAt: "",
             dtime: "",
             zmount: "",
             bplan: "",
             periods: "",
-						irr:'',
-						paidType:'0',
-						paymentMode:'',
+            irr: "",
+            paidType: "0",
+            paymentMode: "",
             qlist: [
               {
                 finish: false,
@@ -243,7 +240,9 @@
             }
             params.qlist = JSON.stringify([...params.qlist]);
             //   delete params.id
-						const url = params.id ? '/insurance/product/update':'/insurance/product/add'
+            const url = params.id
+              ? "/insurance/product/update"
+              : "/insurance/product/add";
             this.$http({
               url: this.$http.adornUrl(url),
               method: "post",
