@@ -41,7 +41,7 @@ http.interceptors.response.use(
             return res
         }
         // A00001 用于直接显示提示用户的错误,内容由输入决定
-        if (res.code === 'A00001') {
+        if (res.code === 'A00001' || res.code === '400') {
             Message({
                 message: res.msg || 'Error',
                 type: 'error',
