@@ -469,7 +469,7 @@
         });
       },
       deluser(user) {
-        const userId = user.id;
+        const userId = user.userId;
         const prodid = this.detailItem.id;
 
         this.$confirm(`确定进行[${prodid ? "删除" : "批量删除"}]操作?`, "提示", {
@@ -479,10 +479,12 @@
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl("/admin/prodTagReference/ruser"),
+              url: this.$http.adornUrl("/insurance/user/delete"),
               method: "delete",
               data: this.$http.adornData({
-                id: prodid,
+                id: user.id,
+                productId: prodid,
+                userId: userId,
                 userDtm: [
                   {
                     id: userId,
