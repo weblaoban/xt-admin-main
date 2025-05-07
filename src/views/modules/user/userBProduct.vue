@@ -386,6 +386,7 @@ export default {
 						method: 'post',
 						data: this.$http.adornData({
 							productId: this.detailItem.id,
+							puserId: this.userForm.puserId,
 							totalAmount:this.detailItem.totalAmount+totalAmount,
 							userDtm:
 								{
