@@ -168,8 +168,8 @@
           <el-table-column prop="idcard" label="身份证号">
             <template slot-scope="{ row }">{{ row.userDtm.idcard }}</template>
           </el-table-column>
-          <el-table-column prop="amount" label="每期认购金额">
-            <template slot-scope="{ row }">{{ row.userDtm.amount }}</template>
+          <el-table-column prop="remainingAmount" label="每期认购金额">
+            <template slot-scope="{ row }">{{ row.remainingAmount }}</template>
           </el-table-column>
           <el-table-column
             v-for="(item, index) in detailItem.totalPhases"
@@ -430,6 +430,7 @@
                 puserid: this.userForm.puserId,
                 totalAmount: this.detailItem.totalAmount + totalAmount,
                 paidList,
+								remainingAmount:this.userForm.amount,
                 userDtm: {
                   ...this.userForm,
                   paidList,
