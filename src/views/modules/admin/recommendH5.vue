@@ -58,6 +58,22 @@
       width="30%"
     >
       <div class="content">
+        <div>产品类型</div>
+        <el-select
+          v-model="selectType"
+          filterable
+          placeholder="请选择"
+          @change="onTypeChange"
+        >
+          <el-option
+            v-for="item in typeList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+        <div style="height: 10px"></div>
         <el-select v-model="selectItem" filterable placeholder="请选择">
           <el-option
             v-for="item in selectList"
@@ -99,6 +115,17 @@
   export default {
     data() {
       return {
+        selectType: "",
+        typeList: [
+          {
+            label: "产品",
+            value: 1,
+          },
+          {
+            label: "产品（保险）",
+            value: 2,
+          },
+        ],
         selectItem: "",
         dataForm: {
           indexImg: "",
@@ -118,6 +145,8 @@
         selectList: [],
         sold_num: "",
         loading: false,
+        allBList: [],
+        allPList: [],
       };
     },
     methods: {
@@ -128,7 +157,19 @@
         });
       },
       // 获取数据列表 信托产品
-      getDataList(page, params) {
+      async getDataList(page, params) {
+        const bData = await this.$http({
+          url: this.$http.adornUrl("/insurance/product/listByUnPaid"),
+          method: "get",
+        });
+        const bDataList = bData.data
+          .map((item) => {
+            item.baoxian = true;
+            return item;
+          })
+          .filter((item) => item.orders > 0);
+        this.allBList = bData.data;
+        console.log(bData);
         this.dataListLoading = true;
         this.$http({
           url: this.$http.adornUrl("/admin/prod/page"),
@@ -144,19 +185,17 @@
             )
           ),
         }).then(({ data }) => {
-          // const dataList = [...defaultList];
           for (var i = 0; i < data.records.length; i++) {
             data.records[i].oldIndex = i;
           }
           data.records = data.records.sort((a, b) => {
             return a.tpy - b.tpy || a.oldIndex - b.oldIndex;
           });
-          // dataList.forEach((_, index) => {
-          // 	if (data.records[index]) {
-          // 		dataList[index] = data.records[index];
-          // 	}
-          // });
-          this.dataList = data.records;
+          const totalList = [...bDataList, ...data.records];
+          const resultList = totalList.sort((a, b) => {
+            return a.orders - b.orders;
+          });
+          this.dataList = resultList;
           this.dataListLoading = false;
         });
       },
@@ -179,10 +218,21 @@
             })
           ),
         }).then(({ data }) => {
-          this.selectList = data.records;
+          this.allPList = data.records;
           this.dataListLoading = false;
           this.showSelectProd = true;
         });
+      },
+      onTypeChange(value) {
+        console.log(value);
+        this.selectItem = "";
+        if (value === 1) {
+          this.selectList = this.allPList;
+        } else if (value === 2) {
+          this.selectList = this.allBList;
+        } else {
+          this.selectList = [];
+        }
       },
       onSetProd() {
         if (!this.selectItem) {
@@ -191,10 +241,25 @@
         const param = {
           id: this.selectItem,
           tpy: this.sold_num,
+          orders: this.sold_num,
         };
+        let target = {};
+        const inB = this.allBList.find((item) => item.id === this.selectItem);
+        const inP = this.allPList.find((item) => item.id === this.selectItem);
+        target = inB || inP;
+        if (!target) {
+          return;
+        }
+        console.log(target);
+        let url = this.$http.adornUrl(`/admin/prod`);
+        let method = "put";
+        if (target.baoxian) {
+          url = this.$http.adornUrl("/insurance/product/update");
+          method = "post";
+        }
         this.$http({
-          url: this.$http.adornUrl(`/admin/prod`),
-          method: param.id ? "put" : "post",
+          url: url,
+          method: method,
           data: this.$http.adornData(param),
         }).then(() => {
           this.$message({
@@ -235,20 +300,40 @@
 
       goDown(row, index, resource) {
         if (this.loading) {
-          return;
         }
         const nextP = resource[index + 1];
+
+        let url = this.$http.adornUrl(`/admin/prod`);
+        let method = "put";
+        if (row.baoxian) {
+          url = this.$http.adornUrl("/insurance/product/update");
+          method = "post";
+        }
+        let naxturl = this.$http.adornUrl(`/admin/prod`);
+        let nextMethod = "put";
+        if (nextP.baoxian) {
+          naxturl = this.$http.adornUrl("/insurance/product/update");
+          nextMethod = "post";
+        }
         if (nextP && !nextP.default) {
           this.loading = true;
           this.$http({
-            url: this.$http.adornUrl(`/admin/prod`),
-            method: "put",
-            data: this.$http.adornData({ id: row.id, tpy: index + 2 }),
+            url: url,
+            method: method,
+            data: this.$http.adornData({
+              id: row.id,
+              tpy: index + 2,
+              orders: index + 2,
+            }),
           }).then(() => {
             this.$http({
-              url: this.$http.adornUrl(`/admin/prod`),
-              method: "put",
-              data: this.$http.adornData({ id: nextP.id, tpy: index + 1 }),
+              url: naxturl,
+              method: nextMethod,
+              data: this.$http.adornData({
+                id: nextP.id,
+                tpy: index + 1,
+                orders: index + 1,
+              }),
             }).then(() => {
               this.loading = false;
               this.getAllList();
@@ -266,18 +351,34 @@
         if (this.loading) {
           return;
         }
+        let url = this.$http.adornUrl(`/admin/prod`);
+        let method = "put";
+        if (row.baoxian) {
+          url = this.$http.adornUrl("/insurance/product/update");
+          method = "post";
+        }
         const nextP = resource[index - 1];
+        let naxturl = this.$http.adornUrl(`/admin/prod`);
+        let nextMethod = "put";
+        if (nextP.baoxian) {
+          naxturl = this.$http.adornUrl("/insurance/product/update");
+          nextMethod = "post";
+        }
         if (nextP && !nextP.default) {
           this.loading = true;
           this.$http({
-            url: this.$http.adornUrl(`/admin/prod`),
-            method: "put",
-            data: this.$http.adornData({ id: row.id, tpy: index }),
+            url: url,
+            method: method,
+            data: this.$http.adornData({ id: row.id, tpy: index, orders: index }),
           }).then(() => {
             this.$http({
-              url: this.$http.adornUrl(`/admin/prod`),
-              method: "put",
-              data: this.$http.adornData({ id: nextP.id, tpy: index + 1 }),
+              url: naxturl,
+              method: nextMethod,
+              data: this.$http.adornData({
+                id: nextP.id,
+                tpy: index + 1,
+                orders: index + 1,
+              }),
             }).then(() => {
               this.loading = false;
               this.getAllList();

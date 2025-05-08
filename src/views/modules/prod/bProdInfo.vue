@@ -127,6 +127,7 @@
               ></el-input>
             </el-col> </el-form-item
         ></el-col>
+
         <el-col :span="8">
           <el-form-item
             label="类型"
@@ -177,14 +178,36 @@
             </el-col>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <!-- <el-col :span="8">
           <el-form-item label="是否推荐">
             <el-radio-group v-model="dataForm.recommended">
               <el-radio :label="1">是</el-radio>
               <el-radio :label="0">否</el-radio>
             </el-radio-group>
           </el-form-item>
-        </el-col>
+        </el-col> -->
+
+        <el-col :span="8">
+          <el-form-item
+            label="产品期限"
+            label-width="120px"
+            prop="phasesc"
+            :rules="[
+              {
+                required: true,
+                message: '产品期限不能为空',
+                trigger: 'blur',
+              },
+            ]"
+          >
+            <el-col :span="20">
+              <el-input
+                v-model="dataForm.phasesc"
+                placeholder="产品期限"
+                maxlength="50"
+              ></el-input>
+            </el-col> </el-form-item
+        ></el-col>
       </el-row>
 
       <el-form-item label="产品详情" prop="description">
@@ -246,6 +269,7 @@
           porder: [],
           paidType: "1",
           tpe: "",
+          phasesc: "",
         },
         searchs: {
           prodEffid: [
