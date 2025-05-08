@@ -245,9 +245,9 @@
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl(`/admin/prod`),
-              method: "delete",
-              data: this.$http.adornData(prodIds, false),
+							url: this.$http.adornUrl("/insurance/product/delete"),
+							method: "post",
+							params: {ids: id},
             }).then(({ data }) => {
               this.$message({
                 message: "操作成功",

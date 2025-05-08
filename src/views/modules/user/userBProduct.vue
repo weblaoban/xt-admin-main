@@ -58,10 +58,10 @@
     <!-- 查看弹窗 -->
 
     <el-dialog
-      title="编辑认购用户
-"
+      title="编辑认购用户"
       :close-on-click-modal="false"
       :visible.sync="visibleBuyDetailDialog"
+			@close="onClose"
     >
       <el-form
         label-width="80px"
@@ -208,7 +208,8 @@
               }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="amount" label="操作">
+          <el-table-column prop="amount" label="操作"
+													 fixed="right">
             <template slot-scope="scope">
               <el-button type="danger" @click="deluser(scope.row)"
                 >删除
@@ -306,6 +307,9 @@
         console.log(value);
         this.userForm.paidList[index].value = value;
       },
+			onClose(){
+				this.getDataList()
+			},
       // 获取数据列表
       getDataList(page, params, done) {
         this.dataListLoading = true;
@@ -479,21 +483,14 @@
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl("/insurance/user/delete"),
-              method: "delete",
-              data: this.$http.adornData({
-                id: user.id,
-                productId: prodid,
-                userId: userId,
-                userDtm: [
-                  {
-                    id: userId,
-                    amount: user.amount,
-                    rad: user.rad,
-                    puserId: user.puserId,
-                  },
-                ],
-              }),
+              url: this.$http.adornUrl("/insurance/user/delete/"),
+              method: "get",
+              // data: this.$http.adornData({
+              //   ids: user.id,
+              // }),
+							params:{
+								ids:user.id
+							}
             }).then(({ data }) => {
               this.$message({
                 message: "操作成功",
@@ -534,9 +531,9 @@
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl("/admin/prodTagReference/" + ids),
-              method: "delete",
-              data: this.$http.adornData(ids, false),
+							url: this.$http.adornUrl("/insurance/product/delete"),
+							method: "post",
+							params: {ids: id},
             }).then(({ data }) => {
               this.$message({
                 message: "操作成功",
