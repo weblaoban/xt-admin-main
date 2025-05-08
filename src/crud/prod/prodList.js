@@ -220,6 +220,9 @@ export const bTableOption = {
             props: {
                 label: 'name',
                 value: 'id'
+            },
+            formatter(row) {
+                return row.investmentThreshold + '万（美元）'
             }
         },
 
@@ -237,9 +240,9 @@ export const bTableOption = {
                 }
             ],
             search: true,
-            formatter(row){
+            formatter(row) {
                 return row.recommended === 1 ? '是' : '否'
             }
-        },
+        }
     ]
 }

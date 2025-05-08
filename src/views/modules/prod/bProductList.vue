@@ -1,6 +1,6 @@
 <template>
   <div class="mod-prod">
-<!--		:page="page"-->
+    <!--		:page="page"-->
     <avue-crud
       ref="crud"
       :data="dataList"
@@ -182,7 +182,7 @@
           // 付息方式
           // this.tableOption.column[8].dicData = this.getDataByParent(13, data);
           // 投资门槛
-          this.tableOption.column[7].dicData = this.getDataByParent(14, data);
+          //   this.tableOption.column[7].dicData = this.getDataByParent(14, data);
           // 投资领域
           // this.tableOption.column[9].dicData = this.getDataByParent(15, data);
         });
@@ -194,23 +194,23 @@
       },
       // 获取数据列表
       getDataList(page, params, done) {
-				// params: this.$http.adornParams(
-				// 		Object.assign(
-				// 				{
-				// 					current: page == null ? this.page.currentPage : page.currentPage,
-				// 					size: page == null ? this.page.pageSize : page.pageSize,
-				// 				},
-				// 				params
-				// 		)
-				// ),
+        // params: this.$http.adornParams(
+        // 		Object.assign(
+        // 				{
+        // 					current: page == null ? this.page.currentPage : page.currentPage,
+        // 					size: page == null ? this.page.pageSize : page.pageSize,
+        // 				},
+        // 				params
+        // 		)
+        // ),
         this.dataListLoading = true;
         this.$http({
           url: this.$http.adornUrl("/insurance/product/listByUnPaid"),
           method: "get",
-					params:params,
+          params: params,
         }).then(({ data }) => {
           // this.dataList = data.records.map((item) => {
-					//
+          //
           //   return item;
           // });
           this.dataList = data.map((item) => {
@@ -245,9 +245,9 @@
         })
           .then(() => {
             this.$http({
-							url: this.$http.adornUrl("/insurance/product/delete"),
-							method: "post",
-							params: {ids: id},
+              url: this.$http.adornUrl("/insurance/product/delete"),
+              method: "post",
+              params: { ids: id },
             }).then(({ data }) => {
               this.$message({
                 message: "操作成功",

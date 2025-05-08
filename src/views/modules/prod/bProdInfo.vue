@@ -162,7 +162,12 @@
             ]"
           >
             <el-col :span="20">
-              <el-select
+              <el-input
+                v-model="dataForm.investmentThreshold"
+                placeholder="请输入投资门槛"
+                maxlength="50"
+              ></el-input>
+              <!-- <el-select
                 v-model="dataForm.investmentThreshold"
                 style="width: 250px"
                 placeholder="请选择投资门槛"
@@ -174,7 +179,7 @@
                   :value="item.id"
                 >
                 </el-option>
-              </el-select>
+              </el-select> -->
             </el-col>
           </el-form-item>
         </el-col>
