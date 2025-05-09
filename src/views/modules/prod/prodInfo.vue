@@ -51,30 +51,31 @@
             prop="categoryId"
           >
             <el-col :span="24">
-							<el-select
-									v-model="dataForm.categoryId"
-									style="width: 250px"
-									placeholder="请选择产品分类"
-							>
-								<el-option
-										v-for="item in category.list"
-										:key="item.label"
-										:label="item.categoryName"
-										:value="item.categoryId"
-								>
-								</el-option>
-							</el-select>
-<!--              <el-cascader-->
-<!--                expand-trigger="hover"-->
-<!--                :options="category.list"-->
-<!--                :props="category.props"-->
-<!--                v-model="category.selected"-->
-<!--                change-on-select-->
-<!--                @change="handleCategoryChange"-->
-<!--              >-->
-<!--              </el-cascader>-->
-            </el-col> </el-form-item
-        ></el-col>
+              <el-select
+                v-model="dataForm.categoryId"
+                style="width: 250px"
+                placeholder="请选择产品分类"
+              >
+                <el-option
+                  v-for="item in category.list"
+                  :key="item.label"
+                  :label="item.categoryName"
+                  :value="item.categoryId"
+                >
+                </el-option>
+              </el-select>
+              <!--              <el-cascader-->
+              <!--                expand-trigger="hover"-->
+              <!--                :options="category.list"-->
+              <!--                :props="category.props"-->
+              <!--                v-model="category.selected"-->
+              <!--                change-on-select-->
+              <!--                @change="handleCategoryChange"-->
+              <!--              >-->
+              <!--              </el-cascader>-->
+            </el-col>
+          </el-form-item></el-col
+        >
         <el-col :span="8">
           <el-form-item
             label="期限"
@@ -374,7 +375,7 @@
         dataForm: {
           name: "",
           brief: "",
-          categoryId: '',
+          categoryId: "",
           id: 0,
           investLimitId: "",
           content: "",
@@ -554,7 +555,10 @@
       getDataByParent(parentId, origin) {
         const data = [...origin];
         const result = data.filter((item) => item.parentId === parentId);
-        return result;
+        return result.map((item) => {
+          item.id = item.id + "";
+          return item;
+        });
       },
       // 机构信息
       getOrganList() {
@@ -572,7 +576,7 @@
           method: "get",
           params: this.$http.adornParams(),
         }).then(({ data }) => {
-          data = data.filter((item) => item.parentId===1);
+          data = data.filter((item) => item.parentId === 1);
           this.category.list = treeDataTranslate(data, "categoryId", "parentId");
         });
       },

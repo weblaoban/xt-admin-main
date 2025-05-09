@@ -190,7 +190,10 @@
       getDataByParent(parentId, origin) {
         const data = [...origin];
         const result = data.filter((item) => item.parentId === parentId);
-        return result;
+        return result.map((item) => {
+          item.id = item.id + "";
+          return item;
+        });
       },
       // 获取数据列表
       getDataList(page, params, done) {

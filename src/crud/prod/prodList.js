@@ -71,13 +71,13 @@ export const tableOption = {
         },
         {
             label: '期限',
-            prop: 'investLimitId',
-            type: 'select',
-            dicData: [],
-            props: {
-                label: 'name',
-                value: 'id'
-            }
+            prop: 'inrestMethodCnt'
+            // type: 'select',
+            // dicData: [],
+            // props: {
+            //     label: 'name',
+            //     value: 'id'
+            // }
         },
         {
             label: '业绩比较基准',
@@ -85,13 +85,13 @@ export const tableOption = {
         },
         {
             label: '投资门槛',
-            prop: 'pmStand',
-            type: 'select',
-            dicData: [],
-            props: {
-                label: 'name',
-                value: 'id'
-            }
+            prop: 'pmStandCnt'
+            // type: 'select',
+            // dicData: [],
+            // props: {
+            //     label: 'name',
+            //     value: 'id'
+            // }
         },
         {
             label: '付息方式',
