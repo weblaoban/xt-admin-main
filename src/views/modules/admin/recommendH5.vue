@@ -206,7 +206,8 @@
       onShowSelectProd(classify, index) {
         this.dataListLoading = true;
         this.selectItem = "";
-        this.sold_num = index + 1;
+				const target = this.dataList[index-1];
+        this.sold_num = target?target.orders*1+1:index + 1;
         this.$http({
           url: this.$http.adornUrl("/admin/prod/page"),
           method: "get",
@@ -280,6 +281,25 @@
         if (row.default) {
           return;
         }
+				if(row.baoxian){
+					let param = Object.assign({}, row);
+					param.orders = '';
+					this.$http({
+						url: this.$http.adornUrl("/insurance/product/update"),
+						method:  "post",
+						data: this.$http.adornData(param),
+					}).then(() => {
+						this.$message({
+							message: "操作成功",
+							type: "success",
+							duration: 2000,
+							onClose: () => {
+								this.getAllList();
+							},
+						});
+					});
+					return
+				}
         let param = Object.assign({}, row);
         param.tpy = 0;
         this.$http({
