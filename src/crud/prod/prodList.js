@@ -71,7 +71,7 @@ export const tableOption = {
         },
         {
             label: '期限',
-            prop: 'inrestMethodCnt'
+            prop: 'investLimitCnt'
             // type: 'select',
             // dicData: [],
             // props: {
