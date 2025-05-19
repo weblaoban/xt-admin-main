@@ -61,6 +61,12 @@ const mainRoutes = {
             component: _import('modules/prod/bProdInfo'),
             name: 'bprodInfo',
             meta: { title: '产品详情（保险）' }
+        },
+        {
+            path: '/oProdInfo',
+            component: _import('modules/prod/oProdInfo'),
+            name: 'oprodInfo',
+            meta: { title: '产品详情（境外）' }
         }
     ],
     beforeEnter(to, from, next) {
