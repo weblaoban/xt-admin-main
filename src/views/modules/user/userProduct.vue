@@ -228,7 +228,6 @@
               {
                 current: page == null ? this.page.currentPage : page.currentPage,
                 size: page == null ? this.page.pageSize : page.pageSize,
-								tpe:0
               },
               params
             )

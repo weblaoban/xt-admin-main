@@ -348,6 +348,13 @@ export const userbuytableOption = {
             search: true
         },
         {
+            label: '境外债',
+            prop: 'tpe',
+            formatter(row) {
+                return row.tpe === 1 ? '是' : '否'
+            }
+        },
+        {
             label: '状态',
             prop: 'state',
             search: true,

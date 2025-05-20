@@ -24,7 +24,19 @@
               addForm.state == 0 ? "存续中" : "已完成"
             }}</span></el-form-item
           ></el-col
-        ><el-col :span="18">
+        >
+			<el-col :span="12">
+				<el-form-item label="境外债" prop="state"
+				>
+					<el-radio-group v-model="addForm.tpe">
+						<el-radio :label="0">否</el-radio>
+						<el-radio :label="1">是</el-radio>
+					</el-radio-group>
+					
+				</el-form-item
+				></el-col
+			>
+			<el-col :span="18">
           <el-form-item label-width="100px" label="业绩比较基准" prop="brief"
             ><el-input
               v-model="addForm.brief"
@@ -178,6 +190,7 @@
           zmount: "",
           bplan: "",
           periods: "",
+					tpe:0,
           qlist: [
             {
               finish: false,
@@ -225,6 +238,7 @@
             zmount: "",
             bplan: "",
             periods: "",
+						tpe:0,
             qlist: [
               {
                 finish: false,
