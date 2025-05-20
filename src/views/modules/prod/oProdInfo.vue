@@ -576,7 +576,7 @@
           method: "get",
           params: this.$http.adornParams(),
         }).then(({ data }) => {
-          data = data.filter((item) => item.parentId === 1);
+          data = data.filter((item) => item.parentId ===2);
           this.category.list = treeDataTranslate(data, "categoryId", "parentId");
         });
       },

@@ -156,7 +156,7 @@
 
 <script>
   import { userbuytableOption } from "@/crud/user/user";
-  import AddOrUpdate from "./buyDetailDialog.vue";
+  import AddOrUpdate from "./buyODetailDialog.vue";
   export default {
     data() {
       function isMobile(s) {
@@ -228,6 +228,7 @@
               {
                 current: page == null ? this.page.currentPage : page.currentPage,
                 size: page == null ? this.page.pageSize : page.pageSize,
+								tpe:1
               },
               params
             )

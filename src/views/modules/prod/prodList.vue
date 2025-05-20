@@ -206,6 +206,7 @@
               {
                 current: page == null ? this.page.currentPage : page.currentPage,
                 size: page == null ? this.page.pageSize : page.pageSize,
+								isDebt: 0,
               },
               params
             )
