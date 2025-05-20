@@ -167,30 +167,36 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="投资领域" prop="prodEffId">
+          <el-form-item label="资金用途" prop="prodEffId">
             <el-col :span="20">
-              <el-select
-                v-model="dataForm.prodEffId"
-                style="width: 250px"
-                placeholder="请选择投资领域"
-              >
-                <el-option
-                  v-for="item in searchs.prodEffid"
-                  :key="item.label"
-                  :label="item.name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
+							<el-input
+									v-model="dataForm.prodEffId"
+									placeholder="资金用途"
+									maxlength="50"
+							></el-input
+							>
+<!--              <el-select-->
+<!--                v-model="dataForm.prodEffId"-->
+<!--                style="width: 250px"-->
+<!--                placeholder="请选择投资领域"-->
+<!--              >-->
+<!--                <el-option-->
+<!--                  v-for="item in searchs.prodEffid"-->
+<!--                  :key="item.label"-->
+<!--                  :label="item.name"-->
+<!--                  :value="item.id"-->
+<!--                >-->
+<!--                </el-option>-->
+<!--              </el-select>-->
             </el-col>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="防控级别" prop="lev">
+          <el-form-item label="1S1N" prop="lev">
             <el-col :span="20">
               <el-input
                 v-model="dataForm.lev"
-                placeholder="防控级别"
+                placeholder="1S1N"
                 maxlength="50"
               ></el-input>
             </el-col>
@@ -209,29 +215,35 @@
 
       <el-row>
         <el-col :span="8">
-          <el-form-item label="发行机构" prop="organId">
-            <el-select
-              v-model="dataForm.organId"
-              style="width: 250px"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in this.organList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
+          <el-form-item label="发行人" prop="organId">
+						<el-input
+								v-model="dataForm.organId"
+								placeholder="发行人"
+								maxlength="50"
+						></el-input
+						>
+<!--            <el-select-->
+<!--              v-model="dataForm.organId"-->
+<!--              style="width: 250px"-->
+<!--              placeholder="请选择"-->
+<!--            >-->
+<!--              <el-option-->
+<!--                v-for="item in this.organList"-->
+<!--                :key="item.id"-->
+<!--                :label="item.name"-->
+<!--                :value="item.id"-->
+<!--              >-->
+<!--              </el-option>-->
+<!--            </el-select>-->
           </el-form-item>
         </el-col>
 
         <el-col :span="8">
-          <el-form-item label="收益类型" prop="investId">
+          <el-form-item label="发行币种" prop="investId">
             <el-col :span="20">
               <el-input
                 v-model="dataForm.investId"
-                placeholder="收益类型"
+                placeholder="发行币种"
                 maxlength="50"
               ></el-input
             ></el-col>
@@ -250,21 +262,21 @@
         ></el-col>
 
         <el-col :span="8">
-          <el-form-item label="所在地区" prop="area">
+          <el-form-item label="上市地点" prop="area">
             <el-col :span="20">
               <el-input
                 v-model="dataForm.area"
-                placeholder="所在地区"
+                placeholder="上市地点"
                 maxlength="50"
               ></el-input>
             </el-col> </el-form-item
         ></el-col>
         <el-col :span="8">
-          <el-form-item label="大小额配比" prop="investRatio">
+          <el-form-item label="发行日期" prop="investRatio">
             <el-col :span="20">
               <el-input
                 v-model="dataForm.investRatio"
-                placeholder="大小额配比"
+                placeholder="发行日期"
                 maxlength="50"
               ></el-input>
             </el-col> </el-form-item
@@ -620,7 +632,7 @@
         });
       }),
       back() {
-        this.$router.push({ name: "prod-prodList" });
+        this.$router.push({ name: "prod-oProdList" });
       },
       paramSetPriceAndStocks(param) {
         // 获取规格属性信息

@@ -114,7 +114,7 @@
 </template>
 
 <script>
-  import { tableOption } from "@/crud/prod/prodList";
+  import { oTableOption } from "@/crud/prod/prodList";
   import { treeDataTranslate } from "@/utils";
   export default {
     data() {
@@ -133,7 +133,7 @@
         },
         dataListSelections: [],
         dataListLoading: false,
-        tableOption: tableOption,
+        tableOption: oTableOption,
         resourcesUrl: process.env.VUE_APP_RESOURCES_URL,
         detailVisible: false,
         detail: {},
