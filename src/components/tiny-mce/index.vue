@@ -164,6 +164,8 @@ export default {
         body_class: 'panel-body ',
         object_resizing: false,
         toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
+        fontsize_formats: '11px 12px 14px 16px 18px 24px 36px 48px',
+        font_formats: '微软雅黑=Microsoft YaHei,Helvetica Neue,PingFang SC,sans-serif;苹果苹方=PingFang SC,Microsoft YaHei,sans-serif;宋体=simsun,serif',
         menubar: this.menubar,
         plugins: plugins,
         end_container_on_empty_block: true,
