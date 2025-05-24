@@ -131,7 +131,12 @@
             ]"
           >
             <el-col :span="20">
-              <el-select
+              <el-input-number
+                v-model="dataForm.pmStand"
+                placeholder="投资门槛"
+                :min="1"
+              ></el-input-number>
+              <!-- <el-select
                 v-model="dataForm.pmStand"
                 style="width: 250px"
                 placeholder="请选择投资门槛"
@@ -143,7 +148,7 @@
                   :value="item.id"
                 >
                 </el-option>
-              </el-select>
+              </el-select> -->
             </el-col>
           </el-form-item>
         </el-col>
@@ -169,25 +174,24 @@
         <el-col :span="8">
           <el-form-item label="资金用途" prop="prodEffId">
             <el-col :span="20">
-							<el-input
-									v-model="dataForm.prodEffId"
-									placeholder="资金用途"
-									maxlength="50"
-							></el-input
-							>
-<!--              <el-select-->
-<!--                v-model="dataForm.prodEffId"-->
-<!--                style="width: 250px"-->
-<!--                placeholder="请选择投资领域"-->
-<!--              >-->
-<!--                <el-option-->
-<!--                  v-for="item in searchs.prodEffid"-->
-<!--                  :key="item.label"-->
-<!--                  :label="item.name"-->
-<!--                  :value="item.id"-->
-<!--                >-->
-<!--                </el-option>-->
-<!--              </el-select>-->
+              <el-input
+                v-model="dataForm.prodEffId"
+                placeholder="资金用途"
+                maxlength="50"
+              ></el-input>
+              <!--              <el-select-->
+              <!--                v-model="dataForm.prodEffId"-->
+              <!--                style="width: 250px"-->
+              <!--                placeholder="请选择投资领域"-->
+              <!--              >-->
+              <!--                <el-option-->
+              <!--                  v-for="item in searchs.prodEffid"-->
+              <!--                  :key="item.label"-->
+              <!--                  :label="item.name"-->
+              <!--                  :value="item.id"-->
+              <!--                >-->
+              <!--                </el-option>-->
+              <!--              </el-select>-->
             </el-col>
           </el-form-item>
         </el-col>
@@ -216,25 +220,24 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="发行人" prop="organId">
-						<el-input
-								v-model="dataForm.organId"
-								placeholder="发行人"
-								maxlength="50"
-						></el-input
-						>
-<!--            <el-select-->
-<!--              v-model="dataForm.organId"-->
-<!--              style="width: 250px"-->
-<!--              placeholder="请选择"-->
-<!--            >-->
-<!--              <el-option-->
-<!--                v-for="item in this.organList"-->
-<!--                :key="item.id"-->
-<!--                :label="item.name"-->
-<!--                :value="item.id"-->
-<!--              >-->
-<!--              </el-option>-->
-<!--            </el-select>-->
+            <el-input
+              v-model="dataForm.organId"
+              placeholder="发行人"
+              maxlength="50"
+            ></el-input>
+            <!--            <el-select-->
+            <!--              v-model="dataForm.organId"-->
+            <!--              style="width: 250px"-->
+            <!--              placeholder="请选择"-->
+            <!--            >-->
+            <!--              <el-option-->
+            <!--                v-for="item in this.organList"-->
+            <!--                :key="item.id"-->
+            <!--                :label="item.name"-->
+            <!--                :value="item.id"-->
+            <!--              >-->
+            <!--              </el-option>-->
+            <!--            </el-select>-->
           </el-form-item>
         </el-col>
 
@@ -588,7 +591,7 @@
           method: "get",
           params: this.$http.adornParams(),
         }).then(({ data }) => {
-          data = data.filter((item) => item.parentId ===2);
+          data = data.filter((item) => item.parentId === 2);
           this.category.list = treeDataTranslate(data, "categoryId", "parentId");
         });
       },
@@ -624,7 +627,7 @@
               onClose: () => {
                 this.visible = false;
                 this.$store.commit("common/removeMainActiveTab");
-                this.$router.push({ name: "prod-prodList" });
+                this.$router.push({ name: "prod-oProdList" });
                 this.$emit("refreshDataList");
               },
             });
