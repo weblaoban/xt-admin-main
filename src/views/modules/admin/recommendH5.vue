@@ -125,6 +125,10 @@
             label: "产品（保险）",
             value: 2,
           },
+          {
+            label: "产品（境外）",
+            value: 3,
+          },
         ],
         selectItem: "",
         dataForm: {
@@ -147,6 +151,7 @@
         loading: false,
         allBList: [],
         allPList: [],
+        allOList: [],
       };
     },
     methods: {
@@ -168,7 +173,27 @@
             return item;
           })
           .filter((item) => item.orders > 0);
+
+        const oData = await this.$http({
+          url: this.$http.adornUrl("/admin/prod/page"),
+          method: "get",
+          params: this.$http.adornParams(
+            Object.assign(
+              {
+                current: page == null ? this.page.currentPage : page.currentPage,
+                size: page == null ? this.page.pageSize : page.pageSize,
+                tpy: 1,
+                isDebt: 1,
+              },
+              params
+            )
+          ),
+        });
+
         this.allBList = bData.data;
+        if (oData.data.records && oData.data.records.length) {
+          this.allBList = [...bData.data, ...oData.data.records];
+        }
         console.log(bData);
         this.dataListLoading = true;
         this.$http({
@@ -180,6 +205,7 @@
                 current: page == null ? this.page.currentPage : page.currentPage,
                 size: page == null ? this.page.pageSize : page.pageSize,
                 tpy: 1,
+                isDebt: 0,
               },
               params
             )
@@ -203,11 +229,24 @@
       getAllList() {
         this.getDataList();
       },
-      onShowSelectProd(classify, index) {
+      async onShowSelectProd(classify, index) {
+        const odata = await this.$http({
+          url: this.$http.adornUrl("/admin/prod/page"),
+          method: "get",
+          params: this.$http.adornParams(
+            Object.assign({
+              current: 1,
+              size: 1000,
+              tpy: 0,
+              isDebt: 1,
+            })
+          ),
+        });
+        this.allOList = odata.data.records;
         this.dataListLoading = true;
         this.selectItem = "";
-				const target = this.dataList[index-1];
-        this.sold_num = target?target.orders*1+1:index + 1;
+        const target = this.dataList[index - 1];
+        this.sold_num = target ? target.orders * 1 + 1 : index + 1;
         this.$http({
           url: this.$http.adornUrl("/admin/prod/page"),
           method: "get",
@@ -216,6 +255,7 @@
               current: 1,
               size: 1000,
               tpy: 0,
+              isDebt: 0,
             })
           ),
         }).then(({ data }) => {
@@ -231,6 +271,8 @@
           this.selectList = this.allPList;
         } else if (value === 2) {
           this.selectList = this.allBList;
+        } else if (value === 3) {
+          this.selectList = this.allOList;
         } else {
           this.selectList = [];
         }
@@ -281,25 +323,25 @@
         if (row.default) {
           return;
         }
-				if(row.baoxian){
-					let param = Object.assign({}, row);
-					param.orders = '';
-					this.$http({
-						url: this.$http.adornUrl("/insurance/product/update"),
-						method:  "post",
-						data: this.$http.adornData(param),
-					}).then(() => {
-						this.$message({
-							message: "操作成功",
-							type: "success",
-							duration: 2000,
-							onClose: () => {
-								this.getAllList();
-							},
-						});
-					});
-					return
-				}
+        if (row.baoxian) {
+          let param = Object.assign({}, row);
+          param.orders = "";
+          this.$http({
+            url: this.$http.adornUrl("/insurance/product/update"),
+            method: "post",
+            data: this.$http.adornData(param),
+          }).then(() => {
+            this.$message({
+              message: "操作成功",
+              type: "success",
+              duration: 2000,
+              onClose: () => {
+                this.getAllList();
+              },
+            });
+          });
+          return;
+        }
         let param = Object.assign({}, row);
         param.tpy = 0;
         this.$http({
