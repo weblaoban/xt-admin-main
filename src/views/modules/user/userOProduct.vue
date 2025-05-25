@@ -246,7 +246,7 @@
         this.$http({
           url: this.$http.adornUrl("/admin/user/list"),
           method: "get",
-          params: this.$http.adornParams(Object.assign({}, { score: 1 })),
+          params: this.$http.adornParams(Object.assign({}, { score: 2 })),
         }).then(({ data }) => {
           this.userList = data;
           if (done) {

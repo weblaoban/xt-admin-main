@@ -511,8 +511,36 @@
               params: this.$http.adornParams(),
             }).then(({ data }) => {
               this.dataForm = data;
-
-              this.dataForm.porder = JSON.parse(this.dataForm.porder);
+              data.qlist = data.porder;
+              let qlist = {
+                qlist: [
+                  {
+                    finish: false,
+                    desc: "",
+                    days: "",
+                  },
+                ],
+              };
+              try {
+                qlist = JSON.parse(data.qlist);
+              } catch (err) {
+                qlist = {
+                  qlist: [
+                    {
+                      finish: false,
+                      desc: "",
+                      days: "",
+                    },
+                  ],
+                };
+              }
+              if (Array.isArray(qlist)) {
+                data.porder = qlist;
+              } else {
+                data.periods = qlist.periods;
+                data.days = qlist.days;
+                data.porder = qlist.porder;
+              }
               // this.$refs.skuTag.init(data.skuList)
               // this.$refs.skuTable.init()
               this.category.selected = idList(
@@ -599,7 +627,7 @@
             return;
           }
           let param = Object.assign({}, this.dataForm);
-          param.porder = JSON.stringify(param.porder);
+          param.porder = JSON.stringify(param);
           this.$http({
             url: this.$http.adornUrl(`/admin/prod`),
             method: param.id ? "put" : "post",

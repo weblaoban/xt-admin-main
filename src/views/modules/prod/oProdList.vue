@@ -206,20 +206,25 @@
               {
                 current: page == null ? this.page.currentPage : page.currentPage,
                 size: page == null ? this.page.pageSize : page.pageSize,
-								isDebt:1,
+                isDebt: 1,
               },
-              params
+              params,
+              {
+                size: 10000,
+              }
             )
           ),
         }).then(({ data }) => {
-          this.dataList = data.records.map((item) => {
-            // item.inrestMethodId = item.inrestMethodId
-            // 	? item.inrestMethodId * 1
-            // 	: 0;
-            // item.investLimitId = item.investLimitId ? item.investLimitId * 1 : 0;
+          this.dataList = data.records
+            .map((item) => {
+              // item.inrestMethodId = item.inrestMethodId
+              // 	? item.inrestMethodId * 1
+              // 	: 0;
+              // item.investLimitId = item.investLimitId ? item.investLimitId * 1 : 0;
 
-            return item;
-          });
+              return item;
+            })
+            .filter((item) => item.categoryId === 3);
           console.log(this.tableOption.column);
           // for (const key in this.dataList) {
           //   if (this.dataList.hasOwnProperty(key)) {
@@ -227,7 +232,7 @@
           //     element.imgs = element.imgs.split(',')[0]
           //   }
           // }
-          this.page.total = data.total;
+          this.page.total = this.dataList.length;
           this.dataListLoading = false;
           if (done) {
             done();

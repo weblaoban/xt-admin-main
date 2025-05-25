@@ -526,10 +526,36 @@
               params: this.$http.adornParams(),
             }).then(({ data }) => {
               this.dataForm = data;
-
-              this.dataForm.porder = JSON.parse(this.dataForm.porder);
-              // this.$refs.skuTag.init(data.skuList)
-              // this.$refs.skuTable.init()
+              data.qlist = data.porder;
+              let qlist = {
+                qlist: [
+                  {
+                    finish: false,
+                    desc: "",
+                    days: "",
+                  },
+                ],
+              };
+              try {
+                qlist = JSON.parse(data.qlist);
+              } catch (err) {
+                qlist = {
+                  qlist: [
+                    {
+                      finish: false,
+                      desc: "",
+                      days: "",
+                    },
+                  ],
+                };
+              }
+              if (Array.isArray(qlist)) {
+                data.porder = qlist;
+              } else {
+                data.periods = qlist.periods;
+                data.days = qlist.days;
+                data.porder = qlist.porder;
+              }
               this.category.selected = idList(
                 this.category.list,
                 this.dataForm.categoryId,

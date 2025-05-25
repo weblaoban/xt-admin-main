@@ -380,11 +380,29 @@ export const userbuytableOption = {
         },
         {
             label: '计息时间',
-            prop: 'periods'
+            prop: 'periods',
+            formatter(row) {
+                let qlist = {}
+                try {
+                    qlist = JSON.parse(row.qlist)
+                } catch (err) {
+                    alist = {}
+                }
+                return Array.isArray(qlist) ? row.periods : qlist.periods
+            }
         },
         {
             label: '计息天数',
-            prop: 'days'
+            prop: 'days',
+            formatter(row) {
+                let qlist = {}
+                try {
+                    qlist = JSON.parse(row.qlist)
+                } catch (err) {
+                    alist = {}
+                }
+                return Array.isArray(qlist) ? row.days : qlist.days
+            }
         },
         {
             label: '到期时间',
@@ -463,8 +481,8 @@ export const userbuyBtableOption = {
         {
             label: '缴费模式',
             prop: 'paymentMode',
-            type:'select',
-            dicData:[]
+            type: 'select',
+            dicData: []
         },
         {
             label: '总认购金额',

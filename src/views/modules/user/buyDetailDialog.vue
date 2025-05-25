@@ -25,18 +25,15 @@
             }}</span></el-form-item
           ></el-col
         >
-			<el-col :span="12">
-				<el-form-item label="境外债" prop="state"
-				>
-					<el-radio-group v-model="addForm.tpe">
-						<el-radio :label="0">否</el-radio>
-						<el-radio :label="1">是</el-radio>
-					</el-radio-group>
-					
-				</el-form-item
-				></el-col
-			>
-			<el-col :span="18">
+        <el-col :span="12">
+          <el-form-item label="境外债" prop="state">
+            <el-radio-group v-model="addForm.tpe">
+              <el-radio :label="0">否</el-radio>
+              <el-radio :label="1">是</el-radio>
+            </el-radio-group>
+          </el-form-item></el-col
+        >
+        <el-col :span="18">
           <el-form-item label-width="100px" label="业绩比较基准" prop="brief"
             ><el-input
               v-model="addForm.brief"
@@ -190,7 +187,7 @@
           zmount: "",
           bplan: "",
           periods: "",
-					tpe:0,
+          tpe: 0,
           qlist: [
             {
               finish: false,
@@ -222,9 +219,37 @@
             method: "get",
             params: this.$http.adornParams(),
           }).then(({ data }) => {
-            data.qlist = data.qlist ? JSON.parse(data.qlist) : [];
+            // data.qlist = data.qlist ? JSON.parse(data.qlist) : [];
+            let qlist = {
+              qlist: [
+                {
+                  finish: false,
+                  desc: "",
+                  days: "",
+                },
+              ],
+            };
+            try {
+              qlist = JSON.parse(data.qlist);
+            } catch (err) {
+              qlist = {
+                qlist: [
+                  {
+                    finish: false,
+                    desc: "",
+                    days: "",
+                  },
+                ],
+              };
+            }
+            if (Array.isArray(qlist)) {
+              data.qlist = qlist;
+            } else {
+              data.periods = qlist.periods;
+              data.days = qlist.days;
+              data.qlist = qlist.qlist;
+            }
             this.addForm = data;
-
             console.log(data);
           });
         } else {
@@ -238,7 +263,7 @@
             zmount: "",
             bplan: "",
             periods: "",
-						tpe:0,
+            tpe: 0,
             qlist: [
               {
                 finish: false,
@@ -302,7 +327,7 @@
             } else {
               params.userDtm = [];
             }
-            params.qlist = JSON.stringify([...params.qlist]);
+            params.qlist = JSON.stringify(params);
             //   delete params.id
             this.$http({
               url: this.$http.adornUrl(`/admin/prodTagReference`),

@@ -270,7 +270,7 @@
               {
                 current: page == null ? this.page.currentPage : page.currentPage,
                 size: page == null ? this.page.pageSize : page.pageSize,
-                score: 1,
+                score: 2,
               },
               params
             )
@@ -441,6 +441,7 @@
       },
       // 删除
       deleteHandle(row) {
+        delete row.loginPassword;
         const id = row.id;
         this.$confirm(`确定进行[删除}]操作?`, "提示", {
           confirmButtonText: "确定",
