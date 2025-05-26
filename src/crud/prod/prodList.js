@@ -334,7 +334,10 @@ export const oTableOption = {
         },
         {
             label: '投资门槛',
-            prop: 'pmStandCnt'
+            prop: 'pmStand',
+            formatter(row) {
+                return row.pmStand + '万美元'
+            }
             // type: 'select',
             // dicData: [],
             // props: {
