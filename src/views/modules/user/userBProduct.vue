@@ -362,17 +362,17 @@
           const paidList = [];
           console.log(row.totalPhases);
           for (let i = 0; i < row.totalPhases; i++) {
-            if (i === 0) {
-              paidList.push({
-                value: this.getCurDate(),
-                status: 1,
-              });
-            } else {
+            // if (i === 0) {
+            //   paidList.push({
+            //     value: this.getCurDate(),
+            //     status: 1,
+            //   });
+            // } else {
               paidList.push({
                 value: "",
                 status: 0,
               });
-            }
+            // }
           }
           this.userForm.paidList = paidList;
         });
