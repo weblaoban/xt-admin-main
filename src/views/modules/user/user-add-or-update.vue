@@ -52,7 +52,7 @@
 				<el-col :span="12">
 <!--					已通过的可以改为未通过  未通过的可以改为已通过-->
 					<el-form-item label="注册审核">
-					<el-select v-model="dataForm.rStatus" v-if="dataForm.rStatus===1">
+					<el-select v-model="dataForm.userMemo" v-if="dataForm.userMemo==='1'">
 						<el-option
 							v-for="item in status1"
 							:key="item.value"
@@ -60,7 +60,7 @@
 							:value="item.value"
 						/>
 					</el-select>
-					<el-select v-model="dataForm.rStatus" v-if="dataForm.rStatus===0">
+					<el-select v-model="dataForm.userMemo" v-if="dataForm.userMemo==='2'">
 						<el-option
 							v-for="item in status2"
 							:key="item.value"
@@ -68,7 +68,7 @@
 							:value="item.value"
 						/>
 					</el-select>
-					<el-select v-model="dataForm.rStatus" v-if="dataForm.rStatus===-1">
+					<el-select v-model="dataForm.userMemo" v-if="!dataForm.userMemo">
 						<el-option
 							v-for="item in statusAll"
 							:key="item.value"
@@ -115,23 +115,23 @@
 				statusAll:[
 					{
 						label:'未通过',
-						value:0
+						value:'2'
 					},
 					{
 						label:'已通过',
-						value:1
+						value:'1'
 					}
 				],
 				status1:[
 					{
 						label:'未通过',
-						value:0
+						value:'2'
 					}
 				],
 				status2:[
 					{
 						label:'已通过',
-						value:1
+						value:'1'
 					}
 				],
       };
@@ -165,6 +165,7 @@
                 userName: this.dataForm.userName,
                 userMail: this.dataForm.userMail,
                 status: this.dataForm.status,
+								userMemo: this.dataForm.userMemo,
                 // score: 1,
                 // loginPassword: encrypt("123456"),
               }),

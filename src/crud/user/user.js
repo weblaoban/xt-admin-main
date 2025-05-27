@@ -26,21 +26,24 @@ export const tableOption = {
     },
     {
       label: '注册审核',
-      prop: 'rStatus',
+      prop: 'userMemo',
       dicData: [
         {
           label: '未审核',
-          value: -1
-        },
-        {
-          label: '未通过',
           value: 0
         },
         {
-          label: '已通过',
-          value: 1
+          label:'未通过',
+          value:'2'
+        },
+        {
+          label:'已通过',
+          value:'1'
         }
-      ]
+      ],
+      formatter(row){
+        return row.userMemo === '1' ? '已通过' : row.userMemo === '2' ? '未通过' : '未审核'
+      }
     },
     {
       label: '用户名',
