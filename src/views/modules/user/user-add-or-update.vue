@@ -68,6 +68,14 @@
 							:value="item.value"
 						/>
 					</el-select>
+					<el-select v-model="dataForm.rStatus" v-if="dataForm.rStatus===-1">
+						<el-option
+							v-for="item in statusAll"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value"
+						/>
+					</el-select>
 					</el-form-item>
 				</el-col
 				>
@@ -104,6 +112,16 @@
             { required: true, message: "用户名不能为空", trigger: "blur" },
           ],
         },
+				statusAll:[
+					{
+						label:'未通过',
+						value:0
+					},
+					{
+						label:'已通过',
+						value:1
+					}
+				],
 				status1:[
 					{
 						label:'未通过',
@@ -112,7 +130,7 @@
 				],
 				status2:[
 					{
-						label:'已审核',
+						label:'已通过',
 						value:1
 					}
 				],
