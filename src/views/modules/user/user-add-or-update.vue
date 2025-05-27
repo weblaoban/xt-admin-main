@@ -48,6 +48,30 @@
           </el-form-item></el-col
         >
       </el-row>
+			<el-row>
+				<el-col :span="12">
+<!--					已通过的可以改为未通过  未通过的可以改为已通过-->
+					<el-form-item label="注册审核">
+					<el-select v-model="dataForm.rStatus" v-if="dataForm.rStatus===1">
+						<el-option
+							v-for="item in status1"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value"
+						/>
+					</el-select>
+					<el-select v-model="dataForm.rStatus" v-if="dataForm.rStatus===0">
+						<el-option
+							v-for="item in status2"
+							:key="item.value"
+							:label="item.label"
+							:value="item.value"
+						/>
+					</el-select>
+					</el-form-item>
+				</el-col
+				>
+			</el-row>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="dataFormSubmit()">确认修改</el-button>
@@ -80,6 +104,18 @@
             { required: true, message: "用户名不能为空", trigger: "blur" },
           ],
         },
+				status1:[
+					{
+						label:'未通过',
+						value:0
+					}
+				],
+				status2:[
+					{
+						label:'已审核',
+						value:1
+					}
+				],
       };
     },
     methods: {
