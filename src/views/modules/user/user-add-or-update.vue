@@ -176,7 +176,7 @@
                 duration: 1500,
                 onClose: () => {
                   this.visible = false;
-                  this.$emit("refreshDataList", this.page);
+                  this.$emit("refreshDataList");
                 },
               });
             });
