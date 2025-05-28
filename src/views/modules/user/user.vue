@@ -53,6 +53,7 @@
     data() {
       return {
         dataList: [],
+				totalDataList: [],
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
@@ -69,29 +70,70 @@
       AddOrUpdate,
     },
     methods: {
+			getCurList(page, params) {
+				let result = [];
+				if(Object.keys(params).length === 0) {
+					result=[...this.totalDataList]
+				}else{
+					this.totalDataList.forEach((item, index) => {
+						let matchAll = true;
+						for (let i in params) {
+							if (i === 'userMemo') {
+								if (!((params[i] === 0 && !item[i]) || item[i] === params[i])) {
+									matchAll = false;
+									break;
+								}
+							} else if (!params[i]) {
+								continue;
+							} else if (!item[i] || item[i].indexOf(params[i]) === -1) {
+								matchAll = false;
+								break;
+							}
+						}
+						if (matchAll) {
+							result.push(item);
+						}
+					});
+				}
+				console.log(result)
+				this.dataList = result.slice(
+					(page.currentPage - 1) * page.pageSize,
+					page.currentPage * page.pageSize
+				);
+				this.page.total = result.length;
+			},
       // 获取数据列表
       getDataList(page, params, done) {
         this.dataListLoading = true;
-        this.$http({
-          url: this.$http.adornUrl("/admin/user/page"),
-          method: "get",
-          params: this.$http.adornParams(
-            Object.assign(
-              {
-                current: page == null ? this.page.currentPage : page.currentPage,
-                size: page == null ? this.page.pageSize : page.pageSize,
-              },
-              { ...params, ...this.params }
-            )
-          ),
-        }).then(({ data }) => {
-          this.dataList = data.records;
-          this.page.total = data.total;
-          this.dataListLoading = false;
-          if (done) {
-            done();
-          }
-        });
+				this.$http({
+					url: this.$http.adornUrl("/admin/user/list"),
+					method: "get",
+				}).then(res=>{
+					this.totalDataList = res.data;
+					const resultParams = {...params,...this.params}
+					this.getCurList(page, resultParams)
+					done && done()
+				})
+        // this.$http({
+        //   url: this.$http.adornUrl("/admin/user/page"),
+        //   method: "get",
+        //   params: this.$http.adornParams(
+        //     Object.assign(
+        //       {
+        //         current: page == null ? this.page.currentPage : page.currentPage,
+        //         size: page == null ? this.page.pageSize : page.pageSize,
+        //       },
+        //       { ...params, ...this.params }
+        //     )
+        //   ),
+        // }).then(({ data }) => {
+        //   this.dataList = data.records;
+        //   this.page.total = data.total;
+        //   this.dataListLoading = false;
+        //   if (done) {
+        //     done();
+        //   }
+        // });
       },
       // 新增 / 修改
       addOrUpdateHandle(id) {

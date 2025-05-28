@@ -28,6 +28,7 @@ export const tableOption = {
       label: '注册审核',
       prop: 'userMemo',
       search: true,
+      type: 'select',
       dicData: [
         {
           label: '未审核',
