@@ -16,7 +16,6 @@
           type="primary"
           icon="el-icon-plus"
           size="small"
-          v-if="isAuth('user:addr:save')"
           @click="addOrUpdateHandle()"
           >新增</el-button
         >
@@ -31,7 +30,6 @@
           type="text"
           icon="el-icon-edit"
           size="small"
-          v-if="isAuth('admin:user:update')"
           @click.stop="addOrUpdateHandle(scope.row.id)"
           >编辑</el-button
         >
@@ -41,7 +39,6 @@
           icon="el-icon-delete"
           style="color: #ef4444"
           size="small"
-          v-if="isAuth('admin:user:delete')"
           @click.stop="deleteHandle(scope.row.id)"
           >删除</el-button
         >
