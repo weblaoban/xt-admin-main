@@ -497,10 +497,10 @@ export const userbuyBtableOption = {
       label: 'IRR',
       prop: 'irr'
     },
-    {
-      label: '成立时间',
-      prop: 'updatedAt'
-    },
+    // {
+    //   label: '成立时间',
+    //   prop: 'updatedAt'
+    // },
     {
       label: '缴费模式',
       prop: 'paymentMode',

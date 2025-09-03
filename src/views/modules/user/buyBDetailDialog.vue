@@ -33,17 +33,17 @@
               placeholder="IRR"
             ></el-input> </el-form-item
         ></el-col>
-        <el-col :span="12">
-          <el-form-item label="成立时间" prop="updatedAt"
-            ><el-date-picker
-              type="date"
-              format="yyyy 年 MM 月 dd 日"
-              value-format="yyyy-MM-dd 00:00:00"
-              placeholder="选择日期"
-              v-model="addForm.updatedAt"
-              style="width: 100%"
-            ></el-date-picker></el-form-item
-        ></el-col>
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="成立时间" prop="updatedAt"-->
+<!--            ><el-date-picker-->
+<!--              type="date"-->
+<!--              format="yyyy 年 MM 月 dd 日"-->
+<!--              value-format="yyyy-MM-dd 00:00:00"-->
+<!--              placeholder="选择日期"-->
+<!--              v-model="addForm.updatedAt"-->
+<!--              style="width: 100%"-->
+<!--            ></el-date-picker></el-form-item-->
+<!--        ></el-col>-->
         <el-col :span="13">
           <el-form-item
             label="缴费模式"
