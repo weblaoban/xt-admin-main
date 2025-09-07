@@ -33,17 +33,17 @@
               placeholder="IRR"
             ></el-input> </el-form-item
         ></el-col>
-<!--        <el-col :span="12">-->
-<!--          <el-form-item label="成立时间" prop="updatedAt"-->
-<!--            ><el-date-picker-->
-<!--              type="date"-->
-<!--              format="yyyy 年 MM 月 dd 日"-->
-<!--              value-format="yyyy-MM-dd 00:00:00"-->
-<!--              placeholder="选择日期"-->
-<!--              v-model="addForm.updatedAt"-->
-<!--              style="width: 100%"-->
-<!--            ></el-date-picker></el-form-item-->
-<!--        ></el-col>-->
+        <!--        <el-col :span="12">-->
+        <!--          <el-form-item label="成立时间" prop="updatedAt"-->
+        <!--            ><el-date-picker-->
+        <!--              type="date"-->
+        <!--              format="yyyy 年 MM 月 dd 日"-->
+        <!--              value-format="yyyy-MM-dd 00:00:00"-->
+        <!--              placeholder="选择日期"-->
+        <!--              v-model="addForm.updatedAt"-->
+        <!--              style="width: 100%"-->
+        <!--            ></el-date-picker></el-form-item-->
+        <!--        ></el-col>-->
         <el-col :span="13">
           <el-form-item
             label="缴费模式"
@@ -142,6 +142,16 @@
         },
         buyDetail: [],
       };
+    },
+    computed: {
+      userId: {
+        get() {
+          return this.$store.state.user.id;
+        },
+        set(val) {
+          this.$store.commit("user/updateId", val);
+        },
+      },
     },
     methods: {
       init(id) {
@@ -249,6 +259,7 @@
               data: this.$http.adornData({
                 id: this.addForm.id || "",
                 ...params,
+                description: params.description || this.userId,
               }),
             }).then(({ data }) => {
               this.$message({

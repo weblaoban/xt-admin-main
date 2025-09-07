@@ -1,14 +1,15 @@
 <!-- 用户产品详情 -->
 <template>
   <div class="mod-user">
+    <!-- :page="page" -->
+
+    <!-- @on-load="getAllData" -->
     <avue-crud
       ref="crud"
-      :page="page"
       :data="dataList"
       :option="tableOption"
       @search-change="searchChange"
       @selection-change="selectionChange"
-      @on-load="getDataList"
       @search-reset="resetChange"
     >
       <template slot="menuLeft">
@@ -49,7 +50,7 @@
     <add-or-update
       v-if="addOrUpdateVisible"
       ref="addOrUpdate"
-      @refreshDataList="getDataList"
+      @refreshDataList="getAllData"
     ></add-or-update>
 
     <!-- 查看弹窗 -->
@@ -152,195 +153,299 @@
 </template>
 
 <script>
-  import { userbuytableOption } from '@/crud/user/user'
-import AddOrUpdate from './buyDetailDialog.vue'
-export default {
-    data () {
-      function isMobile (s) {
-        return /^1[0-9]{10}$/.test(s)
+  import { userbuytableOption } from "@/crud/user/user";
+  import AddOrUpdate from "./buyDetailDialog.vue";
+  export default {
+    data() {
+      function isMobile(s) {
+        return /^1[0-9]{10}$/.test(s);
       }
       const validatePhone = (rule, value, callback) => {
         if (value && !isMobile(value)) {
-          callback(new Error('请填写正确的手机号'))
+          callback(new Error("请填写正确的手机号"));
         } else {
-          callback()
+          callback();
         }
-      }
+      };
       return {
+        allDataList: [],
         dataList: [],
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
         tableOption: userbuytableOption,
         visibleBuyDetailDialog: false,
-        perMobile: '',
+        perMobile: "",
         detailItem: {
-          userDtm: []
+          userDtm: [],
         },
         page: {
           total: 0, // 总页数
           currentPage: 1, // 当前页数
-          pageSize: 10 // 每页显示多少条
+          pageSize: 100, // 每页显示多少条
         },
         rules: {
           // 身份证
           userMail: [
-            { required: true, message: '请输入身份证', trigger: 'blur' }
+            { required: true, message: "请输入身份证", trigger: "blur" },
           ],
           // 手机
           userMobile: [
-            { required: true, message: '请输入手机', trigger: 'blur' },
-            { validator: validatePhone, trigger: 'blur' }
+            { required: true, message: "请输入手机", trigger: "blur" },
+            { validator: validatePhone, trigger: "blur" },
           ],
           // 姓名
-          nickName: [{ required: true, message: '请输入 姓名', trigger: 'blur' }],
+          nickName: [{ required: true, message: "请输入 姓名", trigger: "blur" }],
           amount: [
-            { required: true, message: '请输入购买金额', trigger: 'blur' }
-          ]
+            { required: true, message: "请输入购买金额", trigger: "blur" },
+          ],
         },
         userForm: {
-          userMail: '',
-          nickName: '',
-          userMobile: '',
+          userMail: "",
+          nickName: "",
+          userMobile: "",
           amount: 1,
-          puserId: ''
+          puserId: "",
         },
-        userList: []
-      }
-  },
-    components: {
-      AddOrUpdate
+        userList: [],
+      };
     },
-    mounted () {
-      this.getUserList()
-  },
+    components: {
+      AddOrUpdate,
+    },
+    mounted() {
+      this.getUserList();
+      this.getAllData();
+    },
+    computed: {
+      userId: {
+        get() {
+          return this.$store.state.user.id;
+        },
+        set(val) {
+          this.$store.commit("user/updateId", val);
+        },
+      },
+    },
     methods: {
-      // 获取数据列表
-      getDataList (page, params, done) {
-        this.dataListLoading = true
+      // 递归获取所有数据的内部方法
+      _fetchAllDataRecursive(params, currentPage, allData) {
+        return new Promise((resolve, reject) => {
+          const pageConfig = {
+            currentPage,
+            pageSize: this.page.pageSize,
+          };
+
+          this.getDataList(pageConfig, params, (data, error) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+
+            // 合并当前页数据
+            const newData = [...allData, ...data.records];
+
+            // 检查是否已获取全部数据
+            if (newData.length >= data.total) {
+              resolve(newData);
+            } else {
+              // 继续获取下一页
+              this._fetchAllDataRecursive(params, currentPage + 1, newData)
+                .then(resolve)
+                .catch(reject);
+            }
+          });
+        });
+      },
+
+      // 获取所有数据的公开方法
+      async getAllData(page = {}, params = {}, done = null) {
+        try {
+          this.dataListLoading = true;
+          // 从第1页开始获取，初始数据为空数组
+          const allData = await this._fetchAllDataRecursive(params, 1, []);
+          this.dataListLoading = false;
+          this.allDataList = allData;
+          if (this.userId == "1") {
+            this.dataList = JSON.parse(JSON.stringify(allData));
+          } else {
+            const dList = [];
+            allData.forEach((item, index) => {
+              const qlist = JSON.parse(item.qlist);
+              if (qlist.createUser === this.userId) {
+                dList.push(item);
+              }
+            });
+            this.dataList = dList;
+          }
+          console.log("所有数据获取完成，共", allData.length, "条记录");
+          if (done) {
+            done();
+          }
+          return allData;
+        } catch (error) {
+          this.dataListLoading = false;
+          console.error("获取所有数据失败:", error);
+          throw error; // 抛出错误让调用者处理
+        }
+      },
+      // 原有的分页查询方法
+      getDataList(page, params, done) {
+        this.dataListLoading = true;
         this.$http({
-          url: this.$http.adornUrl('/admin/prodTagReference/page'),
-          method: 'get',
+          url: this.$http.adornUrl("/admin/prodTagReference/page"),
+          method: "get",
           params: this.$http.adornParams(
             Object.assign(
               {
                 current: page == null ? this.page.currentPage : page.currentPage,
-                size: page == null ? this.page.pageSize : page.pageSize
+                size: page == null ? this.page.pageSize : page.pageSize,
               },
               params
             )
-          )
-        }).then(({ data }) => {
-          this.dataList = data.records
-          this.page.total = data.total
-          this.dataListLoading = false
-          if (done) {
-            done()
-          }
+          ),
         })
+          .then(({ data }) => {
+            this.page.total = data.total;
+            this.dataListLoading = false;
+            if (done) {
+              done(data); // 将接口返回的数据传递给回调
+            }
+          })
+          .catch((error) => {
+            this.dataListLoading = false;
+            console.error("数据请求失败:", error);
+            if (done) {
+              done(null, error); // 传递错误信息
+            }
+          });
       },
-      getUserList () {
+      //   // 获取数据列表
+      //   getDataList(page, params, done) {
+      //     this.dataListLoading = true;
+      //     this.$http({
+      //       url: this.$http.adornUrl("/admin/prodTagReference/page"),
+      //       method: "get",
+      //       params: this.$http.adornParams(
+      //         Object.assign(
+      //           {
+      //             current: page == null ? this.page.currentPage : page.currentPage,
+      //             size: page == null ? this.page.pageSize : page.pageSize,
+      //           },
+      //           params
+      //         )
+      //       ),
+      //     }).then(({ data }) => {
+      //       this.dataList = data.records;
+      //       this.page.total = data.total;
+      //       this.dataListLoading = false;
+      //       if (done) {
+      //         done();
+      //       }
+      //     });
+      //   },
+      getUserList() {
         this.$http({
-          url: this.$http.adornUrl('/admin/user/list'),
-          method: 'get',
-          params: this.$http.adornParams(Object.assign({}, { score: 2 }))
+          url: this.$http.adornUrl("/admin/user/list"),
+          method: "get",
+          params: this.$http.adornParams(Object.assign({}, { score: 2 })),
         }).then(({ data }) => {
-          this.userList = data
-          if (done) {
-            done()
-          }
-        })
+          this.userList = data;
+          //   if (done) {
+          //     done();
+          //   }
+        });
       },
-      onShowDetail (row) {
+      onShowDetail(row) {
         this.$http({
           url: this.$http.adornUrl(`/admin/prodTagReference/info/${row.id}`),
-          method: 'get',
-          params: this.$http.adornParams()
+          method: "get",
+          params: this.$http.adornParams(),
         }).then(({ data }) => {
-          this.detailItem = data
-          this.visibleBuyDetailDialog = true
-        //   this.$refs.ruleForm.resetFields()
+          this.detailItem = data;
+          this.visibleBuyDetailDialog = true;
+          //   this.$refs.ruleForm.resetFields()
           this.userForm = {
-            userMail: '',
-            nickName: '',
-            userMobile: '',
-            amount: '',
-            puserId: ''
-          }
-        })
+            userMail: "",
+            nickName: "",
+            userMobile: "",
+            amount: "",
+            puserId: "",
+          };
+        });
       },
       // 新增 / 修改
-      addOrUpdateHandle (id) {
-        this.addOrUpdateVisible = true
+      addOrUpdateHandle(id) {
+        this.addOrUpdateVisible = true;
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
-        })
+          this.$refs.addOrUpdate.init(id);
+        });
       },
-      submitForm (formName) {
+      submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$http({
               url: this.$http.adornUrl(`/admin/prodTagReference`),
-              method: 'put',
+              method: "put",
               data: this.$http.adornData({
                 id: this.detailItem.id,
                 userDtm: [
                   {
                     ...this.userForm,
-                    amount: this.userForm.amount + '',
-                    rad: new Date().getTime()
-                  }
-                ]
-              })
+                    amount: this.userForm.amount + "",
+                    rad: new Date().getTime(),
+                  },
+                ],
+              }),
             }).then(({ data }) => {
               if (data) {
-                this.preMobile = this.userForm.userMobile
-                this.$refs[formName].resetFields()
+                this.preMobile = this.userForm.userMobile;
+                this.$refs[formName].resetFields();
                 this.userForm = {
-                  userMail: '',
-                  nickName: '',
-                  userMobile: '',
+                  userMail: "",
+                  nickName: "",
+                  userMobile: "",
                   amount: 1,
-                  puserId: ''
-                }
+                  puserId: "",
+                };
                 this.$message({
-                  message: '操作成功',
-                  type: 'success',
+                  message: "操作成功",
+                  type: "success",
                   duration: 1500,
                   onClose: () => {
-                    this.getDataDetail(this.detailItem.id)
-                  }
-                })
+                    this.getDataDetail(this.detailItem.id);
+                  },
+                });
               } else {
                 this.$message({
-                  message: '用户已存在',
-                  type: 'error',
+                  message: "用户已存在",
+                  type: "error",
                   duration: 1500,
                   onClose: () => {
-                    this.getDataDetail(this.detailItem.id)
-                  }
-                })
+                    this.getDataDetail(this.detailItem.id);
+                  },
+                });
               }
-            })
+            });
           } else {
-            console.log('error submit!!')
-            return false
+            console.log("error submit!!");
+            return false;
           }
-        })
+        });
       },
-      deluser (user) {
-        const userId = user.id
-        const prodid = this.detailItem.id
+      deluser(user) {
+        const userId = user.id;
+        const prodid = this.detailItem.id;
 
-        this.$confirm(`确定进行[${prodid ? '删除' : '批量删除'}]操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+        this.$confirm(`确定进行[${prodid ? "删除" : "批量删除"}]操作?`, "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl('/admin/prodTagReference/ruser'),
-              method: 'delete',
+              url: this.$http.adornUrl("/admin/prodTagReference/ruser"),
+              method: "delete",
               data: this.$http.adornData({
                 id: prodid,
                 userDtm: [
@@ -348,91 +453,93 @@ export default {
                     id: userId,
                     amount: user.amount,
                     rad: user.rad,
-                    puserId: user.puserId
-                  }
-                ]
-              })
+                    puserId: user.puserId,
+                  },
+                ],
+              }),
             }).then(({ data }) => {
               this.$message({
-                message: '操作成功',
-                type: 'success',
+                message: "操作成功",
+                type: "success",
                 duration: 1500,
                 onClose: () => {
-                  this.getDataDetail(prodid)
-                }
-              })
-            })
+                  this.getDataDetail(prodid);
+                },
+              });
+            });
           })
-          .catch(() => {})
+          .catch(() => {});
       },
 
-      getDataDetail (id) {
+      getDataDetail(id) {
         this.$http({
           url: this.$http.adornUrl(`/admin/prodTagReference/info/${id}`),
-          method: 'get',
-          params: this.$http.adornParams()
+          method: "get",
+          params: this.$http.adornParams(),
         }).then(({ data }) => {
-          this.detailItem = data
+          this.detailItem = data;
           if (this.preMobile) {
-						// 新增购买用户以后  把用户的注册状态变成已通过  userMemo = 1
-  const userId = data.userDtm.find(item => item.userMobile === this.preMobile).id
-            this.preMobile = ''
+            // 新增购买用户以后  把用户的注册状态变成已通过  userMemo = 1
+            const userId = data.userDtm.find(
+              (item) => item.userMobile === this.preMobile
+            ).id;
+            this.preMobile = "";
             if (!userId) {
-  return
+              return;
             }
-  this.$http({
-    url: this.$http.adornUrl(`/admin/user`),
-  method: 'put',
-  data: this.$http.adornData({
-  id: userId,
-  userMemo: '1'
-  })
-})
+            this.$http({
+              url: this.$http.adornUrl(`/admin/user`),
+              method: "put",
+              data: this.$http.adornData({
+                id: userId,
+                userMemo: "1",
+              }),
+            });
           }
-          this.getDataList(this.page)
-        })
+          this.getAllData(this.page);
+        });
       },
       // 删除
-      deleteHandle (id) {
+      deleteHandle(id) {
         var ids = id
           ? [id]
           : this.dataListSelections.map((item) => {
-            return item.userId
-          })
-        this.$confirm(`确定进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
+              return item.userId;
+            });
+        this.$confirm(`确定进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
         })
           .then(() => {
             this.$http({
-              url: this.$http.adornUrl('/admin/prodTagReference/' + ids),
-              method: 'delete',
-              data: this.$http.adornData(ids, false)
+              url: this.$http.adornUrl("/admin/prodTagReference/" + ids),
+              method: "delete",
+              data: this.$http.adornData(ids, false),
             }).then(({ data }) => {
               this.$message({
-                message: '操作成功',
-                type: 'success',
+                message: "操作成功",
+                type: "success",
                 duration: 1500,
                 onClose: () => {
-                  this.getDataList(this.page)
-                }
-              })
-            })
+                  this.getAllData(this.page);
+                },
+              });
+            });
           })
-          .catch(() => {})
+          .catch(() => {});
       },
       // 条件查询
-      searchChange (params, done) {
-        this.getDataList(this.page, params, done)
+      searchChange(params, done) {
+        this.getAllData(this.page, params, done);
       },
-      resetChange () {
-        this.getDataList(this.page, {})
+      resetChange() {
+        this.getAllData(this.page, {});
       },
       // 多选变化
-      selectionChange (val) {
-        this.dataListSelections = val
-      }
-    }
-  }
+      selectionChange(val) {
+        this.dataListSelections = val;
+      },
+    },
+  };
 </script>

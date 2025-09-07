@@ -204,6 +204,16 @@
         buyDetail: [],
       };
     },
+    computed: {
+      userId: {
+        get() {
+          return this.$store.state.user.id;
+        },
+        set(val) {
+          this.$store.commit("user/updateId", val);
+        },
+      },
+    },
     methods: {
       init(id) {
         this.addForm.id = id || null;
@@ -326,6 +336,9 @@
               delete params.userDtm;
             } else {
               params.userDtm = [];
+            }
+            if (params && !params.createUser) {
+              params.createUser = this.userId;
             }
             params.qlist = JSON.stringify(params);
             //   delete params.id

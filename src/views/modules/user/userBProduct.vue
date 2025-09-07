@@ -58,7 +58,7 @@
       title="编辑认购用户"
       :close-on-click-modal="false"
       :visible.sync="visibleBuyDetailDialog"
-			@close="onClose"
+      @close="onClose"
     >
       <el-form
         label-width="80px"
@@ -205,8 +205,7 @@
               }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="amount" label="操作"
-													 fixed="right">
+          <el-table-column prop="amount" label="操作" fixed="right">
             <template slot-scope="scope">
               <el-button type="danger" @click="deluser(scope.row)"
                 >删除
@@ -287,6 +286,17 @@
     mounted() {
       this.getUserList();
     },
+
+    computed: {
+      userId: {
+        get() {
+          return this.$store.state.user.id;
+        },
+        set(val) {
+          this.$store.commit("user/updateId", val);
+        },
+      },
+    },
     methods: {
       getPaidList(info) {
         let result = [];
@@ -304,9 +314,9 @@
         console.log(value);
         this.userForm.paidList[index].value = value;
       },
-			onClose(){
-				this.getDataList()
-			},
+      onClose() {
+        this.getDataList();
+      },
       // 获取数据列表
       getDataList(page, params, done) {
         this.dataListLoading = true;
@@ -324,7 +334,18 @@
           //   )
           // ),
         }).then(({ data }) => {
-          this.dataList = data;
+          if (this.userId == "1") {
+            this.dataList = JSON.parse(JSON.stringify(data));
+          } else {
+            const dList = [];
+            data.forEach((item, index) => {
+              if (item.description === this.userId) {
+                dList.push(item);
+              }
+            });
+            this.dataList = dList;
+          }
+          //   this.dataList = data;
           this.page.total = data.total;
           this.dataListLoading = false;
           if (done) {
@@ -365,10 +386,10 @@
             //     status: 1,
             //   });
             // } else {
-              paidList.push({
-                value: "",
-                status: 0,
-              });
+            paidList.push({
+              value: "",
+              status: 0,
+            });
             // }
           }
           this.userForm.paidList = paidList;
@@ -427,7 +448,7 @@
                 puserid: this.userForm.puserId,
                 totalAmount: this.detailItem.totalAmount + totalAmount,
                 paidList,
-								remainingAmount:this.userForm.amount,
+                remainingAmount: this.userForm.amount,
                 userDtm: {
                   ...this.userForm,
                   paidList,
@@ -486,9 +507,9 @@
               // data: this.$http.adornData({
               //   ids: user.id,
               // }),
-							params:{
-								ids:user.id
-							}
+              params: {
+                ids: user.id,
+              },
             }).then(({ data }) => {
               this.$message({
                 message: "操作成功",
@@ -529,9 +550,9 @@
         })
           .then(() => {
             this.$http({
-							url: this.$http.adornUrl("/insurance/product/delete"),
-							method: "post",
-							params: {ids: id},
+              url: this.$http.adornUrl("/insurance/product/delete"),
+              method: "post",
+              params: { ids: id },
             }).then(({ data }) => {
               this.$message({
                 message: "操作成功",
