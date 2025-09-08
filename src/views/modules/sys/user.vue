@@ -26,6 +26,7 @@
                    icon="el-icon-edit"
                    size="small"
                    v-if="isAuth('sys:user:update')"
+									 :disabled="scope.row.userId==1"
                    @click.stop="addOrUpdateHandle(scope.row.userId)">编辑</el-button>
 
         <el-button type="danger"
