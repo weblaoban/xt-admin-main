@@ -627,6 +627,7 @@
             return;
           }
           let param = Object.assign({}, this.dataForm);
+          delete param.qlist
           param.porder = JSON.stringify(param);
           this.$http({
             url: this.$http.adornUrl(`/admin/prod`),
